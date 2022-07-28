@@ -1,4 +1,4 @@
-import { ScrollView, Text, View, StyleSheet } from "react-native";
+import { ScrollView, Text, View, StyleSheet, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LOCATIONS } from "../data/dummy-data";
 
@@ -17,6 +17,26 @@ function LocationDetailsScreen({ route }) {
           <Text style={styles.nameView}>{selectedLocation.name}</Text>
           <Text style={styles.addressView}>{selectedLocation.address}</Text>
         </View>
+      </View>
+      <Image style={styles.image} source={{ uri: selectedLocation.uri }} />
+      <View style={styles.innerContainer}>
+        <Text>Type</Text>
+        <Text>Style</Text>
+      </View>
+      <View style={styles.innerContainer}>
+        <Text>{selectedLocation.type}</Text>
+        <Text>{selectedLocation.style}</Text>
+      </View>
+      <View style={styles.innerContainer}>
+        <Text>Build Date</Text>
+        <Text>Architect</Text>
+      </View>
+      <View style={styles.innerContainer}>
+        <Text>{selectedLocation.date}</Text>
+        <Text>{selectedLocation.architect}</Text>
+      </View>
+      <View style={styles.innerContainer}>
+        <Text>{selectedLocation.description}</Text>
       </View>
     </ScrollView>
   );
@@ -44,5 +64,9 @@ const styles = StyleSheet.create({
   },
   innerContainer: {
     flexDirection: "row",
+  },
+  image: {
+    width: "100%",
+    height: 300,
   },
 });
