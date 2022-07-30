@@ -9,20 +9,35 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { LOCATIONS } from "../data/dummy-data";
 import LocationItem from "../components/LocationItem";
+import { useEffect, useState } from "react";
+import { fetchLocations } from "../util/http";
 
 function DiscoveryScreen({ navigation }) {
-  const displayedLocations = LOCATIONS.filter((locationItem) => {
+  const [fetchedLocations, setFetchedLocations] = useState([]);
+  useEffect(() => {
+    async function getLocations() {
+      const locations = await fetchLocations();
+      setFetchedLocations(locations);
+      const displayedLocations = fetchedLocations.filter((locationItem) => {
+        return locationItem;
+      });
+    }
+    getLocations();
+  }, []);
+
+  const displayedLocations = fetchedLocations.filter((locationItem) => {
     return locationItem;
   });
+
   function renderLocationItem(itemData) {
     function pressHandler() {
       navigation.navigate("locationDetails", {
-        locationId: itemData.item.id,
+        locationId: itemData.item._id,
       });
     }
     const item = itemData.item;
     const locationItemProps = {
-      id: item.id,
+      id: item._id,
       name: item.name,
       address: item.address,
       type: item.type,
@@ -44,7 +59,7 @@ function DiscoveryScreen({ navigation }) {
         </ScrollView> */}
         <FlatList
           data={displayedLocations}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item._id}
           renderItem={renderLocationItem}
           style={styles.flatList}
         />
