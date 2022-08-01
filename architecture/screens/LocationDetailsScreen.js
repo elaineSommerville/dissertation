@@ -54,7 +54,6 @@ function LocationDetailsScreen({ route, navigation }) {
   const imageCaptions = [];
 
   function errorHandler() {
-    // setError(null);
     navigation.goBack();
   }
 
@@ -92,8 +91,6 @@ function LocationDetailsScreen({ route, navigation }) {
           images={imageUris}
           sliderBoxHeight={200}
           onCurrentImagePressed={(index) =>
-            // TO DO: navigate to image screen
-            //console.warn(`image ${index} pressed`)
             navigation.navigate("imageScreen", {
               uri: imageUris[index],
               caption: imageCaptions[index],

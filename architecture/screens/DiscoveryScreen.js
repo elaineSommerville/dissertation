@@ -24,9 +24,6 @@ function DiscoveryScreen({ navigation }) {
       try {
         const locations = await fetchLocations();
         setFetchedLocations(locations);
-        // const displayedLocations = fetchedLocations.filter((locationItem) => {
-        //   return locationItem;
-        // });
       } catch (error) {
         setError("Could not fetch locations!");
       }
@@ -34,10 +31,6 @@ function DiscoveryScreen({ navigation }) {
     }
     getLocations();
   }, []);
-
-  const displayedLocations = fetchedLocations.filter((locationItem) => {
-    return locationItem;
-  });
 
   function renderLocationItem(itemData) {
     function pressHandler() {
@@ -73,6 +66,9 @@ function DiscoveryScreen({ navigation }) {
   if (isLoading) {
     return <LoadingOverlay />;
   } else {
+    const displayedLocations = fetchedLocations.filter((locationItem) => {
+      return locationItem;
+    });
     return (
       <View style={styles.rootContainer}>
         <View style={styles.searchView}>
