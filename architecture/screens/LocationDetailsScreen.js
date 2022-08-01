@@ -1,7 +1,14 @@
-import { ScrollView, Text, View, StyleSheet } from "react-native";
+import {
+  ScrollView,
+  Text,
+  View,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useState, useEffect } from "react";
 import { fetchLocation } from "../util/http";
+import LoadingOverlay from "../components/ui/LoadingOverlay";
 
 import { SliderBox } from "react-native-image-slider-box";
 // npm install react-native-image-slider-box
@@ -41,11 +48,7 @@ function LocationDetailsScreen({ route, navigation }) {
   const imageCaptions = [];
 
   if (isLoading) {
-    return (
-      <View style={styles.loadingScreen}>
-        <Text>Loading...</Text>
-      </View>
-    );
+    return <LoadingOverlay />;
   } else {
     // once location data has been received, push images into imageUri array
     // for image slider
