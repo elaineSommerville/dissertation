@@ -1,9 +1,9 @@
-import { ScrollView, Text, View, StyleSheet, Image } from "react-native";
+import { ScrollView, Text, View, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useState, useEffect } from "react";
 import { fetchLocation } from "../util/http";
-import { SliderBox } from "react-native-image-slider-box";
 
+import { SliderBox } from "react-native-image-slider-box";
 // npm install react-native-image-slider-box
 // https://www.npmjs.com/package/react-native-image-slider-box
 // replace ViewPropTypes in multiple places
@@ -13,7 +13,7 @@ import { SliderBox } from "react-native-image-slider-box";
 // ./node_modules/react-native-snap-carousel/src/pagination/PaginationDot.js
 // ./node_modules/react-native-snap-carousel/src/parallaximage/ParallaxImage.js
 
-function LocationDetailsScreen({ route }) {
+function LocationDetailsScreen({ route, navigation }) {
   const locationId = route.params.locationId;
   const [fetchedLocation, setFetchedLocation] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -38,6 +38,7 @@ function LocationDetailsScreen({ route }) {
   const description = fetchedLocation.description;
 
   const imageUris = [];
+  const imageCaptions = [];
 
   if (isLoading) {
     return (
@@ -46,6 +47,12 @@ function LocationDetailsScreen({ route }) {
       </View>
     );
   } else {
+    // once location data has been received, push images into imageUri array
+    // for image slider
+    images.map((image) => {
+      imageUris.push(image.uri);
+      imageCaptions.push(image.name);
+    });
     return (
       <ScrollView style={styles.rootContainer}>
         <View style={styles.innerContainer}>
@@ -57,18 +64,20 @@ function LocationDetailsScreen({ route }) {
             <Text style={styles.addressView}>{address}</Text>
           </View>
         </View>
-        {images.map((image) => {
-          imageUris.push(image.uri);
-        })}
         <SliderBox
           images={imageUris}
           sliderBoxHeight={200}
           onCurrentImagePressed={(index) =>
-            console.warn(`image ${index} pressed`)
+            // TO DO: navigate to image screen
+            //console.warn(`image ${index} pressed`)
+            navigation.navigate("imageScreen", {
+              uri: imageUris[index],
+              caption: imageCaptions[index],
+            })
           }
           dotColor="#FFEE58"
           inactiveDotColor="#90A4AE"
-          paginationBoxVerticalPadding={20}
+          paginationBoxVerticalPadding={0}
           autoplay
           circleLoop
           resizeMethod={"resize"}
@@ -79,7 +88,7 @@ function LocationDetailsScreen({ route }) {
             padding: 0,
             alignItems: "center",
             alignSelf: "center",
-            justifyContent: "center",
+            justifyContent: "flex-start",
             paddingVertical: 0,
           }}
           dotStyle={{
@@ -92,7 +101,11 @@ function LocationDetailsScreen({ route }) {
             marginBottom: 10,
             backgroundColor: "rgba(128, 128, 128, 0.92)",
           }}
-          ImageComponentStyle={{ borderRadius: 15, width: "97%", marginTop: 5 }}
+          ImageComponentStyle={{
+            borderRadius: 10,
+            width: "80%",
+            marginTop: 5,
+          }}
           imageLoadingColor="#2196F3"
         />
         <View style={styles.innerContainer}>
