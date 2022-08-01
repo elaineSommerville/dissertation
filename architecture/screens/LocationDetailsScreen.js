@@ -9,6 +9,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useState, useEffect } from "react";
 import { fetchLocation } from "../util/http";
 import LoadingOverlay from "../components/ui/LoadingOverlay";
+import ErrorOverlay from "../components/ui/ErrorOverlay";
 
 import { SliderBox } from "react-native-image-slider-box";
 // npm install react-native-image-slider-box
@@ -24,11 +25,16 @@ function LocationDetailsScreen({ route, navigation }) {
   const locationId = route.params.locationId;
   const [fetchedLocation, setFetchedLocation] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState();
 
   useEffect(() => {
     async function getLocation(locationId) {
-      const location = await fetchLocation(locationId);
-      setFetchedLocation(location);
+      try {
+        const location = await fetchLocation(locationId);
+        setFetchedLocation(location);
+      } catch (error) {
+        setError("Could not fetch location details...");
+      }
       setIsLoading(false);
     }
     getLocation(locationId);
@@ -46,6 +52,21 @@ function LocationDetailsScreen({ route, navigation }) {
 
   const imageUris = [];
   const imageCaptions = [];
+
+  function errorHandler() {
+    // setError(null);
+    navigation.goBack();
+  }
+
+  if (error && !isLoading) {
+    return (
+      <ErrorOverlay
+        buttonTitle="Go back"
+        message={error}
+        onConfirm={errorHandler}
+      />
+    );
+  }
 
   if (isLoading) {
     return <LoadingOverlay />;

@@ -11,20 +11,26 @@ import LocationItem from "../components/LocationItem";
 import { useEffect, useState } from "react";
 import { fetchLocations } from "../util/http";
 import LoadingOverlay from "../components/ui/LoadingOverlay";
+import ErrorOverlay from "../components/ui/ErrorOverlay";
 
 // npm install react-native-maps
 
 function DiscoveryScreen({ navigation }) {
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState();
   const [fetchedLocations, setFetchedLocations] = useState([]);
   useEffect(() => {
     async function getLocations() {
-      const locations = await fetchLocations();
-      setFetchedLocations(locations);
+      try {
+        const locations = await fetchLocations();
+        setFetchedLocations(locations);
+        // const displayedLocations = fetchedLocations.filter((locationItem) => {
+        //   return locationItem;
+        // });
+      } catch (error) {
+        setError("Could not fetch locations!");
+      }
       setIsLoading(false);
-      const displayedLocations = fetchedLocations.filter((locationItem) => {
-        return locationItem;
-      });
     }
     getLocations();
   }, []);
@@ -48,6 +54,22 @@ function DiscoveryScreen({ navigation }) {
     };
     return <LocationItem {...locationItemProps} onPress={pressHandler} />;
   }
+
+  function errorHandler() {
+    // setError(null);
+    navigation.replace("discovery");
+  }
+
+  if (error && !isLoading) {
+    return (
+      <ErrorOverlay
+        buttonTitle="Try again"
+        message={error}
+        onConfirm={errorHandler}
+      />
+    );
+  }
+
   if (isLoading) {
     return <LoadingOverlay />;
   } else {
@@ -58,11 +80,6 @@ function DiscoveryScreen({ navigation }) {
           <Ionicons name="search" size={18} color="black" />
         </View>
         <View style={styles.listView}>
-          {/* <ScrollView alwaysBounceVertical={false} style={styles.scrollViewView}>
-          {displayedLocations.map((item, id) => (
-            <LocationItem item={item} />
-          ))}
-        </ScrollView> */}
           <FlatList
             data={displayedLocations}
             keyExtractor={(item) => item._id}
