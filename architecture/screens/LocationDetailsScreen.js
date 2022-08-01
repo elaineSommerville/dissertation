@@ -85,11 +85,10 @@ function LocationDetailsScreen({ route, navigation }) {
           paginationBoxStyle={{
             position: "absolute",
             bottom: 0,
-            padding: 0,
+            paddingLeft: 0,
             alignItems: "center",
             alignSelf: "center",
             justifyContent: "flex-start",
-            paddingVertical: 0,
           }}
           dotStyle={{
             width: 10,
@@ -103,8 +102,9 @@ function LocationDetailsScreen({ route, navigation }) {
           }}
           ImageComponentStyle={{
             borderRadius: 10,
-            width: "80%",
+            width: "87%",
             marginTop: 5,
+            marginLeft: -50,
           }}
           imageLoadingColor="#2196F3"
         />
