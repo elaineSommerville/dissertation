@@ -1,8 +1,17 @@
 import { ScrollView, Text, View, StyleSheet, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-// import { LOCATIONS } from "../data/dummy-data";
 import { useState, useEffect } from "react";
 import { fetchLocation } from "../util/http";
+import { SliderBox } from "react-native-image-slider-box";
+
+// npm install react-native-image-slider-box
+// https://www.npmjs.com/package/react-native-image-slider-box
+// replace ViewPropTypes in multiple places
+// import {ViewPropTypes} from 'deprecated-react-native-prop-types';
+// ./node_modules/react-native-snap-carousel/src/carousel/Carousel.js
+// ./node_modules/react-native-snap-carousel/src/pagination/Pagination.js
+// ./node_modules/react-native-snap-carousel/src/pagination/PaginationDot.js
+// ./node_modules/react-native-snap-carousel/src/parallaximage/ParallaxImage.js
 
 function LocationDetailsScreen({ route }) {
   const locationId = route.params.locationId;
@@ -28,6 +37,8 @@ function LocationDetailsScreen({ route }) {
   const architects = fetchedLocation.architect;
   const description = fetchedLocation.description;
 
+  const imageUris = [];
+
   if (isLoading) {
     return (
       <View style={styles.loadingScreen}>
@@ -46,13 +57,44 @@ function LocationDetailsScreen({ route }) {
             <Text style={styles.addressView}>{address}</Text>
           </View>
         </View>
-        {images.map((image, imageIndex) => {
-          return (
-            <View key={imageIndex}>
-              <Image style={styles.image} source={{ uri: image.uri }} />
-            </View>
-          );
+        {images.map((image) => {
+          imageUris.push(image.uri);
         })}
+        <SliderBox
+          images={imageUris}
+          sliderBoxHeight={200}
+          onCurrentImagePressed={(index) =>
+            console.warn(`image ${index} pressed`)
+          }
+          dotColor="#FFEE58"
+          inactiveDotColor="#90A4AE"
+          paginationBoxVerticalPadding={20}
+          autoplay
+          circleLoop
+          resizeMethod={"resize"}
+          resizeMode={"cover"}
+          paginationBoxStyle={{
+            position: "absolute",
+            bottom: 0,
+            padding: 0,
+            alignItems: "center",
+            alignSelf: "center",
+            justifyContent: "center",
+            paddingVertical: 0,
+          }}
+          dotStyle={{
+            width: 10,
+            height: 10,
+            borderRadius: 5,
+            marginHorizontal: 0,
+            padding: 0,
+            margin: 0,
+            marginBottom: 10,
+            backgroundColor: "rgba(128, 128, 128, 0.92)",
+          }}
+          ImageComponentStyle={{ borderRadius: 15, width: "97%", marginTop: 5 }}
+          imageLoadingColor="#2196F3"
+        />
         <View style={styles.innerContainer}>
           <Text style={styles.heading}>Type</Text>
           <Text style={styles.heading}>Style</Text>
