@@ -7,17 +7,21 @@ import {
   FlatList,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { LOCATIONS } from "../data/dummy-data";
 import LocationItem from "../components/LocationItem";
 import { useEffect, useState } from "react";
 import { fetchLocations } from "../util/http";
+import LoadingOverlay from "../components/ui/LoadingOverlay";
+
+// npm install react-native-maps
 
 function DiscoveryScreen({ navigation }) {
+  const [isLoading, setIsLoading] = useState(true);
   const [fetchedLocations, setFetchedLocations] = useState([]);
   useEffect(() => {
     async function getLocations() {
       const locations = await fetchLocations();
       setFetchedLocations(locations);
+      setIsLoading(false);
       const displayedLocations = fetchedLocations.filter((locationItem) => {
         return locationItem;
       });
@@ -44,28 +48,31 @@ function DiscoveryScreen({ navigation }) {
     };
     return <LocationItem {...locationItemProps} onPress={pressHandler} />;
   }
-
-  return (
-    <View style={styles.rootContainer}>
-      <View style={styles.searchView}>
-        <TextInput style={styles.textInput} placeholder="search"></TextInput>
-        <Ionicons name="search" size={18} color="black" />
-      </View>
-      <View style={styles.listView}>
-        {/* <ScrollView alwaysBounceVertical={false} style={styles.scrollViewView}>
+  if (isLoading) {
+    return <LoadingOverlay />;
+  } else {
+    return (
+      <View style={styles.rootContainer}>
+        <View style={styles.searchView}>
+          <TextInput style={styles.textInput} placeholder="search"></TextInput>
+          <Ionicons name="search" size={18} color="black" />
+        </View>
+        <View style={styles.listView}>
+          {/* <ScrollView alwaysBounceVertical={false} style={styles.scrollViewView}>
           {displayedLocations.map((item, id) => (
             <LocationItem item={item} />
           ))}
         </ScrollView> */}
-        <FlatList
-          data={displayedLocations}
-          keyExtractor={(item) => item._id}
-          renderItem={renderLocationItem}
-          style={styles.flatList}
-        />
+          <FlatList
+            data={displayedLocations}
+            keyExtractor={(item) => item._id}
+            renderItem={renderLocationItem}
+            style={styles.flatList}
+          />
+        </View>
       </View>
-    </View>
-  );
+    );
+  }
 }
 export default DiscoveryScreen;
 
