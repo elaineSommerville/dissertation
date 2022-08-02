@@ -142,6 +142,9 @@ function Map({ navigation }) {
           {/* <Callout>
             <Text>{location.description}</Text>
           </Callout> */}
+          {/* <View>
+            <Text>Custom ICON and label</Text>
+          </View> */}
         </Marker>
       );
     });
