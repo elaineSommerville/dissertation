@@ -25,7 +25,8 @@ function DiscoveryScreen({ navigation }) {
         const locations = await fetchLocations();
         setFetchedLocations(locations);
       } catch (error) {
-        setError("Could not fetch locations!");
+        // setError("Could not fetch locations!");
+        setError(error.message);
       }
       setIsLoading(false);
     }
