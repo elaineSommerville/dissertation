@@ -1,7 +1,7 @@
 // expo MapView
 // expo install react-native-maps
-import MapView, { Marker } from "react-native-maps";
-import { Alert, StyleSheet, View, Text } from "react-native";
+import MapView, { Callout, Marker } from "react-native-maps";
+import { Alert, StyleSheet, View, Text, ScrollView } from "react-native";
 import { useState, useEffect } from "react";
 import { fetchLocations } from "../util/http";
 import LoadingOverlay from "../components/ui/LoadingOverlay";
@@ -117,11 +117,16 @@ function Map({ navigation }) {
       return locationItem;
     });
     return displayedLocations.map((location) => {
+      console.log(location.buildDate);
       return (
         <Marker
           key={location._id}
           title={location.name}
-          description={location.address}
+          description={
+            location.type +
+            " - Built: " +
+            new Date(location.buildDate * 1000).toString().slice(11, 15)
+          }
           coordinate={{
             latitude: location.lat,
             longitude: location.long,
@@ -129,11 +134,15 @@ function Map({ navigation }) {
           // have to stop the event propagating to allow it to distinguish between
           // pressing the marker for a label to pop up and actually getting to the
           // location details page
-          onPress={(e) => {
-            e.stopPropagation();
-            onMarkerPressHandler(location._id);
-          }}
-        />
+          // onPress={(e) => {
+          //   e.stopPropagation();
+          //   onMarkerPressHandler(location._id);
+          // }}
+        >
+          {/* <Callout>
+            <Text>{location.description}</Text>
+          </Callout> */}
+        </Marker>
       );
     });
   }
