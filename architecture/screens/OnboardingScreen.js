@@ -23,6 +23,7 @@ function OnboardingScreen({ navigation }) {
           title="Continue as Guest"
           onPress={() => navigation.navigate("discovery")}
         />
+        <PrimaryButton title="Map" onPress={() => navigation.navigate("map")} />
         <PrimaryButton
           title="Location Picker"
           onPress={() => navigation.navigate("locationPicker")}

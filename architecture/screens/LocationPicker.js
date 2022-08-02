@@ -14,7 +14,7 @@ import { getMapPreview } from "../util/location";
 //   ["module:react-native-dotenv"]
 // ]
 
-function LocationPicker() {
+function LocationPicker({ navigation }) {
   const [pickedLocation, setPickedLocation] = useState();
   const [locationPermissionInformation, requestPermission] =
     useForegroundPermissions();
@@ -52,7 +52,9 @@ function LocationPicker() {
     });
   }
 
-  function pickOnMapHandler() {}
+  function pickOnMapHandler() {
+    navigation.navigate("map");
+  }
 
   let locationPreview = <Text>No located picked yet.</Text>;
 
