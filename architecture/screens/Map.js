@@ -118,8 +118,9 @@ function Map({ navigation }) {
     });
     const markerImages = {
       // TO DO: CREATE UNIVERSITY ICON
-      university: require("../assets/icons/map-pin-library.png"),
-      education: require("../assets/icons/map-pin-education.png"),
+      university: require("../assets/icons/map-pin-university.png"),
+      education: require("../assets/icons/map-pin-university.png"),
+      library: require("../assets/icons/map-pin-library.png"),
     };
     return displayedLocations.map((location) => {
       return (
@@ -139,17 +140,17 @@ function Map({ navigation }) {
           // have to stop the event propagating to allow it to distinguish between
           // pressing the marker for a label to pop up and actually getting to the
           // location details page
-          // onPress={(e) => {
-          //   e.stopPropagation();
-          //   onMarkerPressHandler(location._id);
-          // }}
+          onPress={(e) => {
+            e.stopPropagation();
+            onMarkerPressHandler(location._id);
+          }}
         >
-          {/* <Callout>
-            <Text>{location.description}</Text>
+          {/* <Callout tooltip>
+            <Text>{location.name}</Text>
           </Callout> */}
-          {/* <View>
-            <Text>Custom ICON and label</Text>
-          </View> */}
+          <View>
+            <Text style={styles.iconName}>{location.name}</Text>
+          </View>
         </Marker>
       );
     });
@@ -163,6 +164,8 @@ function Map({ navigation }) {
   } else {
     return (
       <MapView
+        showsUserLocation
+        showsMyLocationButton
         initialRegion={region}
         style={styles.map}
         // onPress={selectLocationHandler}
@@ -178,5 +181,15 @@ export default Map;
 const styles = StyleSheet.create({
   map: {
     flex: 1,
+  },
+  iconName: {
+    fontWeight: "bold",
+    textShadowColor: "rgba(0, 0, 0, 1)",
+    textShadowOffset: { width: 0.5, height: 0.5 },
+    textShadowRadius: 1.5,
+    elevation: 4,
+    color: "#fff",
+    marginLeft: 50,
+    marginTop: 12,
   },
 });
