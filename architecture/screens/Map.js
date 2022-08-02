@@ -116,12 +116,17 @@ function Map({ navigation }) {
     const displayedLocations = fetchedLocations.filter((locationItem) => {
       return locationItem;
     });
+    const markerImages = {
+      // TO DO: CREATE UNIVERSITY ICON
+      university: require("../assets/icons/map-pin-library.png"),
+      education: require("../assets/icons/map-pin-education.png"),
+    };
     return displayedLocations.map((location) => {
-      console.log(location.buildDate);
       return (
         <Marker
           key={location._id}
           title={location.name}
+          image={markerImages[location.type.toLowerCase()]}
           description={
             location.type +
             " - Built: " +
