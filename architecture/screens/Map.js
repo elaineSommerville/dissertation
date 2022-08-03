@@ -73,33 +73,36 @@ function Map({ navigation }) {
         }
         const location = await getCurrentPositionAsync({});
         setUserLocation(location);
-        setRegion({
-          latitude: location.coords.latitude, // center
-          longitude: location.coords.longitude, // center
-          latitudeDelta: 0.05, // essentially configures the zoom
-          longitudeDelta: 0.05, // essentially configures the zoom
-        });
+        // setRegion({
+        //   latitude: location.coords.latitude, // center
+        //   longitude: location.coords.longitude, // center
+        //   latitudeDelta: 0.03, // essentially configures the zoom
+        //   longitudeDelta: 0.03, // essentially configures the zoom
+        // });
       } catch (error) {
         setError(error.message);
         setError(null);
       }
       setIsUserLocationLoading(false);
     }
-
-    async function getLocationsHeaders() {
-      try {
-        const locations = await fetchLocationsHeaders();
-        setFetchedLocationsHeaders(locations);
-        const locationsWithinMap = await fetchLocationsHeadersWithinMap(region);
-        setFetchedLocationsHeadersWithinMap(locationsWithinMap);
-      } catch (error) {
-        setError(error.message);
-      }
-      setIsLocationsLoading(false);
-    }
-    getLocationsHeaders();
     getUserLocation();
   }, [locationPermissionInformation]);
+
+  async function getLocationsHeaders(region) {
+    setIsLocationsLoading(true);
+    try {
+      // const locations = await fetchLocationsHeaders();
+      // setFetchedLocationsHeaders(locations);
+      const locationsWithinMap = await fetchLocationsHeadersWithinMap(region);
+      setFetchedLocationsHeadersWithinMap(locationsWithinMap);
+    } catch (error) {
+      setError(error.message);
+    }
+    setIsLocationsLoading(false);
+  }
+  // getLocationsHeaders();
+  // getUserLocation();
+  // }, [locationPermissionInformation]);
   // ***** END GET LIST OF LOCATIONS *****
 
   function selectLocationHandler(event) {
@@ -134,6 +137,7 @@ function Map({ navigation }) {
   }
 
   function createMarkers() {
+    console.log("createmarkers");
     // const displayedLocations = fetchedLocationsHeaders.filter(
     //   (locationItem) => {
     //     return locationItem;
@@ -148,7 +152,10 @@ function Map({ navigation }) {
       commercial: require("../assets/icons/map-pin-generic.png"),
       industrial: require("../assets/icons/map-pin-generic.png"),
     };
-    return fetchedLocationsHeaders.map((location) => {
+
+    return fetchedLocationsHeadersWithinMap.map((location) => {
+      console.log("fetchedLocationsHeadersWithinMap: ");
+      console.log(fetchedLocationsHeadersWithinMap);
       return (
         <Marker
           key={location._id}
@@ -160,8 +167,8 @@ function Map({ navigation }) {
             new Date(location.buildDate * 1000).toString().slice(11, 15)
           }
           coordinate={{
-            latitude: location.lat,
-            longitude: location.long,
+            latitude: location.location.coordinates[1],
+            longitude: location.location.coordinates[0],
           }}
           // have to stop the event propagating to allow it to distinguish between
           // pressing the marker for a label to pop up and actually getting to the
@@ -193,7 +200,29 @@ function Map({ navigation }) {
         showsMyLocationButton
         initialRegion={region}
         style={styles.map}
-        onRegionChangeComplete={(region) => setRegion(region)}
+        // region={region}
+        // onRegionChangeComplete={(region) => {
+        //   console.log("map changed: setting region");
+        //   console.log(region);
+        //   setRegion(region);
+        // }}
+        onRegionChangeComplete={(Region) => {
+          console.log("Region: ");
+          console.log(Region);
+          console.log("region: ");
+          console.log(region);
+
+          if (
+            Region.latitude.toFixed(6) === region.latitude.toFixed(6) &&
+            Region.longitude.toFixed(6) === region.longitude.toFixed(6)
+          ) {
+            return;
+          }
+          console.log("settingRegion");
+          setRegion(Region);
+          getLocationsHeaders(Region);
+        }}
+
         // onPress={selectLocationHandler}
       >
         {createMarkers()}

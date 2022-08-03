@@ -15,6 +15,7 @@ export async function fetchLocationsHeaders() {
 }
 
 export async function fetchLocationsHeadersWithinMap(region) {
+  console.log("in http js");
   const response = await axios.post(BACKEND_URL + "/location/map/header", {
     region,
   });
