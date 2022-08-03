@@ -14,6 +14,13 @@ export async function fetchLocationsHeaders() {
   return response.data;
 }
 
+export async function fetchLocationsHeadersWithinMap(region) {
+  const response = await axios.post(BACKEND_URL + "/location/map/header", {
+    region,
+  });
+  return response.data;
+}
+
 export async function fetchLocation(locationId) {
   const response = await axios.get(BACKEND_URL + "/location/" + locationId);
   return response.data;

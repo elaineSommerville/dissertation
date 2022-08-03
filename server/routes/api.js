@@ -11,6 +11,25 @@ const dbo = require("../db/conn");
 // This help convert the id from string to ObjectId for the _id.
 const ObjectId = require("mongodb").ObjectId;
 
+// modified from https://github.com/zzcyrus/mongoDB-geospatial-demos/blob/master/src/utils/tool.js
+const array2polygon = (array) => {
+  // console.log(array)
+  const length = array.length;
+  // console.log(length)
+  if (length % 2 !== 0) {
+    throw new Error("Coordinates incorrect format");
+  }
+  let result = [];
+  for (let i = 0; i < length; i = i + 2) {
+    // modification: parseInt to prevent single quotes
+    result.push([parseInt(array[i]), parseInt(array[i + 1])]);
+  }
+  // modification: add first coordinates to close the polygon to prevent "loop not closed" error.
+  result.push([parseInt(array[0]), parseInt(array[1])]);
+  // console.log(result)
+  return result;
+};
+
 // --- START OF USER ---
 
 // POST (add) a user
@@ -95,24 +114,23 @@ apiRoutes.route("/user/:id").delete((req, response) => {
 //creates a location object (associative array in js)
 apiRoutes.route("/location").post(function (req, response) {
   let db_connect = dbo.getDb();
-  let myobj = {
-    name: req.body.name,
-    description: req.body.description,
-    lat: req.body.lat,
-    long: req.body.long,
-    type: req.body.type,
-    style: req.body.style,
-    buildDate: req.body.buildDate,
-    architect: req.body.architect,
-    openToPublic: req.body.openToPublic,
-    visitorInfo: req.body.visitorInfo,
-    images: req.body.images,
-    videos: req.body.videos,
-    stories: req.body.stories,
-    submittedBy: req.body.submittedBy,
-    submittedOn: req.body.submittedOn,
-  };
-  db_connect.collection("locations").insertOne(myobj, function (err, res) {
+  // let myobj = {
+  //   name: req.body.name,
+  //   description: req.body.description,
+  //   location: req.body.location,
+  //   type: req.body.type,
+  //   style: req.body.style,
+  //   buildDate: req.body.buildDate,
+  //   architect: req.body.architect,
+  //   openToPublic: req.body.openToPublic,
+  //   visitorInfo: req.body.visitorInfo,
+  //   images: req.body.images,
+  //   videos: req.body.videos,
+  //   stories: req.body.stories,
+  //   submittedBy: req.body.submittedBy,
+  //   submittedOn: req.body.submittedOn,
+  // };
+  db_connect.collection("locations").insertOne(req.body, function (err, res) {
     if (err) throw err;
     response.json(res);
   });
@@ -136,10 +154,55 @@ apiRoutes.route("/location/header").get(function (req, res) {
   db_connect
     .collection("locations")
     .find({})
-    .project({ name: 1, type: 1, lat: 1, long: 1, buildDate: 1, address: 1 }) // thumbnail too?
+    .project({ name: 1, type: 1, location: 1, buildDate: 1, address: 1 }) // thumbnail too?
     .toArray(function (err, result) {
       if (err) throw err;
       res.json(result);
+    });
+});
+
+// get records within map boundary
+apiRoutes.route("/location/map/header").post(function (req, response) {
+  const lat = req.body.region.latitude;
+  const latD = req.body.region.latitudeDelta;
+  const lng = req.body.region.longitude;
+  const lngD = req.body.region.longitudeDelta;
+  let db_connect = dbo.getDb();
+  db_connect
+    .collection("locations")
+    .find({
+      location: {
+        $geoWithin: {
+          // $geometry: {
+          // type: "Polygon",
+          // // important!!!
+          // // 1. first and last coordinate must be the same to close the polygon or will get a
+          // //      "MongoServerError: Loop is not closed" error.
+          // // 2. coordinates must go either clockwise or anticlockwise and not cross over eachother.
+          // // 3. list long first, then lat
+          // // should look like this => coordinates: [ [ [-6, 55], [-6, 54], [-5, 54], [-5, 55], [-6, 55] ] ]
+          // coordinates: [array2polygon(req.params.polygon.split(","))],
+          // TO DO REGION TO POLYGON
+          $box: [
+            [
+              // bottom left
+              lng - lngD,
+              lat - latD,
+            ],
+            [
+              lng + lngD,
+              lat + latD,
+              // upper right
+            ],
+          ],
+          // },
+        },
+      },
+    })
+    .project({ name: 1, type: 1, lat: 1, long: 1, buildDate: 1, address: 1 }) // thumbnail too?
+    .toArray(function (err, result) {
+      if (err) throw err;
+      response.json(result);
     });
 });
 
@@ -161,8 +224,7 @@ apiRoutes.route("/location/:id").put(function (req, response) {
     $set: {
       name: req.body.name,
       description: req.body.description,
-      lat: req.body.lat,
-      long: req.body.long,
+      location: req.body.location,
       type: req.body.type,
       style: req.body.style,
       buildDate: req.body.buildDate,

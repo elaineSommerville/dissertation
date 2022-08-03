@@ -1,9 +1,19 @@
 // expo MapView
 // expo install react-native-maps
 import MapView, { Callout, Marker } from "react-native-maps";
-import { Alert, StyleSheet, View, Text, ScrollView } from "react-native";
+import {
+  Alert,
+  StyleSheet,
+  View,
+  Text,
+  ScrollView,
+  Platform,
+} from "react-native";
 import { useState, useEffect } from "react";
-import { fetchLocationsHeaders } from "../util/http";
+import {
+  fetchLocationsHeaders,
+  fetchLocationsHeadersWithinMap,
+} from "../util/http";
 import LoadingOverlay from "../components/ui/LoadingOverlay";
 import ErrorOverlay from "../components/ui/ErrorOverlay";
 import {
@@ -14,13 +24,23 @@ import {
 
 function Map({ navigation }) {
   const [selectedLocation, setSelectedLocation] = useState();
+  const [userLocation, setUserLocation] = useState();
   const [isLocationsLoading, setIsLocationsLoading] = useState(true);
   const [isUserLocationLoading, setIsUserLocationLoading] = useState(true);
   const [error, setError] = useState();
-  const [fetchedLocationsHeaders, setfetchedLocationsHeaders] = useState([]);
+  const [fetchedLocationsHeaders, setFetchedLocationsHeaders] = useState([]);
+  const [
+    fetchedLocationsHeadersWithinMap,
+    setFetchedLocationsHeadersWithinMap,
+  ] = useState([]);
   const [locationPermissionInformation, requestPermission] =
     useForegroundPermissions();
-  const [region, setRegion] = useState();
+  const [region, setRegion] = useState({
+    latitude: 54.59803, // center
+    longitude: -5.93049, // center
+    latitudeDelta: 0.05, // essentially configures the zoom
+    longitudeDelta: 0.05, // essentially configures the zoom
+  });
 
   // ***** END SET INITIAL MAP POSITION *****
 
@@ -52,6 +72,7 @@ function Map({ navigation }) {
           return;
         }
         const location = await getCurrentPositionAsync({});
+        setUserLocation(location);
         setRegion({
           latitude: location.coords.latitude, // center
           longitude: location.coords.longitude, // center
@@ -68,7 +89,9 @@ function Map({ navigation }) {
     async function getLocationsHeaders() {
       try {
         const locations = await fetchLocationsHeaders();
-        setfetchedLocationsHeaders(locations);
+        setFetchedLocationsHeaders(locations);
+        const locationsWithinMap = await fetchLocationsHeadersWithinMap(region);
+        setFetchedLocationsHeadersWithinMap(locationsWithinMap);
       } catch (error) {
         setError(error.message);
       }
@@ -76,11 +99,6 @@ function Map({ navigation }) {
     }
     getLocationsHeaders();
     getUserLocation();
-    console.log(" ");
-    console.log("***** START LOCATION HEADERS *****");
-    console.log(fetchedLocationsHeaders);
-    console.log("***** END LOCATION HEADERS *****");
-    console.log(" ");
   }, [locationPermissionInformation]);
   // ***** END GET LIST OF LOCATIONS *****
 
@@ -116,18 +134,21 @@ function Map({ navigation }) {
   }
 
   function createMarkers() {
-    const displayedLocations = fetchedLocationsHeaders.filter(
-      (locationItem) => {
-        return locationItem;
-      }
-    );
+    // const displayedLocations = fetchedLocationsHeaders.filter(
+    //   (locationItem) => {
+    //     return locationItem;
+    //   }
+    // );
     const markerImages = {
       // TO DO: CREATE UNIVERSITY ICON
       university: require("../assets/icons/map-pin-university.png"),
-      education: require("../assets/icons/map-pin-university.png"),
+      education: require("../assets/icons/map-pin-generic.png"),
       library: require("../assets/icons/map-pin-library.png"),
+      residential: require("../assets/icons/map-pin-generic.png"),
+      commercial: require("../assets/icons/map-pin-generic.png"),
+      industrial: require("../assets/icons/map-pin-generic.png"),
     };
-    return displayedLocations.map((location) => {
+    return fetchedLocationsHeaders.map((location) => {
       return (
         <Marker
           key={location._id}
@@ -150,9 +171,6 @@ function Map({ navigation }) {
             onMarkerPressHandler(location._id);
           }}
         >
-          {/* <Callout tooltip>
-            <Text>{location.name}</Text>
-          </Callout> */}
           <View>
             <Text style={styles.iconName}>{location.name}</Text>
           </View>
@@ -160,6 +178,7 @@ function Map({ navigation }) {
       );
     });
   }
+
   if (isLocationsLoading && isUserLocationLoading) {
     return (
       <View>
@@ -167,12 +186,14 @@ function Map({ navigation }) {
       </View>
     );
   } else {
+    console.log(region);
     return (
       <MapView
         showsUserLocation
         showsMyLocationButton
         initialRegion={region}
         style={styles.map}
+        onRegionChangeComplete={(region) => setRegion(region)}
         // onPress={selectLocationHandler}
       >
         {createMarkers()}
