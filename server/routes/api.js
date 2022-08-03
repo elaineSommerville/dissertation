@@ -183,7 +183,9 @@ apiRoutes.route("/location/:id").get(function (req, res) {
   let db_connect = dbo.getDb();
   let myquery = { _id: ObjectId(req.params.id) };
   db_connect.collection("locations").findOne(myquery, function (err, result) {
-    if (err) throw err;
+    if (err) {
+      return console.log("error: " + err);
+    }
     res.json(result);
   });
 });
@@ -206,7 +208,10 @@ apiRoutes.route("/location/:id").delete((req, response) => {
   let db_connect = dbo.getDb();
   let myquery = { _id: ObjectId(req.params.id) };
   db_connect.collection("locations").deleteOne(myquery, function (err, obj) {
-    if (err) throw err;
+    if (err) {
+      return console.log("error: " + err);
+    }
+    console.log({ _id: req.params.id });
     console.log("1 document deleted");
     response.json(obj);
   });

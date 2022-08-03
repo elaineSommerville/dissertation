@@ -28,7 +28,6 @@ function Map({ navigation }) {
   const [isLocationsLoading, setIsLocationsLoading] = useState(true);
   const [isUserLocationLoading, setIsUserLocationLoading] = useState(true);
   const [error, setError] = useState();
-  const [fetchedLocationsHeaders, setFetchedLocationsHeaders] = useState([]);
   const [
     fetchedLocationsHeadersWithinMap,
     setFetchedLocationsHeadersWithinMap,
@@ -42,9 +41,7 @@ function Map({ navigation }) {
     longitudeDelta: 0.05, // essentially configures the zoom
   });
 
-  // ***** END SET INITIAL MAP POSITION *****
-
-  // ***** START GET LIST OF LOCATIONS *****
+  // ***** START GET LOCATION PERMISSIONS *****
   useEffect(() => {
     async function verifyPermissions() {
       if (
@@ -73,12 +70,6 @@ function Map({ navigation }) {
         }
         const location = await getCurrentPositionAsync({});
         setUserLocation(location);
-        // setRegion({
-        //   latitude: location.coords.latitude, // center
-        //   longitude: location.coords.longitude, // center
-        //   latitudeDelta: 0.03, // essentially configures the zoom
-        //   longitudeDelta: 0.03, // essentially configures the zoom
-        // });
       } catch (error) {
         setError(error.message);
         setError(null);
@@ -87,62 +78,30 @@ function Map({ navigation }) {
     }
     getUserLocation();
   }, [locationPermissionInformation]);
+  // ***** END GET LOCATION PERMISSIONS *****
 
-  async function getLocationsHeaders(region) {
-    setIsLocationsLoading(true);
-    try {
-      // const locations = await fetchLocationsHeaders();
-      // setFetchedLocationsHeaders(locations);
-      const locationsWithinMap = await fetchLocationsHeadersWithinMap(region);
-      setFetchedLocationsHeadersWithinMap(locationsWithinMap);
-    } catch (error) {
-      setError(error.message);
+  // ***** START GET LOCATIONS *****
+  useEffect(() => {
+    async function getLocationsHeaders(region) {
+      setIsLocationsLoading(true);
+      try {
+        const locationsWithinMap = await fetchLocationsHeadersWithinMap(region);
+        setFetchedLocationsHeadersWithinMap(locationsWithinMap);
+      } catch (error) {
+        setError(error.message);
+      }
+      setIsLocationsLoading(false);
     }
-    setIsLocationsLoading(false);
-  }
-  // getLocationsHeaders();
-  // getUserLocation();
-  // }, [locationPermissionInformation]);
-  // ***** END GET LIST OF LOCATIONS *****
 
-  function selectLocationHandler(event) {
-    console.log(event);
-    const lat = event.nativeEvent.coordinate.latitude;
-    const lng = event.nativeEvent.coordinate.longitude;
-    setSelectedLocation({ lat: lat, lng: lng });
-  }
-
-  // ***** START SAVE LOCATION MARKERS *****
-
-  // function savePickedLocationHandler() {
-  //   if (!selectedLocation) {
-  //     Alert.alert(
-  //       "No location picked!",
-  //       "You have to pick a location by tapping on the map first"
-  //     );
-  //     return;
-  //   }
-  //   navigation.navigate("LocationPicker", {
-  //     pickedLat: selectedLocation.lat,
-  //     pickedLng: selectedLocation.lng,
-  //   });
-  // }
-  // Left out remainder of video 205 (from 3:40) which adds picked locations as I'm
-  // not looking to add locations from the app yet.
-
-  // ***** END SAVE LOCATION MARKERS *****
+    getLocationsHeaders(region);
+  }, [region]);
+  // ***** END GET LOCATIONS *****
 
   function onMarkerPressHandler(locationId) {
     navigation.navigate("locationDetails", { locationId: locationId });
   }
 
   function createMarkers() {
-    console.log("createmarkers");
-    // const displayedLocations = fetchedLocationsHeaders.filter(
-    //   (locationItem) => {
-    //     return locationItem;
-    //   }
-    // );
     const markerImages = {
       // TO DO: CREATE UNIVERSITY ICON
       university: require("../assets/icons/map-pin-university.png"),
@@ -154,8 +113,8 @@ function Map({ navigation }) {
     };
 
     return fetchedLocationsHeadersWithinMap.map((location) => {
-      console.log("fetchedLocationsHeadersWithinMap: ");
-      console.log(fetchedLocationsHeadersWithinMap);
+      // console.log("fetchedLocationsHeadersWithinMap: ");
+      // console.log(fetchedLocationsHeadersWithinMap);
       return (
         <Marker
           key={location._id}
@@ -193,37 +152,22 @@ function Map({ navigation }) {
       </View>
     );
   } else {
-    console.log(region);
+    // console.log(region);
     return (
       <MapView
         showsUserLocation
         showsMyLocationButton
         initialRegion={region}
         style={styles.map}
-        // region={region}
-        // onRegionChangeComplete={(region) => {
-        //   console.log("map changed: setting region");
-        //   console.log(region);
-        //   setRegion(region);
-        // }}
         onRegionChangeComplete={(Region) => {
-          console.log("Region: ");
-          console.log(Region);
-          console.log("region: ");
-          console.log(region);
-
           if (
             Region.latitude.toFixed(6) === region.latitude.toFixed(6) &&
             Region.longitude.toFixed(6) === region.longitude.toFixed(6)
           ) {
             return;
           }
-          console.log("settingRegion");
           setRegion(Region);
-          getLocationsHeaders(Region);
         }}
-
-        // onPress={selectLocationHandler}
       >
         {createMarkers()}
       </MapView>

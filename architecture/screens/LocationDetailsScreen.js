@@ -26,6 +26,7 @@ function LocationDetailsScreen({ route, navigation }) {
   const [fetchedLocation, setFetchedLocation] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState();
+  console.log(route.params.locationId);
 
   useEffect(() => {
     async function getLocation(locationId) {
