@@ -130,6 +130,19 @@ apiRoutes.route("/location").get(function (req, res) {
     });
 });
 
+// GET all the locations - HEADER INFORMATION ONLY FOR MAP
+apiRoutes.route("/location/header").get(function (req, res) {
+  let db_connect = dbo.getDb();
+  db_connect
+    .collection("locations")
+    .find({})
+    .project({ name: 1, type: 1, lat: 1, long: 1, buildDate: 1, address: 1 }) // thumbnail too?
+    .toArray(function (err, result) {
+      if (err) throw err;
+      res.json(result);
+    });
+});
+
 // GET a location by id
 apiRoutes.route("/location/:id").get(function (req, res) {
   let db_connect = dbo.getDb();

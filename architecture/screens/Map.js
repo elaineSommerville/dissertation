@@ -3,7 +3,7 @@
 import MapView, { Callout, Marker } from "react-native-maps";
 import { Alert, StyleSheet, View, Text, ScrollView } from "react-native";
 import { useState, useEffect } from "react";
-import { fetchLocations } from "../util/http";
+import { fetchLocationsHeaders } from "../util/http";
 import LoadingOverlay from "../components/ui/LoadingOverlay";
 import ErrorOverlay from "../components/ui/ErrorOverlay";
 import {
@@ -17,7 +17,7 @@ function Map({ navigation }) {
   const [isLocationsLoading, setIsLocationsLoading] = useState(true);
   const [isUserLocationLoading, setIsUserLocationLoading] = useState(true);
   const [error, setError] = useState();
-  const [fetchedLocations, setFetchedLocations] = useState([]);
+  const [fetchedLocationsHeaders, setfetchedLocationsHeaders] = useState([]);
   const [locationPermissionInformation, requestPermission] =
     useForegroundPermissions();
   const [region, setRegion] = useState();
@@ -65,19 +65,22 @@ function Map({ navigation }) {
       setIsUserLocationLoading(false);
     }
 
-    async function getLocations() {
+    async function getLocationsHeaders() {
       try {
-        const locations = await fetchLocations();
-        setFetchedLocations(locations);
+        const locations = await fetchLocationsHeaders();
+        setfetchedLocationsHeaders(locations);
       } catch (error) {
         setError(error.message);
       }
       setIsLocationsLoading(false);
     }
-    getLocations();
+    getLocationsHeaders();
     getUserLocation();
-    console.log("STATE: region");
-    console.log(region);
+    console.log(" ");
+    console.log("***** START LOCATION HEADERS *****");
+    console.log(fetchedLocationsHeaders);
+    console.log("***** END LOCATION HEADERS *****");
+    console.log(" ");
   }, [locationPermissionInformation]);
   // ***** END GET LIST OF LOCATIONS *****
 
@@ -113,9 +116,11 @@ function Map({ navigation }) {
   }
 
   function createMarkers() {
-    const displayedLocations = fetchedLocations.filter((locationItem) => {
-      return locationItem;
-    });
+    const displayedLocations = fetchedLocationsHeaders.filter(
+      (locationItem) => {
+        return locationItem;
+      }
+    );
     const markerImages = {
       // TO DO: CREATE UNIVERSITY ICON
       university: require("../assets/icons/map-pin-university.png"),

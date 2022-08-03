@@ -9,6 +9,11 @@ export async function fetchLocations() {
   return response.data;
 }
 
+export async function fetchLocationsHeaders() {
+  const response = await axios.get(BACKEND_URL + "/location/header");
+  return response.data;
+}
+
 export async function fetchLocation(locationId) {
   const response = await axios.get(BACKEND_URL + "/location/" + locationId);
   return response.data;
