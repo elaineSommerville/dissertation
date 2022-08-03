@@ -1,0 +1,307 @@
+{
+	"info": {
+		"_postman_id": "6fe926b6-9982-43b8-bb91-651fbc440a24",
+		"name": "Dissertation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "deprecated",
+			"item": [
+				{
+					"name": "location/map/{coords}",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true,
+							"accept-encoding": true,
+							"connection": true,
+							"host": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/location/map/-6,55,-6,54,-5,54,-5,55",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"location",
+								"map",
+								"-6,55,-6,54,-5,54,-5,55"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "location",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true,
+					"accept-encoding": true,
+					"connection": true,
+					"host": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5000/location",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"location"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "location/header",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true,
+					"accept-encoding": true,
+					"connection": true,
+					"host": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5000/location/header",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"location",
+						"header"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "location/{id}",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true,
+					"accept-encoding": true,
+					"connection": true,
+					"host": true
+				}
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n        \"_id\": \"62ea9155a5b47238aeca895a\",\n        \"name\": \"Computer Science Building NEW\",\n        \"description\": \"The new Computer Science Building was completed in 2016 and replaced the old Bernard Crossland Building\",\n        \"location\": {\n            \"type\": \"Point\",\n            \"coordinates\": [\n                -5.93750,\n                54.58190\n            ]\n        },\n        \"type\": \"Education\",\n        \"style\": \"Modern\",\n        \"buildDate\": 1469782800,\n        \"architect\": [\n            {\n                \"name\": \"Kennedy FitzGerald Architects\"\n            },\n            {\n                \"name\": \"Niall Miskelly\"\n            }\n        ],\n        \"visitorInfo\": null,\n        \"images\": [\n            {\n                \"name\": \"imagename\",\n                \"uri\": \"https://www.kennedyfitzgerald.com/assets/generated/projects/large/50ac255128189d20e4cbec5568e0b465.jpg\",\n                \"width\": 780,\n                \"height\": 520,\n                \"altText\": \"alttext\",\n                \"location\": {\n                    \"type\": \"Point\",\n                    \"coordinates\": [\n                        -5.93743,\n                        54.582\n                    ]\n                },\n                \"bearing\": 444.33,\n                \"distance\": 44.45,\n                \"attitude\": 10,\n                \"sourceDate\": 1659085200,\n                \"submittedBy\": \"62cdd1cf43aa75a3732ab851\",\n                \"submittedOn\": 1659085200\n            }\n        ],\n        \"videos\": [\n            {\n                \"name\": \"imagename\",\n                \"uri\": \"http://imageuri\",\n                \"width\": 50,\n                \"height\": 150,\n                \"runTime\": 220,\n                \"format\": \"mpeg-4\",\n                \"location\": {\n                    \"type\": \"Point\",\n                    \"coordinates\": [\n                        -5.93743,\n                        54.582\n                    ]\n                },\n                \"bearing\": 444.33,\n                \"distance\": 44.45,\n                \"attitude\": 10,\n                \"sourceDate\": 12345678,\n                \"submittedBy\": \"62cdd1cf43aa75a3732ab851\",\n                \"submittedOn\": 12345678\n            }\n        ],\n        \"stories\": [\n            {\n                \"title\": \"title of my post\",\n                \"body\": \"heres my wee story so it is\",\n                \"location\": {\n                    \"type\": \"Point\",\n                    \"coordinates\": [\n                        -5.93743,\n                        54.582\n                    ]\n                },\n                \"language\": \"EN\",\n                \"sourceDate\": 1659085200,\n                \"submittedBy\": \"62cdd1cf43aa75a3732ab851\",\n                \"submittedOn\": 1659085200\n            }\n        ],\n        \"submittedBy\": \"62cdd1cf43aa75a3732ab851\",\n        \"submittedOn\": 1659085200,\n        \"openToPublic\": false\n    }"
+				},
+				"url": {
+					"raw": "http://192.168.1.6:5000/location/62ea9155a5b47238aeca895a",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"1",
+						"6"
+					],
+					"port": "5000",
+					"path": [
+						"location",
+						"62ea9155a5b47238aeca895a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "location/{id}",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true,
+					"accept-encoding": true,
+					"connection": true,
+					"host": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://192.168.1.6:5000/location/62cfdd1037895b3365aee175",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"1",
+						"6"
+					],
+					"port": "5000",
+					"path": [
+						"location",
+						"62cfdd1037895b3365aee175"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "location/{id}",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true,
+					"accept-encoding": true,
+					"connection": true,
+					"host": true
+				}
+			},
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://192.168.1.6:5000/location/62cfdd1037895b3365aee175",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"1",
+						"6"
+					],
+					"port": "5000",
+					"path": [
+						"location",
+						"62cfdd1037895b3365aee175"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "location/map/header",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true,
+					"accept-encoding": true,
+					"connection": true,
+					"host": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"latitude\": 54.59066,\n  \"latitudeDelta\": 0.05,\n  \"longitude\": -5.94097,\n  \"longitudeDelta\": 0.05,\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/location/map/header",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"location",
+						"map",
+						"header"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "location",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true,
+					"accept-encoding": true,
+					"connection": true,
+					"host": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Ormiston House\",\n    \"description\": \"Built in 1867 for James Combe a Scottish born iron founder and linen manufacturer it is one of Belfast's best kept secrets. The inside of Ormiston House in East Belfast has been allowed to fall apart and rather than restoring the this historic home, the NI Assembly Commission have invested years of hope in trying to sell it at a loss! The estate compromising of gate lodges, the house and grounds still stands and has now been sold off for slightly over £1.5 million, leaving the NI Assembly Commission responsible for an approximately £9 million loss. Ormiston House was purchased around 1880 by shipbuilder Sir Edward J Harland founder of world famous Titanic shipbuilders Harland & Wolff. The house was later sold around 1887 to the chairman of H&W, Lord Pirrie. After his death the house is reported as being in the full ownership of the shipyard itself before being sold to Campbell College in 1928. The estate again changed hands in the mid 1970's and used as government offices. Up until its purchase by the Northern Ireland Assembly for approximately £9.2 million in 2001 it was also used by the army. Despite its inspiring architecture, its Christian versed stonework, its maritime significance the Northern Ireland Executive did nothing with Ormiston House. Its relevance to Titanic times lost on them, allowing the building to cost more in maintain and secure than it would have cost to actually use as a tourist attraction.Ormiston House is a listed building so visitors to Belfast can still view its exterior but now that the East Belfast property has been sold its interior is set to change.\",\n    \"location\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n            -5.85417,\n            54.59878\n        ]\n    },\n    \"type\": \"Residential\",\n    \"style\": \"Victorian\",\n    \"buildDate\": -3231846000,\n    \"architect\": [\n        {\n            \"name\": \"David Bryce\"\n        }\n    ],\n    \"openToPublic\": true,\n    \"visitorInfo\": null,\n    \"images\": [\n        {\n            \"name\": \"Ormiston House\",\n            \"uri\": \"https://www.thetimes.co.uk/imageserver/image/methode%2Fsundaytimes%2Fprod%2Fweb%2Fbin%2F28c27f00-2fad-11e9-b81a-036a4d637b8b.jpg?crop=2667%2C1500%2C0%2C0&resize=685\",\n            \"width\": 685,\n            \"height\": 385,\n            \"altText\": \"alttext\",\n            \"location\": {\n                \"type\": \"Point\",\n                \"coordinates\": [\n                    -5.85417,\n                    54.59878\n                ]\n            },\n            \"bearing\": 444.33,\n            \"distance\": 44.45,\n            \"attitude\": 10,\n            \"sourceDate\": 1627549200,\n            \"submittedBy\": \"62cdd1cf43aa75a3732ab851\",\n            \"submittedOn\": 1627549200\n        },\n        {\n            \"name\": \"Renovation: Staircase\",\n            \"uri\": \"http://www.simplybelfast.co.uk/belfast-photos-sets/ormiston-house-belfast-inside/ormiston-house-belfast-19.jpg\",\n            \"width\": 733,\n            \"height\": 550,\n            \"altText\": \"alttext\",\n            \"location\": {\n                \"type\": \"Point\",\n                \"coordinates\": [\n                    -5.85417,\n                    54.59878\n                ]\n            },\n            \"bearing\": 444.33,\n            \"distance\": 44.45,\n            \"attitude\": 10,\n            \"sourceDate\": 1627549200,\n            \"submittedBy\": \"62cdd1cf43aa75a3732ab851\",\n            \"submittedOn\": 1627549200\n        },\n        {\n            \"name\": \"Date stone\",\n            \"uri\": \"http://2.bp.blogspot.com/_mgCwB6zy6gk/TF3eu70T9QI/AAAAAAAADFM/rdiGAqIi6tc/s1600/DSCF0496.JPG\",\n            \"width\": 648,\n            \"height\": 486,\n            \"altText\": \"alttext\",\n            \"location\": {\n                \"type\": \"Point\",\n                \"coordinates\": [\n                    -5.85417,\n                    54.59878\n                ]\n            },\n            \"bearing\": 444.33,\n            \"distance\": 44.45,\n            \"attitude\": 10,\n            \"sourceDate\": 1627549200,\n            \"submittedBy\": \"62cdd1cf43aa75a3732ab851\",\n            \"submittedOn\": 1627549200\n        }\n    ],\n    \"videos\": null,\n    \"stories\": [\n        {\n            \"title\": \"title of my post\",\n            \"body\": \"heres my wee story so it is\",\n            \"location\": {\n                \"type\": \"Point\",\n                \"coordinates\": [\n                    -5.85417,\n                    54.59878\n                ]\n            },\n            \"language\": \"EN\",\n            \"sourceDate\": 1627549200,\n            \"submittedBy\": \"62cdd1cf43aa75a3732ab851\",\n            \"submittedOn\": 1627549200\n        }\n    ],\n    \"submittedBy\": \"62cdd1cf43aa75a3732ab851\",\n    \"submittedOn\": 1627549200\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/location",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"location"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
