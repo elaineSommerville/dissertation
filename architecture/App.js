@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Button } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SignUpScreen from "./screens/SignUpScreen";
@@ -72,6 +72,19 @@ export default function App() {
           component={Map}
           options={{
             title: "Map",
+            // headerRight: ({ navigation }) => {
+            //   return (
+            //     // <IconButton
+            //     //   icon="star"
+            //     //   color="white"
+            //     //   onPress={navigation.navigate("search")}
+            //     // />
+            //     <Button
+            //       // onPress={navigation.navigate("search")}
+            //       title="Search"
+            //     />
+            //   );
+            // },
           }}
         />
         <Stack.Screen
