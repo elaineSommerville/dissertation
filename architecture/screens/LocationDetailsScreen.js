@@ -1,18 +1,40 @@
-import { ScrollView, Text, View, StyleSheet, Image } from "react-native";
+import {
+  ScrollView,
+  Text,
+  View,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-// import { LOCATIONS } from "../data/dummy-data";
 import { useState, useEffect } from "react";
 import { fetchLocation } from "../util/http";
+import LoadingOverlay from "../components/ui/LoadingOverlay";
+import ErrorOverlay from "../components/ui/ErrorOverlay";
 
-function LocationDetailsScreen({ route }) {
+import { SliderBox } from "react-native-image-slider-box";
+// npm install react-native-image-slider-box
+// https://www.npmjs.com/package/react-native-image-slider-box
+// replace ViewPropTypes in multiple places
+// import {ViewPropTypes} from 'deprecated-react-native-prop-types';
+// ./node_modules/react-native-snap-carousel/src/carousel/Carousel.js
+// ./node_modules/react-native-snap-carousel/src/pagination/Pagination.js
+// ./node_modules/react-native-snap-carousel/src/pagination/PaginationDot.js
+// ./node_modules/react-native-snap-carousel/src/parallaximage/ParallaxImage.js
+
+function LocationDetailsScreen({ route, navigation }) {
   const locationId = route.params.locationId;
   const [fetchedLocation, setFetchedLocation] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState();
 
   useEffect(() => {
     async function getLocation(locationId) {
-      const location = await fetchLocation(locationId);
-      setFetchedLocation(location);
+      try {
+        const location = await fetchLocation(locationId);
+        setFetchedLocation(location);
+      } catch (error) {
+        setError("Could not fetch location details...");
+      }
       setIsLoading(false);
     }
     getLocation(locationId);
@@ -28,13 +50,32 @@ function LocationDetailsScreen({ route }) {
   const architects = fetchedLocation.architect;
   const description = fetchedLocation.description;
 
-  if (isLoading) {
+  const imageUris = [];
+  const imageCaptions = [];
+
+  function errorHandler() {
+    navigation.goBack();
+  }
+
+  if (error && !isLoading) {
     return (
-      <View style={styles.loadingScreen}>
-        <Text>Loading...</Text>
-      </View>
+      <ErrorOverlay
+        buttonTitle="Go back"
+        message={error}
+        onConfirm={errorHandler}
+      />
     );
+  }
+
+  if (isLoading) {
+    return <LoadingOverlay />;
   } else {
+    // once location data has been received, push images into imageUri array
+    // for image slider
+    images.map((image) => {
+      imageUris.push(image.uri);
+      imageCaptions.push(image.name);
+    });
     return (
       <ScrollView style={styles.rootContainer}>
         <View style={styles.innerContainer}>
@@ -46,13 +87,48 @@ function LocationDetailsScreen({ route }) {
             <Text style={styles.addressView}>{address}</Text>
           </View>
         </View>
-        {images.map((image, imageIndex) => {
-          return (
-            <View key={imageIndex}>
-              <Image style={styles.image} source={{ uri: image.uri }} />
-            </View>
-          );
-        })}
+        <SliderBox
+          images={imageUris}
+          sliderBoxHeight={200}
+          onCurrentImagePressed={(index) =>
+            navigation.navigate("imageScreen", {
+              uri: imageUris[index],
+              caption: imageCaptions[index],
+            })
+          }
+          dotColor="#FFEE58"
+          inactiveDotColor="#90A4AE"
+          paginationBoxVerticalPadding={0}
+          autoplay
+          circleLoop
+          resizeMethod={"resize"}
+          resizeMode={"cover"}
+          paginationBoxStyle={{
+            position: "absolute",
+            bottom: 0,
+            paddingLeft: 0,
+            alignItems: "center",
+            alignSelf: "center",
+            justifyContent: "flex-start",
+          }}
+          dotStyle={{
+            width: 10,
+            height: 10,
+            borderRadius: 5,
+            marginHorizontal: 0,
+            padding: 0,
+            margin: 0,
+            marginBottom: 10,
+            backgroundColor: "rgba(128, 128, 128, 0.92)",
+          }}
+          ImageComponentStyle={{
+            borderRadius: 10,
+            width: "87%",
+            marginTop: 5,
+            marginLeft: -50,
+          }}
+          imageLoadingColor="#2196F3"
+        />
         <View style={styles.innerContainer}>
           <Text style={styles.heading}>Type</Text>
           <Text style={styles.heading}>Style</Text>

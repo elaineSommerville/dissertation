@@ -7,6 +7,7 @@ import OnboardingScreen from "./screens/OnboardingScreen";
 import DiscoveryScreen from "./screens/DiscoveryScreen";
 import SignInScreen from "./screens/SignInScreen";
 import LocationDetailsScreen from "./screens/LocationDetailsScreen";
+import ImageScreen from "./screens/ImageScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -35,7 +36,13 @@ export default function App() {
             title: "Discovery",
           }}
         />
-
+        <Stack.Screen
+          name="imageScreen"
+          component={ImageScreen}
+          options={{
+            title: "Image",
+          }}
+        />
         <Stack.Screen
           name="signIn"
           component={SignInScreen}

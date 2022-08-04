@@ -7,27 +7,31 @@ import {
   FlatList,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { LOCATIONS } from "../data/dummy-data";
 import LocationItem from "../components/LocationItem";
 import { useEffect, useState } from "react";
 import { fetchLocations } from "../util/http";
+import LoadingOverlay from "../components/ui/LoadingOverlay";
+import ErrorOverlay from "../components/ui/ErrorOverlay";
+
+// npm install react-native-maps
 
 function DiscoveryScreen({ navigation }) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState();
   const [fetchedLocations, setFetchedLocations] = useState([]);
   useEffect(() => {
     async function getLocations() {
-      const locations = await fetchLocations();
-      setFetchedLocations(locations);
-      const displayedLocations = fetchedLocations.filter((locationItem) => {
-        return locationItem;
-      });
+      try {
+        const locations = await fetchLocations();
+        setFetchedLocations(locations);
+      } catch (error) {
+        // setError("Could not fetch locations!");
+        setError(error.message);
+      }
+      setIsLoading(false);
     }
     getLocations();
   }, []);
-
-  const displayedLocations = fetchedLocations.filter((locationItem) => {
-    return locationItem;
-  });
 
   function renderLocationItem(itemData) {
     function pressHandler() {
@@ -45,27 +49,44 @@ function DiscoveryScreen({ navigation }) {
     return <LocationItem {...locationItemProps} onPress={pressHandler} />;
   }
 
-  return (
-    <View style={styles.rootContainer}>
-      <View style={styles.searchView}>
-        <TextInput style={styles.textInput} placeholder="search"></TextInput>
-        <Ionicons name="search" size={18} color="black" />
+  function errorHandler() {
+    // setError(null);
+    navigation.replace("discovery");
+  }
+
+  if (error && !isLoading) {
+    return (
+      <ErrorOverlay
+        buttonTitle="Try again"
+        message={error}
+        onConfirm={errorHandler}
+      />
+    );
+  }
+
+  if (isLoading) {
+    return <LoadingOverlay />;
+  } else {
+    const displayedLocations = fetchedLocations.filter((locationItem) => {
+      return locationItem;
+    });
+    return (
+      <View style={styles.rootContainer}>
+        <View style={styles.searchView}>
+          <TextInput style={styles.textInput} placeholder="search"></TextInput>
+          <Ionicons name="search" size={18} color="black" />
+        </View>
+        <View style={styles.listView}>
+          <FlatList
+            data={displayedLocations}
+            keyExtractor={(item) => item._id}
+            renderItem={renderLocationItem}
+            style={styles.flatList}
+          />
+        </View>
       </View>
-      <View style={styles.listView}>
-        {/* <ScrollView alwaysBounceVertical={false} style={styles.scrollViewView}>
-          {displayedLocations.map((item, id) => (
-            <LocationItem item={item} />
-          ))}
-        </ScrollView> */}
-        <FlatList
-          data={displayedLocations}
-          keyExtractor={(item) => item._id}
-          renderItem={renderLocationItem}
-          style={styles.flatList}
-        />
-      </View>
-    </View>
-  );
+    );
+  }
 }
 export default DiscoveryScreen;
 
