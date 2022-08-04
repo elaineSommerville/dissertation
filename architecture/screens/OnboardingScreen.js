@@ -25,8 +25,8 @@ function OnboardingScreen({ navigation }) {
         />
         <PrimaryButton title="Map" onPress={() => navigation.navigate("map")} />
         <PrimaryButton
-          title="Location Picker"
-          onPress={() => navigation.navigate("locationPicker")}
+          title="Search"
+          onPress={() => navigation.navigate("search")}
         />
       </View>
     </View>

@@ -10,6 +10,7 @@ import LocationDetailsScreen from "./screens/LocationDetailsScreen";
 import ImageScreen from "./screens/ImageScreen";
 import LocationPicker from "./screens/LocationPicker";
 import Map from "./screens/Map";
+import Search from "./screens/Search";
 
 const Stack = createNativeStackNavigator();
 
@@ -71,6 +72,14 @@ export default function App() {
           component={Map}
           options={{
             title: "Map",
+          }}
+        />
+        <Stack.Screen
+          name="search"
+          component={Search}
+          options={{
+            title: "Search",
+            animation: "slide_from_bottom",
           }}
         />
       </Stack.Navigator>
