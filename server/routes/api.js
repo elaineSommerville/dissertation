@@ -103,7 +103,7 @@ apiRoutes.route("/location").post(function (req, response) {
 
 // SEARCH all the locations
 apiRoutes.route("/location/search/:query").get(function (req, res) {
-  let query = { query: req.params.query };
+  let query = req.params.query;
   let db_connect = dbo.getDb();
   db_connect
     .collection("locations")
@@ -117,6 +117,7 @@ apiRoutes.route("/location/search/:query").get(function (req, res) {
     .toArray(function (err, result) {
       if (err) throw err;
       res.json(result);
+      // res.json("search result");
     });
 });
 
@@ -130,6 +131,10 @@ apiRoutes.route("/location").get(function (req, res) {
       if (err) throw err;
       res.json(result);
     });
+  // db_connect.collection("locations").createIndex({
+  //   name: "text",
+  //   type: "text",
+  // });
 });
 
 // GET all the locations - HEADER INFORMATION ONLY FOR MAP
