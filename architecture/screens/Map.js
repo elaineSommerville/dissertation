@@ -42,20 +42,18 @@ function Map({ navigation }) {
     longitudeDelta: 0.05, // essentially configures the zoom
   });
   //  ***** START ADD SEARCH ICON *****
-  // useLayoutEffect(() => {
-  //   navigation.setOptions({
-  //     headerRight: () => {
-  //       return (
-  //         // <IconButton
-  //         //   icon="star"
-  //         //   color="white"
-  //         //   onPress={navigation.navigate("search")}
-  //         // />
-  //         <Button onPress={navigation.navigate("search")} title="Search" />
-  //       );
-  //     },
-  //   });
-  // }, [navigation]);
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => {
+        return (
+          <Button
+            onPress={() => navigation.navigate("search")}
+            title="Search"
+          />
+        );
+      },
+    });
+  }, [navigation]);
   // ***** END ADD SEARCH ICON *****
 
   // ***** START GET LOCATION PERMISSIONS *****
