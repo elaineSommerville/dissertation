@@ -8,6 +8,7 @@ import DiscoveryScreen from "./screens/DiscoveryScreen";
 import SignInScreen from "./screens/SignInScreen";
 import LocationDetailsScreen from "./screens/LocationDetailsScreen";
 import ImageScreen from "./screens/ImageScreen";
+import UserDetailsScreen from "./screens/UserDetailsScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -55,6 +56,13 @@ export default function App() {
           component={SignUpScreen}
           options={{
             title: "Sign Up",
+          }}
+        />
+        <Stack.Screen
+          name="userDetails"
+          component={UserDetailsScreen}
+          options={{
+            title: "User Details",
           }}
         />
       </Stack.Navigator>

@@ -1,3 +1,4 @@
 *.pem
 *.crt
 node_modules
+.DS_Store
