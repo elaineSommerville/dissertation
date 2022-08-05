@@ -12,6 +12,7 @@ import LoadingOverlay from "../components/ui/LoadingOverlay";
 import ErrorOverlay from "../components/ui/ErrorOverlay";
 
 import { SliderBox } from "react-native-image-slider-box";
+import { render } from "react-dom";
 // npm install react-native-image-slider-box
 // https://www.npmjs.com/package/react-native-image-slider-box
 // replace ViewPropTypes in multiple places
@@ -50,9 +51,73 @@ function LocationDetailsScreen({ route, navigation }) {
   const buildDateStr = buildDate.toString().slice(0, 15);
   const architects = fetchedLocation.architect;
   const description = fetchedLocation.description;
+  const visitorInfo = fetchedLocation.visitorInfo;
+  const openToPublic = fetchedLocation.openToPublic;
 
   const imageUris = [];
   const imageCaptions = [];
+
+  function renderVisitorInfo(visitorInfo, openToPublic) {
+    if (!openToPublic) {
+      return <Text>This building is not open to the public.</Text>;
+    } else {
+      if (visitorInfo == null) {
+        return (
+          <Text>
+            This building is open to the public, but we don't have any visitor
+            information for this building.
+          </Text>
+        );
+      }
+      return (
+        <>
+          <View style={styles.visitorInfoRow}>
+            <Ionicons name="call-outline" size={25} />
+            <Text style={styles.visitorInfoText}>{visitorInfo.phone}</Text>
+          </View>
+          <View style={styles.visitorInfoRow}>
+            <Ionicons name="globe-outline" size={25} />
+            <Text style={styles.visitorInfoText}>{visitorInfo.uri}</Text>
+          </View>
+          <View style={styles.visitorInfoRow}>
+            <Ionicons name="mail-outline" size={25} />
+            <Text style={styles.visitorInfoText}>{visitorInfo.email}</Text>
+          </View>
+          {renderOpeningTimes(visitorInfo)}
+        </>
+      );
+    }
+  }
+
+  function renderOpeningTimes(visitorInfo) {
+    if (!visitorInfo.openingTimes || visitorInfo.openingTimes == null) {
+      return (
+        <Text>We do not currently have opening times for this location.</Text>
+      );
+    } else {
+      visitorInfo.openingTimes.map((item, key) => {
+        if (item.status === "open") {
+          return (
+            <View style={styles.visitorInfoRow}>
+              <View key={key}>
+                <Text>
+                  {item.day} {item.openFrom} - {item.closeAt}
+                </Text>
+              </View>
+            </View>
+          );
+        } else {
+          return (
+            <View style={styles.visitorInfoRow}>
+              <View key={key}>
+                <Text>{item.day} Closed</Text>
+              </View>
+            </View>
+          );
+        }
+      });
+    }
+  }
 
   function errorHandler() {
     navigation.goBack();
@@ -160,6 +225,12 @@ function LocationDetailsScreen({ route, navigation }) {
             <Text>{description}</Text>
           </View>
         </View>
+        <View style={styles.innerContainer}>
+          <View style={styles.descriptionView}>
+            <Text style={styles.heading}>Visitor Information</Text>
+            {renderVisitorInfo(visitorInfo, openToPublic)}
+          </View>
+        </View>
       </ScrollView>
     );
   }
@@ -210,6 +281,13 @@ const styles = StyleSheet.create({
   loadingScreen: {
     flex: 1,
     alignItems: "center",
-    justifyContents: "center",
+    justifyContent: "center",
+  },
+  visitorInfoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  visitorInfoText: {
+    paddingLeft: 12,
   },
 });
