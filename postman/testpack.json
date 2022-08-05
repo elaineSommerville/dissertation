@@ -1,0 +1,298 @@
+{
+	"info": {
+		"_postman_id": "6fe926b6-9982-43b8-bb91-651fbc440a24",
+		"name": "Dissertation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "deprecated",
+			"item": [
+				{
+					"name": "location/map/{coords}",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true,
+							"accept-encoding": true,
+							"connection": true,
+							"host": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "http://{{HOST}}:5000/location/map/-6,55,-6,54,-5,54,-5,55",
+							"protocol": "http",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "5000",
+							"path": [
+								"location",
+								"map",
+								"-6,55,-6,54,-5,54,-5,55"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "location",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true,
+					"accept-encoding": true,
+					"connection": true,
+					"host": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5000/location",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"location"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "location/header",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true,
+					"accept-encoding": true,
+					"connection": true,
+					"host": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://{{HOST}}:5000/location/header",
+					"protocol": "http",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "5000",
+					"path": [
+						"location",
+						"header"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "location/{id}",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true,
+					"accept-encoding": true,
+					"connection": true,
+					"host": true
+				}
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{}"
+				},
+				"url": {
+					"raw": "http://{{HOST}}:5000/location/62cfdd1037895b3365aee175",
+					"protocol": "http",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "5000",
+					"path": [
+						"location",
+						"62cfdd1037895b3365aee175"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "location/{id}",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true,
+					"accept-encoding": true,
+					"connection": true,
+					"host": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://{{HOST}}:5000/location/62cfdd1037895b3365aee175",
+					"protocol": "http",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "5000",
+					"path": [
+						"location",
+						"62cfdd1037895b3365aee175"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "location/{id}",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true,
+					"accept-encoding": true,
+					"connection": true,
+					"host": true
+				}
+			},
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://{{HOST}}:5000/location/62ea9407aed8d21bfe70d5b6",
+					"protocol": "http",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "5000",
+					"path": [
+						"location",
+						"62ea9407aed8d21bfe70d5b6"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "location/map/header",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true,
+					"accept-encoding": true,
+					"connection": true,
+					"host": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"latitude\": 54.59066,\n  \"latitudeDelta\": 0.05,\n  \"longitude\": -5.94097,\n  \"longitudeDelta\": 0.05,\n}"
+				},
+				"url": {
+					"raw": "http://{{HOST}}:5000/location/map/header",
+					"protocol": "http",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "5000",
+					"path": [
+						"location",
+						"map",
+						"header"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "location",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true,
+					"accept-encoding": true,
+					"connection": true,
+					"host": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n        \"name\": \"DELETE ME\",\n        \"description\": \"The new Computer Science Building was completed in 2016 and replaced the old Bernard Crossland Building\",\n        \"location\": {\n            \"type\": \"Point\",\n            \"coordinates\": [\n                -5.93743,\n                54.582\n            ]\n        },\n        \"type\": \"Education\",\n        \"style\": \"Modern\",\n        \"buildDate\": 1469782800,\n        \"architect\": [\n            {\n                \"name\": \"Kennedy FitzGerald Architects\"\n            },\n            {\n                \"name\": \"Niall Miskelly\"\n            }\n        ],\n        \"visitorInfo\": null,\n        \"images\": [\n            {\n                \"name\": \"imagename\",\n                \"uri\": \"https://www.kennedyfitzgerald.com/assets/generated/projects/large/50ac255128189d20e4cbec5568e0b465.jpg\",\n                \"width\": 780,\n                \"height\": 520,\n                \"altText\": \"alttext\",\n                \"location\": {\n                    \"type\": \"Point\",\n                    \"coordinates\": [\n                        -5.93743,\n                        54.582\n                    ]\n                },\n                \"bearing\": 444.33,\n                \"distance\": 44.45,\n                \"attitude\": 10,\n                \"sourceDate\": 1659085200,\n                \"submittedBy\": \"62cdd1cf43aa75a3732ab851\",\n                \"submittedOn\": 1659085200\n            }\n        ],\n        \"videos\": [\n            {\n                \"name\": \"imagename\",\n                \"uri\": \"http://imageuri\",\n                \"width\": 50,\n                \"height\": 150,\n                \"runTime\": 220,\n                \"format\": \"mpeg-4\",\n                \"location\": {\n                    \"type\": \"Point\",\n                    \"coordinates\": [\n                        -5.93743,\n                        54.582\n                    ]\n                },\n                \"bearing\": 444.33,\n                \"distance\": 44.45,\n                \"attitude\": 10,\n                \"sourceDate\": 12345678,\n                \"submittedBy\": \"62cdd1cf43aa75a3732ab851\",\n                \"submittedOn\": 12345678\n            }\n        ],\n        \"stories\": [\n            {\n                \"title\": \"title of my post\",\n                \"body\": \"heres my wee story so it is\",\n                \"location\": {\n                    \"type\": \"Point\",\n                    \"coordinates\": [\n                        -5.93743,\n                        54.582\n                    ]\n                },\n                \"language\": \"EN\",\n                \"sourceDate\": 1659085200,\n                \"submittedBy\": \"62cdd1cf43aa75a3732ab851\",\n                \"submittedOn\": 1659085200\n            }\n        ],\n        \"submittedBy\": \"62cdd1cf43aa75a3732ab851\",\n        \"submittedOn\": 1659085200,\n        \"openToPublic\": false\n    }"
+				},
+				"url": {
+					"raw": "http://{{HOST}}:5000/location",
+					"protocol": "http",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "5000",
+					"path": [
+						"location"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

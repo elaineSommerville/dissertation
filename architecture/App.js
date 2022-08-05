@@ -8,6 +8,8 @@ import DiscoveryScreen from "./screens/DiscoveryScreen";
 import SignInScreen from "./screens/SignInScreen";
 import LocationDetailsScreen from "./screens/LocationDetailsScreen";
 import ImageScreen from "./screens/ImageScreen";
+import LocationPicker from "./screens/LocationPicker";
+import Map from "./screens/Map";
 
 const Stack = createNativeStackNavigator();
 
@@ -55,6 +57,20 @@ export default function App() {
           component={SignUpScreen}
           options={{
             title: "Sign Up",
+          }}
+        />
+        <Stack.Screen
+          name="locationPicker"
+          component={LocationPicker}
+          options={{
+            title: "Location Picker",
+          }}
+        />
+        <Stack.Screen
+          name="map"
+          component={Map}
+          options={{
+            title: "Map",
           }}
         />
       </Stack.Navigator>

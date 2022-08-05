@@ -1,0 +1,15 @@
+{
+	"id": "835630e3-3eb2-4198-8cd3-e0b33f491060",
+	"name": "DissertationEnvs",
+	"values": [
+		{
+			"key": "HOST",
+			"value": "localhost",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2022-08-03T15:40:45.112Z",
+	"_postman_exported_using": "Postman/9.22.2"
+}
