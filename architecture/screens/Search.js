@@ -72,7 +72,11 @@ function Search({ navigation }) {
   }
 
   if (isLoading) {
-    return <LoadingOverlay />;
+    return (
+      <View style={styles.rootContainer}>
+        <LoadingOverlay />
+      </View>
+    );
   } else {
     return (
       <View
