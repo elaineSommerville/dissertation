@@ -3,7 +3,9 @@ import {
   Text,
   View,
   StyleSheet,
-  ActivityIndicator,
+  Image,
+  Pressable,
+  Dimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useState, useEffect, useRef } from "react";
@@ -11,10 +13,8 @@ import { fetchLocation } from "../util/http";
 import LoadingOverlay from "../components/ui/LoadingOverlay";
 import ErrorOverlay from "../components/ui/ErrorOverlay";
 import Carousel from "react-native-snap-carousel";
-import Story, { SLIDER_WIDTH, ITEM_WIDTH } from "../components/Story";
 
 import { SliderBox } from "react-native-image-slider-box";
-import { render } from "react-dom";
 // npm install react-native-image-slider-box
 // https://www.npmjs.com/package/react-native-image-slider-box
 // replace ViewPropTypes in multiple places
@@ -23,6 +23,9 @@ import { render } from "react-dom";
 // ./node_modules/react-native-snap-carousel/src/pagination/Pagination.js
 // ./node_modules/react-native-snap-carousel/src/pagination/PaginationDot.js
 // ./node_modules/react-native-snap-carousel/src/parallaximage/ParallaxImage.js
+
+export const SLIDER_WIDTH = Dimensions.get("window").width;
+export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.7);
 
 function LocationDetailsScreen({ route, navigation }) {
   const locationId = route.params.locationId;
@@ -99,6 +102,29 @@ function LocationDetailsScreen({ route, navigation }) {
 
   function errorHandler() {
     navigation.goBack();
+  }
+
+  function onStoryPressHandler() {
+    navigation.navigate("StoryScreen");
+  }
+
+  function Story({ item, index }) {
+    // const navigation = useNavigation();
+    return (
+      <Pressable
+        onPress={() =>
+          navigation.navigate("storyScreen", {
+            storyIndex: index,
+          })
+        }
+      >
+        <View style={styles.storyCard} key={index}>
+          <Image style={styles.storyImage} source={{ uri: item.image }} />
+          <Text style={styles.storyTitle}>{item.title}</Text>
+          <Text style={styles.storySubtitle}>{item.subtitle}</Text>
+        </View>
+      </Pressable>
+    );
   }
 
   if (error && !isLoading) {
@@ -389,5 +415,35 @@ const styles = StyleSheet.create({
   headerRow: {
     flexDirection: "row",
     fontWeight: "bold",
+  },
+  storyCard: {
+    backgroundColor: "white",
+    borderRadius: 8,
+    width: ITEM_WIDTH,
+    paddingBottom: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.29,
+    shadowRadius: 4.65,
+    elevation: 7,
+  },
+  storyImage: {
+    width: ITEM_WIDTH,
+    height: 200,
+  },
+  storyTitle: {
+    color: "#222",
+    fontSize: 18,
+    fontWeight: "bold",
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
+  storySubtitle: {
+    color: "#222",
+    fontSize: 14,
+    paddingHorizontal: 20,
   },
 });

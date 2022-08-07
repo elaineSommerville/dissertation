@@ -4,9 +4,8 @@ function StoryScreen({ route }) {
   // const caption = route.params.caption;
   return (
     <View style={styles.rootContainer}>
-      <Text>Story Screen</Text>
-      {/* <Image source={{ uri: uri }} style={styles.image} />
-      <Text style={styles.caption}>{caption}</Text> */}
+      <Image source={{ uri: uri }} style={styles.image} />
+      <Text style={styles.caption}>{caption}</Text>
     </View>
   );
 }
@@ -20,7 +19,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: 250,
+    height: 300,
   },
   caption: {
     marginTop: 12,
