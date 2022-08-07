@@ -104,10 +104,6 @@ function LocationDetailsScreen({ route, navigation }) {
     navigation.goBack();
   }
 
-  function onStoryPressHandler() {
-    navigation.navigate("StoryScreen");
-  }
-
   function Story({ item, index }) {
     // const navigation = useNavigation();
     return (
