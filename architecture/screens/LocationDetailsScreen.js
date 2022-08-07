@@ -6,10 +6,12 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { fetchLocation } from "../util/http";
 import LoadingOverlay from "../components/ui/LoadingOverlay";
 import ErrorOverlay from "../components/ui/ErrorOverlay";
+import Carousel from "react-native-snap-carousel";
+import Story, { SLIDER_WIDTH, ITEM_WIDTH } from "../components/Story";
 
 import { SliderBox } from "react-native-image-slider-box";
 import { render } from "react-dom";
@@ -27,6 +29,8 @@ function LocationDetailsScreen({ route, navigation }) {
   const [fetchedLocation, setFetchedLocation] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState();
+  const isCarousel = useRef(null);
+  const [index, setIndex] = useState(0);
 
   useEffect(() => {
     async function getLocation(locationId) {
@@ -303,6 +307,26 @@ function LocationDetailsScreen({ route, navigation }) {
           }}
           imageLoadingColor="#2196F3"
         />
+        <View style={styles.headerRow}>
+          <Ionicons name="book-outline" size={25} />
+          <Text style={styles.heading}>Stories</Text>
+        </View>
+        <View style={{ flex: 1, flexDirection: "row" }}>
+          <Carousel
+            layout={"default"}
+            layoutCardOffset={0}
+            ref={isCarousel}
+            data={stories}
+            sliderWidth={SLIDER_WIDTH}
+            itemWidth={ITEM_WIDTH}
+            renderItem={Story}
+            useScrollView={true}
+            onSnapToItem={(index) => setIndex(index)}
+            autoplay={true}
+            enableMomentum={false}
+            lockScrollWhileSnapping={true}
+          />
+        </View>
       </ScrollView>
     );
   }
