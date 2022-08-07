@@ -9,7 +9,7 @@ function Search({ navigation }) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState();
   const [search, setSearch] = useState(" ");
-  const [searchResults, setSearchResults] = useState({});
+  const [searchResults, setSearchResults] = useState([]);
   useEffect(() => {
     navigation.setOptions({
       headerSearchBarOptions: {
@@ -27,9 +27,11 @@ function Search({ navigation }) {
       console.log(search);
       if (search) {
         try {
-          console.log("try searching for: " + search);
           const result = await searchLocations(search);
           setSearchResults(result);
+          console.log("");
+          console.log(result);
+          console.log("");
         } catch (error) {
           setError(error.message);
         }
@@ -37,7 +39,7 @@ function Search({ navigation }) {
       }
     }
     getSearchResults(search);
-  }, []);
+  }, [search]);
 
   function renderLocationItem(itemData) {
     function pressHandler() {
@@ -95,11 +97,12 @@ export default Search;
 const styles = StyleSheet.create({
   rootContainer: {
     flex: 1,
-    paddingTop: 250,
+    paddingTop: 0,
   },
   flatList: {
     backgroundColor: "white",
     padding: 4,
     marginBottom: 32,
+    marginTop: 145,
   },
 });

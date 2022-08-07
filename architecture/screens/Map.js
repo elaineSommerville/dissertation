@@ -162,7 +162,7 @@ function Map({ navigation }) {
 
   if (isLocationsLoading && isUserLocationLoading) {
     return (
-      <View>
+      <View style={styles.rootContainer}>
         <Text>Loading...</Text>
       </View>
     );
