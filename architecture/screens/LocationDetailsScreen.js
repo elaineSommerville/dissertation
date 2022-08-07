@@ -27,7 +27,6 @@ function LocationDetailsScreen({ route, navigation }) {
   const [fetchedLocation, setFetchedLocation] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState();
-  console.log(route.params.locationId);
 
   useEffect(() => {
     async function getLocation(locationId) {
@@ -70,7 +69,7 @@ function LocationDetailsScreen({ route, navigation }) {
         );
       }
       return (
-        <>
+        <View>
           <View style={styles.visitorInfoRow}>
             <Ionicons name="call-outline" size={25} />
             <Text style={styles.visitorInfoText}>{visitorInfo.phone}</Text>
@@ -83,8 +82,7 @@ function LocationDetailsScreen({ route, navigation }) {
             <Ionicons name="mail-outline" size={25} />
             <Text style={styles.visitorInfoText}>{visitorInfo.email}</Text>
           </View>
-          {renderOpeningTimes(visitorInfo)}
-        </>
+        </View>
       );
     }
   }
@@ -97,26 +95,37 @@ function LocationDetailsScreen({ route, navigation }) {
     } else {
       visitorInfo.openingTimes.map((item, key) => {
         if (item.status === "open") {
-          return (
-            <View style={styles.visitorInfoRow}>
-              <View key={key}>
-                <Text>
-                  {item.day} {item.openFrom} - {item.closeAt}
-                </Text>
-              </View>
-            </View>
-          );
+          renderOpenDay(item, key);
         } else {
-          return (
-            <View style={styles.visitorInfoRow}>
-              <View key={key}>
-                <Text>{item.day} Closed</Text>
-              </View>
-            </View>
-          );
+          renderClosedDay(item, key);
         }
       });
     }
+  }
+  // function renderOpenDay(item, key) {
+  //   return (
+  //     <View key={key}>
+  //       <Text>
+  //         {item.day} {item.openFrom} - {item.closeAt}
+  //       </Text>
+  //     </View>
+  //   );
+  // }
+  // function renderClosedDay(item, key) {
+  //   return (
+  //     <View key={key}>
+  //       <Text>{item.day} Closed</Text>
+  //     </View>
+  //   );
+  // }
+
+  function renderOpenDay(item, key) {
+    console.log("renderOpenDay");
+    return <Text>open</Text>;
+  }
+  function renderClosedDay(item, key) {
+    console.log("renderClosedDay");
+    return <Text>closed</Text>;
   }
 
   function errorHandler() {
@@ -228,7 +237,34 @@ function LocationDetailsScreen({ route, navigation }) {
         <View style={styles.innerContainer}>
           <View style={styles.descriptionView}>
             <Text style={styles.heading}>Visitor Information</Text>
+          </View>
+        </View>
+        <View style={styles.innerContainer}>
+          <View style={styles.descriptionView}>
             {renderVisitorInfo(visitorInfo, openToPublic)}
+            {/* {renderOpeningTimes(visitorInfo)} */}
+            {visitorInfo.openingTimes.map((item, key) => {
+              if (item.status === "open") {
+                return (
+                  <View key={key}>
+                    <Text>
+                      <Ionicons name="lock-open-outline" size={25} />
+                      {item.day[0].toUpperCase() + item.day.substring(1)}
+                      {item.openFrom} - {item.closeAt}
+                    </Text>
+                  </View>
+                );
+              } else {
+                return (
+                  <View key={key}>
+                    <Text>
+                      <Ionicons name="lock-closed-outline" size={25} />
+                      {item.day[0].toUpperCase() + item.day.substring(1)} Closed
+                    </Text>
+                  </View>
+                );
+              }
+            })}
           </View>
         </View>
       </ScrollView>
