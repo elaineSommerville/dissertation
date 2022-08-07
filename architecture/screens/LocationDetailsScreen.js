@@ -44,6 +44,8 @@ function LocationDetailsScreen({ route, navigation }) {
   const name = fetchedLocation.name;
   const address = fetchedLocation.address;
   const images = fetchedLocation.images;
+  const videos = fetchedLocation.videos;
+  const stories = fetchedLocation.stories;
   const type = fetchedLocation.type;
   const style = fetchedLocation.style;
   const buildDate = new Date(fetchedLocation.buildDate * 1000);
@@ -55,6 +57,10 @@ function LocationDetailsScreen({ route, navigation }) {
 
   const imageUris = [];
   const imageCaptions = [];
+
+  const videoUris = [];
+  const videoCaptions = [];
+  const videoThumbnails = [];
 
   function renderVisitorInfo(visitorInfo, openToPublic) {
     if (!openToPublic) {
@@ -87,47 +93,6 @@ function LocationDetailsScreen({ route, navigation }) {
     }
   }
 
-  function renderOpeningTimes(visitorInfo) {
-    if (!visitorInfo.openingTimes || visitorInfo.openingTimes == null) {
-      return (
-        <Text>We do not currently have opening times for this location.</Text>
-      );
-    } else {
-      visitorInfo.openingTimes.map((item, key) => {
-        if (item.status === "open") {
-          renderOpenDay(item, key);
-        } else {
-          renderClosedDay(item, key);
-        }
-      });
-    }
-  }
-  // function renderOpenDay(item, key) {
-  //   return (
-  //     <View key={key}>
-  //       <Text>
-  //         {item.day} {item.openFrom} - {item.closeAt}
-  //       </Text>
-  //     </View>
-  //   );
-  // }
-  // function renderClosedDay(item, key) {
-  //   return (
-  //     <View key={key}>
-  //       <Text>{item.day} Closed</Text>
-  //     </View>
-  //   );
-  // }
-
-  function renderOpenDay(item, key) {
-    console.log("renderOpenDay");
-    return <Text>open</Text>;
-  }
-  function renderClosedDay(item, key) {
-    console.log("renderClosedDay");
-    return <Text>closed</Text>;
-  }
-
   function errorHandler() {
     navigation.goBack();
   }
@@ -151,6 +116,12 @@ function LocationDetailsScreen({ route, navigation }) {
       imageUris.push(image.uri);
       imageCaptions.push(image.name);
     });
+    videos.map((video) => {
+      videoUris.push(video.uri);
+      videoCaptions.push(video.name);
+      videoThumbnails.push(video.thumbnail);
+    });
+
     return (
       <ScrollView style={styles.rootContainer}>
         <View style={styles.innerContainer}>
@@ -243,6 +214,10 @@ function LocationDetailsScreen({ route, navigation }) {
           <View style={styles.descriptionView}>
             {renderVisitorInfo(visitorInfo, openToPublic)}
             {/* {renderOpeningTimes(visitorInfo)} */}
+            <View style={styles.headerRow}>
+              <Ionicons name="time-outline" size={25} />
+              <Text style={styles.heading}>Opening Hours</Text>
+            </View>
             {visitorInfo.openingTimes.map((item, key) => {
               if (item.status === "open") {
                 return (
@@ -265,8 +240,69 @@ function LocationDetailsScreen({ route, navigation }) {
                 );
               }
             })}
+            {/* this ois the start of the admission fees stuff */}
+            <View style={styles.headerRow}>
+              <Ionicons name="cash-outline" size={25} />
+              <Text style={styles.heading}>Admission Fees</Text>
+            </View>
+            {visitorInfo.admissionFees.map((item, key) => {
+              return (
+                <View key={key}>
+                  <Text>
+                    {item.feeName[0].toUpperCase() + item.feeName.substring(1)}
+                    {"    "}£{item.feeAmount.toFixed(2)}
+                  </Text>
+                </View>
+              );
+            })}
           </View>
         </View>
+        <View style={styles.headerRow}>
+          <Ionicons name="film-outline" size={25} />
+          <Text style={styles.heading}>Videos</Text>
+        </View>
+        <SliderBox
+          images={videoThumbnails}
+          sliderBoxHeight={200}
+          onCurrentImagePressed={(index) =>
+            navigation.navigate("videoScreen", {
+              uri: videoUris[index],
+              caption: videoCaptions[index],
+            })
+          }
+          dotColor="#FFEE58"
+          inactiveDotColor="#90A4AE"
+          paginationBoxVerticalPadding={0}
+          autoplay
+          circleLoop
+          resizeMethod={"resize"}
+          resizeMode={"cover"}
+          paginationBoxStyle={{
+            position: "absolute",
+            bottom: 0,
+            paddingLeft: 0,
+            alignItems: "center",
+            alignSelf: "center",
+            justifyContent: "flex-start",
+          }}
+          dotStyle={{
+            width: 10,
+            height: 10,
+            borderRadius: 5,
+            marginHorizontal: 0,
+            padding: 0,
+            margin: 0,
+            marginBottom: 10,
+            backgroundColor: "rgba(128, 128, 128, 0.92)",
+          }}
+          ImageComponentStyle={{
+            borderRadius: 10,
+            width: "87%",
+            marginTop: 5,
+            marginLeft: -50,
+          }}
+          imageLoadingColor="#2196F3"
+        />
       </ScrollView>
     );
   }
@@ -325,5 +361,9 @@ const styles = StyleSheet.create({
   },
   visitorInfoText: {
     paddingLeft: 12,
+  },
+  headerRow: {
+    flexDirection: "row",
+    fontWeight: "bold",
   },
 });
