@@ -110,7 +110,7 @@ function LocationDetailsScreen({ route, navigation }) {
       <Pressable
         onPress={() =>
           navigation.navigate("storyScreen", {
-            storyIndex: index,
+            story: item,
           })
         }
       >

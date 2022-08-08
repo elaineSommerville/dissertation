@@ -1,11 +1,18 @@
 import { Text, View, Image, StyleSheet } from "react-native";
 function StoryScreen({ route }) {
-  // const uri = route.params.uri;
-  // const caption = route.params.caption;
+  const image = route.params.story.image;
+  const title = route.params.story.title;
+  const subtitle = route.params.story.subtitle;
+  const body = route.params.story.body;
+  console.log(route.params);
   return (
     <View style={styles.rootContainer}>
-      <Image source={{ uri: uri }} style={styles.image} />
-      <Text style={styles.caption}>{caption}</Text>
+      <Image source={{ uri: image }} style={styles.image} />
+      <View style={styles.textContainer}>
+        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.subtitle}>{subtitle}</Text>
+        <Text style={styles.body}>{body}</Text>
+      </View>
     </View>
   );
 }
@@ -17,15 +24,26 @@ const styles = StyleSheet.create({
   rootContainer: {
     flex: 1,
   },
+  textContainer: {
+    marginHorizontal: 18,
+  },
   image: {
     width: "100%",
     height: 300,
   },
-  caption: {
+  title: {
     marginTop: 12,
-    textAlign: "center",
-    fontSize: 16,
-    // fontWeight: "bold",
+    fontSize: 24,
+    fontWeight: "bold",
     // fontStyle: "italic",
+  },
+  subtitle: {
+    marginTop: 6,
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#aaa",
+  },
+  body: {
+    marginTop: 6,
   },
 });
