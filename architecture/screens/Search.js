@@ -27,7 +27,7 @@ function Search({ navigation }) {
       console.log(search);
       if (search) {
         try {
-          const result = await searchLocations(search);
+          const result = await searchLocations(search, -5.852744, 54.597182);
           setSearchResults(result);
           console.log("");
           console.log(result);

@@ -101,7 +101,7 @@ apiRoutes.route("/location").post(function (req, response) {
   });
 });
 
-// SEARCH all the locations
+// SEARCH all the locations original
 apiRoutes.route("/location/search/:query").get(function (req, res) {
   let query = req.params.query;
   let db_connect = dbo.getDb();
@@ -121,6 +121,33 @@ apiRoutes.route("/location/search/:query").get(function (req, res) {
     });
 });
 
+apiRoutes.route("/location/distance/:id").post(function (req, res) {
+  let userLocation = req.body;
+  let locationId = { _id: ObjectId(req.params.id) };
+  let db_connect = dbo.getDb();
+  db_connect
+    .collection("locations")
+    .aggregate([
+      {
+        $geoNear: {
+          near: userLocation,
+          spherical: true,
+          distanceField: "distance",
+          maxDistance: 10000,
+          query: locationId,
+        },
+      },
+    ])
+    .project({
+      distance: 1,
+    }) // thumbnail too?
+    .toArray(function (err, result) {
+      if (err) throw err;
+      res.json(result);
+      // res.json("search result");
+    });
+});
+
 // GET all the locations
 apiRoutes.route("/location").get(function (req, res) {
   let db_connect = dbo.getDb();
@@ -131,6 +158,7 @@ apiRoutes.route("/location").get(function (req, res) {
       if (err) throw err;
       res.json(result);
     });
+  // db_connect.collection("locations").createIndex({ location: "2dsphere" });
   // db_connect.collection("locations").createIndex({
   //   name: "text",
   //   type: "text",
