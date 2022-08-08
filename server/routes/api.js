@@ -101,6 +101,26 @@ apiRoutes.route("/location").post(function (req, response) {
   });
 });
 
+// SEARCH all the locations
+apiRoutes.route("/location/search/:query").get(function (req, res) {
+  let query = req.params.query;
+  let db_connect = dbo.getDb();
+  db_connect
+    .collection("locations")
+    // TO DO
+    .find({
+      $text: {
+        $search: query,
+      },
+    })
+    .project({ name: 1, type: 1, location: 1, buildDate: 1, address: 1 }) // thumbnail too?
+    .toArray(function (err, result) {
+      if (err) throw err;
+      res.json(result);
+      // res.json("search result");
+    });
+});
+
 // GET all the locations
 apiRoutes.route("/location").get(function (req, res) {
   let db_connect = dbo.getDb();
@@ -111,6 +131,10 @@ apiRoutes.route("/location").get(function (req, res) {
       if (err) throw err;
       res.json(result);
     });
+  // db_connect.collection("locations").createIndex({
+  //   name: "text",
+  //   type: "text",
+  // });
 });
 
 // GET all the locations - HEADER INFORMATION ONLY FOR MAP

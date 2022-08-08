@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Button } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SignUpScreen from "./screens/SignUpScreen";
@@ -11,7 +11,9 @@ import ImageScreen from "./screens/ImageScreen";
 import VideoScreen from "./screens/VideoScreen";
 import LocationPicker from "./screens/LocationPicker";
 import Map from "./screens/Map";
+import Search from "./screens/Search";
 import StoryScreen from "./screens/StoryScreen";
+
 
 const Stack = createNativeStackNavigator();
 
@@ -87,6 +89,27 @@ export default function App() {
           component={Map}
           options={{
             title: "Map",
+            // headerRight: ({ navigation }) => {
+            //   return (
+            //     // <IconButton
+            //     //   icon="star"
+            //     //   color="white"
+            //     //   onPress={navigation.navigate("search")}
+            //     // />
+            //     <Button
+            //       // onPress={navigation.navigate("search")}
+            //       title="Search"
+            //     />
+            //   );
+            // },
+          }}
+        />
+        <Stack.Screen
+          name="search"
+          component={Search}
+          options={{
+            title: "Search",
+            animation: "slide_from_bottom",
           }}
         />
       </Stack.Navigator>

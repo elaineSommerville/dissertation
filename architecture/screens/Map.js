@@ -6,10 +6,11 @@ import {
   StyleSheet,
   View,
   Text,
+  Button,
   ScrollView,
   Platform,
 } from "react-native";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 import {
   fetchLocationsHeaders,
   fetchLocationsHeadersWithinMap,
@@ -40,6 +41,20 @@ function Map({ navigation }) {
     latitudeDelta: 0.05, // essentially configures the zoom
     longitudeDelta: 0.05, // essentially configures the zoom
   });
+  //  ***** START ADD SEARCH ICON *****
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => {
+        return (
+          <Button
+            onPress={() => navigation.navigate("search")}
+            title="Search"
+          />
+        );
+      },
+    });
+  }, [navigation]);
+  // ***** END ADD SEARCH ICON *****
 
   // ***** START GET LOCATION PERMISSIONS *****
   useEffect(() => {
@@ -147,7 +162,7 @@ function Map({ navigation }) {
 
   if (isLocationsLoading && isUserLocationLoading) {
     return (
-      <View>
+      <View style={styles.rootContainer}>
         <Text>Loading...</Text>
       </View>
     );

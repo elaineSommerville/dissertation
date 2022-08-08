@@ -5,6 +5,11 @@ const BACKEND_URL = "http://192.168.1.9:5000";
 // const BACKEND_URL = "http://192.168.1.6:5000";
 // const BACKEND_URL = "http://localhost:5000";
 
+export async function searchLocations(query) {
+  const response = await axios.get(BACKEND_URL + "/location/search/" + query);
+  return response.data;
+}
+
 export async function fetchLocations() {
   const response = await axios.get(BACKEND_URL + "/location");
   return response.data;
