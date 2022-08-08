@@ -8,9 +8,12 @@ import DiscoveryScreen from "./screens/DiscoveryScreen";
 import SignInScreen from "./screens/SignInScreen";
 import LocationDetailsScreen from "./screens/LocationDetailsScreen";
 import ImageScreen from "./screens/ImageScreen";
+import VideoScreen from "./screens/VideoScreen";
 import LocationPicker from "./screens/LocationPicker";
 import Map from "./screens/Map";
 import Search from "./screens/Search";
+import StoryScreen from "./screens/StoryScreen";
+
 
 const Stack = createNativeStackNavigator();
 
@@ -44,6 +47,20 @@ export default function App() {
           component={ImageScreen}
           options={{
             title: "Image",
+          }}
+        />
+        <Stack.Screen
+          name="videoScreen"
+          component={VideoScreen}
+          options={{
+            title: "Video",
+          }}
+        />
+        <Stack.Screen
+          name="storyScreen"
+          component={StoryScreen}
+          options={{
+            title: "Story",
           }}
         />
         <Stack.Screen

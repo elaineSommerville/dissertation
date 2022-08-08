@@ -1,7 +1,8 @@
 import axios from "axios";
 
 // need to use IP of laptop running server when testing on phone
-const BACKEND_URL = "http://192.168.1.6:5000";
+const BACKEND_URL = "http://192.168.1.9:5000";
+// const BACKEND_URL = "http://192.168.1.6:5000";
 // const BACKEND_URL = "http://localhost:5000";
 
 export async function searchLocations(query) {
