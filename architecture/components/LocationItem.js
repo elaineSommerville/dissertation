@@ -1,13 +1,14 @@
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-function LocationItem({ id, name, address, type, onPress }) {
+function LocationItem({ id, name, address, distance, type, onPress }) {
   return (
     <View style={styles.viewContainer} key={id}>
       <Pressable onPress={onPress}>
         <View style={styles.innerContainer}>
           <View style={styles.typeView}>
             <Ionicons name="home-outline" size={30} />
+            <Text>{distance} mi</Text>
           </View>
           <View style={styles.nameAddressView}>
             <Text style={styles.nameView}>{name}</Text>

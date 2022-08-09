@@ -11,8 +11,11 @@ const BACKEND_URL = "http://192.168.1.6:5000";
 //   return response.data;
 // }
 
-export async function searchLocations(query) {
-  const response = await axios.get(BACKEND_URL + "/location/search/" + query);
+export async function searchLocations(query, lng, lat) {
+  const response = await axios.post(BACKEND_URL + "/location/search/" + query, {
+    type: "Point",
+    coordinates: [lng, lat],
+  });
   return response.data;
 }
 

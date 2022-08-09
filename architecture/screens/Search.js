@@ -8,7 +8,7 @@ import LocationItem from "../components/LocationItem";
 function Search({ navigation }) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState();
-  const [search, setSearch] = useState(" ");
+  const [search, setSearch] = useState(null);
   const [searchResults, setSearchResults] = useState([]);
   useEffect(() => {
     navigation.setOptions({
@@ -29,9 +29,6 @@ function Search({ navigation }) {
         try {
           const result = await searchLocations(search, -5.852744, 54.597182);
           setSearchResults(result);
-          console.log("");
-          console.log(result);
-          console.log("");
         } catch (error) {
           setError(error.message);
         }
@@ -53,6 +50,7 @@ function Search({ navigation }) {
       name: item.name,
       address: item.address,
       type: item.type,
+      distance: (item.distance / 1609.344).toFixed(1),
     };
     return <LocationItem {...locationItemProps} onPress={pressHandler} />;
   }
