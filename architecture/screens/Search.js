@@ -1,5 +1,5 @@
 import { FlatList, View, StyleSheet } from "react-native";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useLayoutEffect } from "react";
 import LoadingOverlay from "../components/ui/LoadingOverlay";
 import ErrorOverlay from "../components/ui/ErrorOverlay";
 import { searchLocations } from "../util/http";
@@ -8,9 +8,9 @@ import LocationItem from "../components/LocationItem";
 function Search({ navigation }) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState();
-  const [search, setSearch] = useState(null);
+  const [search, setSearch] = useState(" ");
   const [searchResults, setSearchResults] = useState([]);
-  useEffect(() => {
+  useLayoutEffect(() => {
     navigation.setOptions({
       headerSearchBarOptions: {
         placeholder: "Search for buildings, architects, addresses...",
@@ -35,7 +35,10 @@ function Search({ navigation }) {
         setIsLoading(false);
       }
     }
-    getSearchResults(search);
+    // wait for at least two characters to be entered before searching
+    if (search.length >= 2) {
+      getSearchResults(search);
+    }
   }, [search]);
 
   function renderLocationItem(itemData) {
@@ -48,7 +51,7 @@ function Search({ navigation }) {
     const locationItemProps = {
       id: item._id,
       name: item.name,
-      address: item.address,
+      address: item.visitorInfo.address,
       type: item.type,
       distance: (item.distance / 1609.344).toFixed(1),
     };
@@ -69,7 +72,7 @@ function Search({ navigation }) {
     );
   }
 
-  if (isLoading) {
+  if (isLoading && search != " ") {
     return (
       <View style={styles.rootContainer}>
         <LoadingOverlay />

@@ -141,6 +141,8 @@ apiRoutes.route("/location/search/:query").post(function (req, res) {
             $or: [
               { name: new RegExp(query, "i") },
               { type: new RegExp(query, "i") },
+              { "visitorInfo.address": new RegExp(query, "i") },
+              { "architect.name": new RegExp(query, "i") },
             ],
           },
         },
@@ -151,7 +153,7 @@ apiRoutes.route("/location/search/:query").post(function (req, res) {
       type: 1,
       location: 1,
       buildDate: 1,
-      address: 1,
+      "visitorInfo.address": 1,
       distance: 1,
     }) // thumbnail too?
     .toArray(function (err, result) {
