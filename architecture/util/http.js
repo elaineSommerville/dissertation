@@ -1,12 +1,29 @@
 import axios from "axios";
 
 // need to use IP of laptop running server when testing on phone
-const BACKEND_URL = "http://192.168.1.9:5000";
-// const BACKEND_URL = "http://192.168.1.6:5000";
+const BACKEND_URL = "http://192.168.1.13:5000";
+// const BACKEND_URL = "http://192.168.1.9:5000";
 // const BACKEND_URL = "http://localhost:5000";
+//
+// ORIGINAL
+// export async function searchLocations(query) {
+//   const response = await axios.get(BACKEND_URL + "/location/search/" + query);
+//   return response.data;
+// }
 
-export async function searchLocations(query) {
-  const response = await axios.get(BACKEND_URL + "/location/search/" + query);
+export async function searchLocations(query, lng, lat) {
+  const response = await axios.post(BACKEND_URL + "/location/search/" + query, {
+    type: "Point",
+    coordinates: [lng, lat],
+  });
+  return response.data;
+}
+
+export async function getDistance(lat, lng, id) {
+  const response = await axios.post(BACKEND_URL + "/location/distance/" + id, {
+    type: "Point",
+    coordinates: [lng, lat],
+  });
   return response.data;
 }
 
