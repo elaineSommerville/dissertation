@@ -2,11 +2,12 @@ import { useState } from "react";
 import { Alert, StyleSheet, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Colors } from "../../constants/styles";
+import { Button } from "react-native";
 
 import PrimaryButton from "../PrimaryButton";
 import AuthForm from "./AuthForm";
 
-function AuthContent({ isLogin, onAuthenticate }) {
+function AuthContent({ isSignin, onAuthenticate }) {
   const navigation = useNavigation();
 
   const [credentialsInvalid, setCredentialsInvalid] = useState({
@@ -17,7 +18,7 @@ function AuthContent({ isLogin, onAuthenticate }) {
   });
 
   function switchAuthModeHandler() {
-    if (isLogin) {
+    if (isSignin) {
       navigation.replace("signUp");
     } else {
       navigation.replace("signIn");
@@ -38,7 +39,7 @@ function AuthContent({ isLogin, onAuthenticate }) {
     if (
       !emailIsValid ||
       !passwordIsValid ||
-      (!isLogin && (!emailsAreEqual || !passwordsAreEqual))
+      (!isSignin && (!emailsAreEqual || !passwordsAreEqual))
     ) {
       Alert.alert("Invalid input", "Please check your entered credentials.");
       setCredentialsInvalid({
@@ -55,14 +56,14 @@ function AuthContent({ isLogin, onAuthenticate }) {
   return (
     <View style={styles.authContent}>
       <AuthForm
-        isLogin={isLogin}
+        isSignin={isSignin}
         onSubmit={submitHandler}
         credentialsInvalid={credentialsInvalid}
       />
       <View style={styles.buttons}>
-        <PrimaryButton
+        <Button
           onPress={switchAuthModeHandler}
-          title={isLogin ? "Create a new user" : "Log in instead"}
+          title={isSignin ? "Create a new user" : "Log in instead"}
         />
       </View>
     </View>

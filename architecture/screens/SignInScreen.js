@@ -1,38 +1,30 @@
-import { View, Text, StyleSheet, Image, TextInput } from "react-native";
-import PrimaryButton from "../components/PrimaryButton";
+import { Alert, StyleSheet } from "react-native";
+import { useState } from "react";
+import LoadingOverlay from "../components/ui/LoadingOverlay";
+import AuthContent from "../components/Auth/AuthContent";
+import { signIn } from "../util/auth";
 
-function SignInScreen({ navigation }) {
-  return (
-    <View style={styles.rootContainer}>
-      <View style={styles.topContainer}>
-        <Image
-          style={styles.image}
-          source={require("../assets/images/place.png")}
-        />
-      </View>
-      <View style={styles.bottomContainer}>
-        <Text style={styles.textTitleBox}>Email Address</Text>
+function SignInScreen() {
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
 
-        <TextInput
-          style={styles.textInputBox}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
+  async function signInHandler({ email, password }) {
+    setIsAuthenticating(true);
+    try {
+      await signIn(email, password);
+    } catch (error) {
+      Alert.alert(
+        "Authentication failed",
+        "Could not log you in, please try again."
+      );
+    }
 
-        <Text style={styles.textTitleBox}>Password</Text>
+    setIsAuthenticating(false);
+  }
 
-        <TextInput
-          style={styles.textInputBox}
-          keyboardType="default"
-          autoCapitalize="none"
-          autoCorrect={false}
-          secureTextEntry={true}
-        />
-        <PrimaryButton title="Sign-in" />
-      </View>
-    </View>
-  );
+  if (isAuthenticating) {
+    return <LoadingOverlay message="Signing in..." />;
+  }
+  return <AuthContent isSignin onAuthenticate={signInHandler} />;
 }
 export default SignInScreen;
 

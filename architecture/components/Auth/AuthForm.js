@@ -4,7 +4,7 @@ import PrimaryButton from "../PrimaryButton";
 // import Button from "../ui/Button";
 import Input from "./Input";
 
-function AuthForm({ isLogin, onSubmit, credentialsInvalid }) {
+function AuthForm({ isSignin, onSubmit, credentialsInvalid }) {
   const [enteredEmail, setEnteredEmail] = useState("");
   const [enteredConfirmEmail, setEnteredConfirmEmail] = useState("");
   const [enteredPassword, setEnteredPassword] = useState("");
@@ -53,7 +53,7 @@ function AuthForm({ isLogin, onSubmit, credentialsInvalid }) {
           keyboardType="email-address"
           isInvalid={emailIsInvalid}
         />
-        {!isLogin && (
+        {!isSignin && (
           <Input
             label="Confirm Email Address"
             onUpdateValue={updateInputValueHandler.bind(this, "confirmEmail")}
@@ -69,7 +69,7 @@ function AuthForm({ isLogin, onSubmit, credentialsInvalid }) {
           value={enteredPassword}
           isInvalid={passwordIsInvalid}
         />
-        {!isLogin && (
+        {!isSignin && (
           <Input
             label="Confirm Password"
             onUpdateValue={updateInputValueHandler.bind(
@@ -84,7 +84,7 @@ function AuthForm({ isLogin, onSubmit, credentialsInvalid }) {
         <View style={styles.buttons}>
           <PrimaryButton
             onPress={submitHandler}
-            title={isLogin ? "Log In" : "Sign Up"}
+            title={isSignin ? "Sign In" : "Sign Up"}
           />
         </View>
       </View>
