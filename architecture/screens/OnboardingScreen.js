@@ -20,10 +20,9 @@ function OnboardingScreen({ navigation }) {
           onPress={() => navigation.navigate("signUp")}
         />
         <PrimaryButton
-          title="Continue as Guest"
-          onPress={() => navigation.navigate("discovery")}
+          title="Discovery"
+          onPress={() => navigation.navigate("map")}
         />
-        <PrimaryButton title="Map" onPress={() => navigation.navigate("map")} />
       </View>
     </View>
   );

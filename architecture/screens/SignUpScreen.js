@@ -1,69 +1,30 @@
-import { View, Text, StyleSheet, Image, TextInput } from "react-native";
-import PrimaryButton from "../components/PrimaryButton";
+import { useState } from "react";
+import AuthContent from "../components/Auth/AuthContent";
+import { createUser } from "../util/auth";
+import LoadingOverlay from "../components/ui/LoadingOverlay";
+import { Alert } from "react-native";
 
-function SignUpScreen({ navigation }) {
-  return (
-    <View style={styles.rootContainer}>
-      <View style={styles.topContainer}>
-        <Image
-          style={styles.image}
-          source={require("../assets/images/place.png")}
-        />
-      </View>
-      <View style={styles.bottomContainer}>
-        <Text style={styles.textTitleBox}>Email Address</Text>
+function SignupScreen() {
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
 
-        <TextInput
-          style={styles.textInputBox}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
+  async function signUpHandler({ email, password }) {
+    setIsAuthenticating(true);
+    try {
+      await createUser(email, password);
+    } catch (error) {
+      Alert.alert(
+        "Authentication failed",
+        "Could not create user, please try again."
+      );
+    }
 
-        <Text style={styles.textTitleBox}>Password</Text>
+    setIsAuthenticating(false);
+  }
 
-        <TextInput
-          style={styles.textInputBox}
-          keyboardType="default"
-          autoCapitalize="none"
-          autoCorrect={false}
-          secureTextEntry={true}
-        />
-        <PrimaryButton title="Sign-up" />
-      </View>
-    </View>
-  );
+  if (isAuthenticating) {
+    return <LoadingOverlay message="Creating your account..." />;
+  }
+  return <AuthContent onAuthenticate={signUpHandler} />;
 }
-export default SignUpScreen;
 
-const styles = StyleSheet.create({
-  rootContainer: {
-    flex: 1,
-  },
-  topContainer: {
-    width: "100%",
-    height: "50%",
-    alignItems: "center",
-    marginTop: 75,
-  },
-  bottomContainer: {
-    marginHorizontal: 75,
-    height: "50%",
-  },
-  image: {
-    width: 300,
-    height: "80%",
-  },
-  textInputBox: {
-    borderColor: "red",
-    borderWidth: 1,
-    marginVertical: 12,
-    padding: 8,
-    fontSize: 18,
-    borderRadius: 8,
-  },
-  textTitleBox: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-});
+export default SignupScreen;

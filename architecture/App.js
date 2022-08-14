@@ -4,7 +4,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SignUpScreen from "./screens/SignUpScreen";
 import OnboardingScreen from "./screens/OnboardingScreen";
-import DiscoveryScreen from "./screens/DiscoveryScreen";
 import SignInScreen from "./screens/SignInScreen";
 import LocationDetailsScreen from "./screens/LocationDetailsScreen";
 import ImageScreen from "./screens/ImageScreen";
@@ -13,7 +12,6 @@ import LocationPicker from "./screens/LocationPicker";
 import Map from "./screens/Map";
 import Search from "./screens/Search";
 import StoryScreen from "./screens/StoryScreen";
-
 
 const Stack = createNativeStackNavigator();
 
@@ -33,13 +31,6 @@ export default function App() {
           component={LocationDetailsScreen}
           options={{
             title: "Location Details",
-          }}
-        />
-        <Stack.Screen
-          name="discovery"
-          component={DiscoveryScreen}
-          options={{
-            title: "Discovery",
           }}
         />
         <Stack.Screen
