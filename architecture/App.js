@@ -1,4 +1,6 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import AppLoading from "expo-app-loading";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, Button } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
@@ -14,6 +16,7 @@ import Search from "./screens/Search";
 import StoryScreen from "./screens/StoryScreen";
 import WelcomeScreen from "./screens/WelcomeScreen";
 import AuthContextProvider, { AuthContext } from "./store/auth-context";
+import IconButton from "./components/ui/IconButton";
 
 const Stack = createNativeStackNavigator();
 
@@ -89,9 +92,23 @@ function AuthStack() {
 }
 
 function AuthenticatedStack() {
+  const authCtx = useContext(AuthContext);
   return (
     <Stack.Navigator>
-      <Stack.Screen name="welcome" component={WelcomeScreen} />
+      <Stack.Screen
+        name="welcome"
+        component={WelcomeScreen}
+        options={{
+          headerRight: () => (
+            <IconButton
+              icon="exit-outline"
+              color="black"
+              size={24}
+              onPress={authCtx.logout}
+            />
+          ),
+        }}
+      />
       <Stack.Screen
         name="locationDetails"
         component={LocationDetailsScreen}
@@ -118,20 +135,6 @@ function AuthenticatedStack() {
         component={StoryScreen}
         options={{
           title: "Story",
-        }}
-      />
-      <Stack.Screen
-        name="signIn"
-        component={SignInScreen}
-        options={{
-          title: "Sign In",
-        }}
-      />
-      <Stack.Screen
-        name="signUp"
-        component={SignUpScreen}
-        options={{
-          title: "Sign Up",
         }}
       />
       <Stack.Screen
@@ -164,11 +167,32 @@ function Navigation() {
   );
 }
 
+function Root() {
+  const [isTryingLogin, setIsTryingLogin] = useState(true);
+  const authCtx = useContext(AuthContext);
+
+  useEffect(() => {
+    async function fetchToken() {
+      const storedToken = await AsyncStorage.getItem("token");
+
+      if (storedToken) {
+        authCtx.authenticate(storedToken);
+      }
+      setIsTryingLogin(false);
+    }
+    fetchToken();
+  }, []);
+  if (isTryingLogin) {
+    return <AppLoading />;
+  }
+  return <Navigation />;
+}
+
 export default function App() {
   return (
     <>
       <AuthContextProvider>
-        <Navigation />
+        <Root />
       </AuthContextProvider>
     </>
   );
