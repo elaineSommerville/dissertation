@@ -1,24 +1,27 @@
 import { Alert, StyleSheet } from "react-native";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import LoadingOverlay from "../components/ui/LoadingOverlay";
 import AuthContent from "../components/Auth/AuthContent";
 import { signIn } from "../util/auth";
+import { AuthContext } from "../store/auth-context";
 
 function SignInScreen() {
   const [isAuthenticating, setIsAuthenticating] = useState(false);
 
+  const authCtx = useContext(AuthContext);
+
   async function signInHandler({ email, password }) {
     setIsAuthenticating(true);
     try {
-      await signIn(email, password);
+      const token = await signIn(email, password);
+      authCtx.authenticate(token);
     } catch (error) {
       Alert.alert(
         "Authentication failed",
         "Could not log you in, please try again."
       );
+      setIsAuthenticating(false);
     }
-
-    setIsAuthenticating(false);
   }
 
   if (isAuthenticating) {
