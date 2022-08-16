@@ -312,4 +312,36 @@ apiRoutes.route("/location/:id").delete((req, response) => {
 });
 
 // --- END OF LOCATION ---
+
+
+// --- START UPLOADS ---
+
+apiRoutes.route("/location/image").post(function (req, response) {
+  // check isAuthenticated === true
+  const isAuthenticated = req.body.isAuthenticated;
+  const caption = req.body.caption,
+  const date = req.body.date,
+  const width = req.body.width,
+  const height = req.body.height,
+  const imageData = req.body.imageData
+
+  // TO DO: verify token
+  if(isAuthenticated === true) {
+  // upload to mongodb gridfs
+  // get id from gridfs
+  // upsert image into location with ID and other data  
+
+
+    response.json({
+      // responseCode: 200,
+      responseMessage: "Image uploaded."
+    })
+  } else {
+    response.json({
+      // responseCode: 403,
+      responseMessage: "Forbidden. User not authorised to upload images."
+    });
+  }
+});
+// --- END UPLOADS ---
 module.exports = apiRoutes;
