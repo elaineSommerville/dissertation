@@ -4,10 +4,12 @@ import {
   useCameraPermissions,
   PermissionStatus,
 } from "expo-image-picker";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { UploadedImageContext } from "../../store/image-context";
 
 function ImagePicker() {
   const [pickedImage, setPickedImage] = useState();
+  const imageCtx = useContext(UploadedImageContext);
   const [cameraPermissionInformation, requestPermission] =
     useCameraPermissions();
 
@@ -40,6 +42,7 @@ function ImagePicker() {
       base64: true,
     });
     setPickedImage(image);
+    imageCtx.uploadImage(image);
   }
 
   let imagePreview = <Text>No image taken yet</Text>;
@@ -48,13 +51,6 @@ function ImagePicker() {
     imagePreview = (
       <Image style={styles.image} source={{ uri: pickedImage.uri }} />
     );
-  }
-
-  function uploadHandler() {
-    if (!pickedImage) {
-      Alert.alert("No image selected", "Please take a photo before uploading.");
-      return;
-    }
   }
 
   return (

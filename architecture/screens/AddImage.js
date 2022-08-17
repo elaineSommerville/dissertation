@@ -1,28 +1,53 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { ScrollView, Text, TextInput, View, StyleSheet } from "react-native";
 import ImagePicker from "../components/Upload/ImagePicker";
 import PrimaryButton from "../components/PrimaryButton";
+import UploadedImageContextProvider, {
+  UploadedImageContext,
+} from "../store/image-context";
 
 function AddImage() {
-  const [enteredTitle, setEnteredTitle] = useState("");
+  const imageCtx = useContext(UploadedImageContext);
+  const [enteredCaption, setEnteredCaption] = useState("");
+  const [enteredDate, setEnteredDate] = useState("");
 
-  function changeTitleHandler(enteredText) {
-    setEnteredTitle(enteredText);
+  function changeCaptionHandler(enteredCaption) {
+    setEnteredCaption(enteredCaption);
+  }
+
+  function changeDateHandler(enteredDate) {
+    setEnteredDate(enteredDate);
+  }
+
+  function uploadHandler(enteredCaption, enteredDate) {
+    if (!imageCtx) {
+      Alert.alert("No image selected", "Please take a photo before uploading.");
+      return;
+    }
+    imageCtx.uploadImage(enteredCaption, enteredDate);
   }
 
   return (
-    <ScrollView style={styles.form}>
-      <View>
-        <Text style={styles.label}>Title</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={changeTitleHandler}
-          value={enteredTitle}
-        />
-      </View>
-      <ImagePicker />
-      <PrimaryButton title="Upload" onPress={uploadHandler} />
-    </ScrollView>
+    <UploadedImageContextProvider>
+      <ScrollView style={styles.form}>
+        <View>
+          <Text style={styles.label}>Caption</Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={changeCaptionHandler}
+            value={enteredCaption}
+          />
+          <Text style={styles.label}>Date</Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={changeDateHandler}
+            value={enteredDate}
+          />
+        </View>
+        <ImagePicker />
+        <PrimaryButton title="Upload" onPress={uploadHandler} />
+      </ScrollView>
+    </UploadedImageContextProvider>
   );
 }
 
