@@ -48,3 +48,14 @@ export async function fetchLocation(locationId) {
   const response = await axios.get(BACKEND_URL + "/location/" + locationId);
   return response.data;
 }
+
+export async function uploadImage(token, locationId, image) {
+  const response = await axios.post(
+    BACKEND_URL + "/location/" + locationId + "/image",
+    {
+      token,
+      image,
+    }
+  );
+  return response.data;
+}

@@ -313,33 +313,42 @@ apiRoutes.route("/location/:id").delete((req, response) => {
 
 // --- END OF LOCATION ---
 
-
 // --- START UPLOADS ---
 
-apiRoutes.route("/location/image").post(function (req, response) {
+apiRoutes.route("/location/:id/image").post(function (req, response) {
   // check isAuthenticated === true
-  const isAuthenticated = req.body.isAuthenticated;
-  const caption = req.body.caption,
-  const date = req.body.date,
-  const width = req.body.width,
-  const height = req.body.height,
-  const imageData = req.body.imageData
-
+  const token = req.body.token;
   // TO DO: verify token
-  if(isAuthenticated === true) {
-  // upload to mongodb gridfs
-  // get id from gridfs
-  // upsert image into location with ID and other data  
-
-
-    response.json({
-      // responseCode: 200,
-      responseMessage: "Image uploaded."
-    })
+  if (token) {
+    // upload to mongodb gridfs
+    // get id from gridfs
+    // upsert image into location with ID and other data
+    let myquery = { _id: ObjectId(req.params.id) };
+    let updateDocument = {
+      $push: {
+        images: {
+          name: req.body.image.caption,
+          date: req.body.image.date,
+          width: req.body.image.width,
+          height: req.body.image.height,
+          imageData: req.body.image.imageData,
+          submittedBy: "placeholder user id",
+          submittedOn: Math.floor(Date.now() / 1000),
+        },
+      },
+    };
+    db_connect
+      .collection("locations")
+      .updateOne(myquery, updateDocument, function (err, res) {
+        if (err) throw err;
+        console.log("1 document updated");
+        response.json(res);
+      });
+    response.json(obj);
   } else {
     response.json({
       // responseCode: 403,
-      responseMessage: "Forbidden. User not authorised to upload images."
+      responseMessage: "Forbidden. User not authorised to upload images.",
     });
   }
 });

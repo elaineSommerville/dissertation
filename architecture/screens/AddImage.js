@@ -5,13 +5,14 @@ import UploadedImageContextProvider, {
   UploadedImageContext,
 } from "../store/image-context";
 
-function AddImage() {
+function AddImage({ route }) {
+  const locationId = route.params.locationId;
   const imageCtx = useContext(UploadedImageContext);
 
   return (
     <UploadedImageContextProvider>
       <ScrollView style={styles.form}>
-        <ImagePicker />
+        <ImagePicker locationId={locationId} />
       </ScrollView>
     </UploadedImageContextProvider>
   );

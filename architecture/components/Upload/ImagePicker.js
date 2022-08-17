@@ -18,14 +18,16 @@ import {
   UploadedImageContext,
 } from "../../store/image-context";
 import PrimaryButton from "../PrimaryButton";
+import { uploadImage } from "../../util/http";
 
-function ImagePicker() {
+function ImagePicker({ locationId }) {
   const [pickedImage, setPickedImage] = useState();
   const [caption, setCaption] = useState("");
   const [date, setDate] = useState("");
   const imageCtx = useContext(UploadedImageContext);
   const [cameraPermissionInformation, requestPermission] =
     useCameraPermissions();
+  const [uploadImageResponse, setUploadImageResponse] = useState("");
 
   function changeCaptionHandler(caption) {
     setCaption(caption);
@@ -63,14 +65,29 @@ function ImagePicker() {
       quality: 0.5,
       base64: true,
     });
-    console.log("pickedImage");
-    console.log(pickedImage);
     setPickedImage(image);
     imageCtx.confirmImage(image);
   }
 
-  function addCaptionDateHandler() {
+  function submitHandler() {
     imageCtx.uploadImage(caption, date);
+    if (imageCtx.imageData === undefined) {
+      Alert.alert(
+        "No photo taken",
+        "You must take a photo before you can upload."
+      );
+      return;
+    }
+    // call API
+    async function upload(image) {
+      try {
+        const result = await uploadImage("mysecuretoken", locationId, image);
+        setUploadImageResponse(result);
+      } catch (error) {
+        Alert.alert("Error", error);
+      }
+    }
+    upload(imageCtx);
   }
 
   let imagePreview = <Text>No image taken yet</Text>;
@@ -99,7 +116,7 @@ function ImagePicker() {
         />
       </View>
       <Button title="Take photo" onPress={takeImageHandler} />
-      <PrimaryButton title="Upload" onPress={addCaptionDateHandler} />
+      <PrimaryButton title="Upload" onPress={submitHandler} />
     </View>
   );
 }
