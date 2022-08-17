@@ -7,6 +7,7 @@ export const UploadedImageContext = createContext({
   height: "",
   caption: "",
   date: "",
+  imageData: "",
   confirmImage: (image) => {},
   uploadImage: (caption, date) => {},
 });
@@ -21,7 +22,7 @@ function UploadedImageContextProvider({ children }) {
   }
 
   function uploadImage(caption, date) {
-    console.log("uploadImage in context");
+    console.log("inside uploadImage");
     console.log("caption: " + caption);
     console.log("date: " + date);
     setCaption(caption);
@@ -34,6 +35,7 @@ function UploadedImageContextProvider({ children }) {
     height: uploadedImage.height,
     caption: caption,
     date: date,
+    imageData: uploadedImage.base64,
     confirmImage: confirmImage,
     uploadImage: uploadImage,
   };
