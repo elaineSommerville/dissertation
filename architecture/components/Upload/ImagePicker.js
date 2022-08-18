@@ -21,10 +21,11 @@ import PrimaryButton from "../PrimaryButton";
 import { uploadImage } from "../../util/http";
 
 function ImagePicker({ locationId }) {
+  const imageCtx = useContext(UploadedImageContext);
   const [pickedImage, setPickedImage] = useState();
   const [caption, setCaption] = useState("");
   const [date, setDate] = useState("");
-  const imageCtx = useContext(UploadedImageContext);
+  // const imageCtx = useContext(UploadedImageContext);
   const [cameraPermissionInformation, requestPermission] =
     useCameraPermissions();
   const [uploadImageResponse, setUploadImageResponse] = useState("");
@@ -69,8 +70,7 @@ function ImagePicker({ locationId }) {
     imageCtx.confirmImage(image);
   }
 
-  function submitHandler() {
-    imageCtx.uploadImage(caption, date);
+  async function uploadHandler() {
     if (imageCtx.imageData === undefined) {
       Alert.alert(
         "No photo taken",
@@ -78,16 +78,19 @@ function ImagePicker({ locationId }) {
       );
       return;
     }
-    // call API
-    async function upload(image) {
-      try {
-        const result = await uploadImage("mysecuretoken", locationId, image);
-        setUploadImageResponse(result);
-      } catch (error) {
-        Alert.alert("Error", error);
-      }
+    try {
+      const result = await uploadImage(
+        "mysecuretoken",
+        locationId,
+        imageCtx,
+        caption,
+        date
+      );
+      setUploadImageResponse(result);
+    } catch (error) {
+      Alert.alert("Error", error);
     }
-    upload(imageCtx);
+    // console.log(uploadImageResponse);
   }
 
   let imagePreview = <Text>No image taken yet</Text>;
@@ -116,7 +119,7 @@ function ImagePicker({ locationId }) {
         />
       </View>
       <Button title="Take photo" onPress={takeImageHandler} />
-      <PrimaryButton title="Upload" onPress={submitHandler} />
+      <PrimaryButton title="Upload" onPress={uploadHandler} />
     </View>
   );
 }

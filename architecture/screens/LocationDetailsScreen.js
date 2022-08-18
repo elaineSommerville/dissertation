@@ -215,7 +215,7 @@ function LocationDetailsScreen({ route, navigation }) {
             <Button
               title="+ Add an image"
               onPress={() => {
-                navigation.navigate("addImage", locationId);
+                navigation.navigate("addImage", { locationId: locationId });
               }}
             />
           )}

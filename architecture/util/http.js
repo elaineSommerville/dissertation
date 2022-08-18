@@ -49,12 +49,19 @@ export async function fetchLocation(locationId) {
   return response.data;
 }
 
-export async function uploadImage(token, locationId, image) {
+export async function uploadImage(token, locationId, image, caption, date) {
+  console.log("in uploadImage");
+  console.log(token);
+  console.log(locationId);
+  console.log(image);
+  console.log(caption);
+  console.log(date);
   const response = await axios.post(
-    BACKEND_URL + "/location/" + locationId + "/image",
+    BACKEND_URL + "/location/" + locationId + "/image?token=" + token,
     {
-      token,
-      image,
+      image: image,
+      caption: caption,
+      date: date,
     }
   );
   return response.data;

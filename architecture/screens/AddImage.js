@@ -1,13 +1,10 @@
 import { useContext } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import ImagePicker from "../components/Upload/ImagePicker";
-import UploadedImageContextProvider, {
-  UploadedImageContext,
-} from "../store/image-context";
+import UploadedImageContextProvider from "../store/image-context";
 
 function AddImage({ route }) {
   const locationId = route.params.locationId;
-  const imageCtx = useContext(UploadedImageContext);
 
   return (
     <UploadedImageContextProvider>
