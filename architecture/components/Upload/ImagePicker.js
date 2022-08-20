@@ -72,17 +72,17 @@ function ImagePicker({ locationId }) {
 
   async function uploadHandler() {
     if (imageCtx.imageData === undefined) {
-      Alert.alert(
-        "No photo taken",
-        "You must take a photo before you can upload."
-      );
+      // Alert.alert(
+      //   "No photo taken",
+      //   "You must take a photo before you can upload."
+      // );
       return;
     }
     try {
       const result = await uploadImage(
         "mysecuretoken",
         locationId,
-        imageCtx,
+        // imageCtx,
         caption,
         date
       );
