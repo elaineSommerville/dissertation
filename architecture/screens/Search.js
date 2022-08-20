@@ -5,11 +5,13 @@ import ErrorOverlay from "../components/ui/ErrorOverlay";
 import { searchLocations } from "../util/http";
 import LocationItem from "../components/LocationItem";
 
-function Search({ navigation }) {
+function Search({ navigation, route }) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState();
   const [search, setSearch] = useState(" ");
   const [searchResults, setSearchResults] = useState([]);
+  const latitude = route.params.latitude;
+  const longitude = route.params.longitude;
   useLayoutEffect(() => {
     navigation.setOptions({
       headerSearchBarOptions: {
@@ -27,7 +29,11 @@ function Search({ navigation }) {
       console.log(search);
       if (search) {
         try {
-          const result = await searchLocations(search, -5.852744, 54.597182);
+          // const result = await searchLocations(search, -5.852744, 54.597182);
+          console.log(
+            "search locations: " + search + ", " + longitude + ", " + latitude
+          );
+          const result = await searchLocations(search, longitude, latitude);
           setSearchResults(result);
         } catch (error) {
           setError(error.message);
