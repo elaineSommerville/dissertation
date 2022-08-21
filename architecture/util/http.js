@@ -85,16 +85,24 @@ export async function uploadImage(token, locationId, image, caption, date) {
   return response.data;
 }
 
-export async function uploadStory(token, locationId, title, date, body) {
+export async function uploadStory(
+  token,
+  locationId,
+  userId,
+  title,
+  date,
+  body
+) {
   console.log("http: in uploadStory");
   console.log("locationid:" + locationId);
   const response = await axios.post(
-    // BACKEND_URL + "/location/" + locationId + "/story?token=" + token,
     BACKEND_URL + "/location/" + locationId + "/story",
     {
+      token: token,
       title: title,
       date: date,
       body: body,
+      userId: userId,
     }
   );
   return response.data;

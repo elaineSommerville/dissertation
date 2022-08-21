@@ -8,8 +8,9 @@ function AddStory({ route }) {
   const [body, setBody] = useState("");
   const [date, setDate] = useState("");
   const [response, setResponse] = useState();
-  // const [locationId, setLocationId] = useState();
   const locationId = route.params.locationId;
+  console.log("const locationId");
+  console.log(locationId);
   // setLocationId(route.params.locationId);
 
   function changeTitleHandler(enteredTitle) {
@@ -24,9 +25,10 @@ function AddStory({ route }) {
     setBody(enteredBody);
   }
 
-  async function uploadHandler(locationId) {
+  async function uploadHandler() {
+    const test = "test";
     console.log("in uploadHandler");
-    console.log(locationId);
+    console.log();
     // const locId = locationId;
     if (!title) {
       Alert.alert("Missing title", "Please enter a title.");
@@ -44,8 +46,8 @@ function AddStory({ route }) {
         "mysecuretoken",
         locationId,
         title,
-        body,
-        date
+        date,
+        body
       );
       setResponse(result);
     } catch (error) {

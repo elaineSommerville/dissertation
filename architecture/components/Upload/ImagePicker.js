@@ -64,10 +64,11 @@ function ImagePicker({ locationId }) {
       allowsEditing: true,
       aspect: [16, 9],
       quality: 0.5,
-      // base64: true,
+      base64: true,
     });
     setPickedImage(image);
     imageCtx.confirmImage(image);
+    console.log(image.base64);
   }
 
   async function uploadHandler() {

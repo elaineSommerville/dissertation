@@ -329,6 +329,7 @@ apiRoutes
   .route("/location/:id/image?token=:token")
   .post(function (req, response) {
     // check isAuthenticated === true
+    let db_connect = dbo.getDb();
     console.log("in api location/:id/image");
     console.log(req.params);
     console.log(req.body.caption);
@@ -372,20 +373,13 @@ apiRoutes
   });
 
 apiRoutes.route("/location/:id/story").post(function (req, response) {
+  let db_connect = dbo.getDb();
   // check isAuthenticated === true
-  console.log("in api location/:id/story");
-  console.log(ObjectId(req.params.id));
-  console.log("title: " + req.body.title);
-  console.log("date: " + req.body.date);
-  console.log("body: " + req.body.body);
   // const token = req.params.token;
-  const token = "myhardcodedtoken";
+  const token = req.body.token;
   // TO DO: verify token
   if (token) {
     console.log("token present");
-    // upload to mongodb gridfs
-    // get id from gridfs
-    // upsert image into location with ID and other data
     let myquery = { _id: ObjectId(req.params.id) };
     let updateDocument = {
       $push: {
@@ -405,7 +399,6 @@ apiRoutes.route("/location/:id/story").post(function (req, response) {
         console.log("1 document updated");
         response.json(res);
       });
-    response.json(obj);
   } else {
     response.json({
       // responseCode: 403,
