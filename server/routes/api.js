@@ -1,18 +1,18 @@
 const express = require("express");
 // import express from "express";
 // const bodyParser = require("body-parser");
-var app = express();
-app.use(express.json({ limit: "50mb" }));
-app.use(
-  express.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 })
-);
+// var app = express();
+// app.use(express.json({ limit: "50mb" }));
+// app.use(
+//   express.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 })
+// );
 // apiRoutes is an instance of the express router.
 // We use it to define our routes.
 // The router will be added as a middleware and will take control of requests starting with path /record.
 const apiRoutes = express.Router();
 // app.use(express.bodyParser({ limit: "16mb" }));
 
-// app.use(express.urlencoded({ limit: "50mb", extended: true }));
+// app.use(express.json({ limit: "50mb", extended: true }));
 // app.use(express.urlencoded({ limit: "16mb", extended: true }));
 
 // This will help us connect to the database
@@ -326,8 +326,7 @@ apiRoutes.route("/location/:id").delete((req, response) => {
 // --- START UPLOADS ---
 
 apiRoutes
-  .route("/location/:id/image&token=:token")
-  // .route("/location/:id/image?token=:token")
+  .route("/location/:id/image?token=:token")
   .post(function (req, response) {
     // check isAuthenticated === true
     console.log("in api location/:id/image");
@@ -350,6 +349,7 @@ apiRoutes
             width: req.body.width,
             height: req.body.height,
             // imageData: req.body.imageData,
+            uri: uri,
             submittedBy: "placeholder user id",
             submittedOn: Math.floor(Date.now() / 1000),
           },
@@ -370,5 +370,48 @@ apiRoutes
       });
     }
   });
+
+apiRoutes.route("/location/:id/story").post(function (req, response) {
+  // check isAuthenticated === true
+  console.log("in api location/:id/story");
+  console.log(ObjectId(req.params.id));
+  console.log("title: " + req.body.title);
+  console.log("date: " + req.body.date);
+  console.log("body: " + req.body.body);
+  // const token = req.params.token;
+  const token = "myhardcodedtoken";
+  // TO DO: verify token
+  if (token) {
+    console.log("token present");
+    // upload to mongodb gridfs
+    // get id from gridfs
+    // upsert image into location with ID and other data
+    let myquery = { _id: ObjectId(req.params.id) };
+    let updateDocument = {
+      $push: {
+        stories: {
+          title: req.body.title,
+          date: req.body.date,
+          body: req.body.body,
+          submittedBy: "placeholder user id",
+          submittedOn: Math.floor(Date.now() / 1000),
+        },
+      },
+    };
+    db_connect
+      .collection("locations")
+      .updateOne(myquery, updateDocument, function (err, res) {
+        if (err) throw err;
+        console.log("1 document updated");
+        response.json(res);
+      });
+    response.json(obj);
+  } else {
+    response.json({
+      // responseCode: 403,
+      responseMessage: "Forbidden. User not authorised to upload images.",
+    });
+  }
+});
 // --- END UPLOADS ---
 module.exports = apiRoutes;

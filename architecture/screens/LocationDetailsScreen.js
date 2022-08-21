@@ -381,7 +381,7 @@ function LocationDetailsScreen({ route, navigation }) {
             <Button
               title="+ Add a story"
               onPress={() => {
-                navigation.navigate("addStory");
+                navigation.navigate("addStory", { locationId: locationId });
               }}
             />
           )}

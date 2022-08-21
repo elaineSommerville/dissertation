@@ -5,7 +5,8 @@ export const UploadedImageContext = createContext({
   uri: "",
   width: "",
   height: "",
-  imageData: "",
+  uri: "",
+  // imageData: "",
   confirmImage: (image) => {},
 });
 
@@ -20,7 +21,8 @@ function UploadedImageContextProvider({ children }) {
     uri: uploadedImage.uri,
     width: uploadedImage.width,
     height: uploadedImage.height,
-    imageData: uploadedImage.base64,
+    uri: uploadedImage.uri,
+    // imageData: uploadedImage.base64,
     confirmImage: confirmImage,
   };
   return (
