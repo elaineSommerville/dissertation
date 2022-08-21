@@ -43,17 +43,29 @@ function Map({ navigation }) {
   });
   //  ***** START ADD SEARCH ICON *****
   useLayoutEffect(() => {
+    let searchLat = 54.59803;
+    let searchLng = -5.93049;
+    if (!isUserLocationLoading) {
+      // if user location has loaded, pass user's location to search
+      searchLat = userLocation.coords.latitude;
+      searchLng = userLocation.coords.longitude;
+    }
     navigation.setOptions({
       headerRight: () => {
         return (
           <Button
-            onPress={() => navigation.navigate("search")}
+            onPress={() =>
+              navigation.navigate("search", {
+                latitude: searchLat,
+                longitude: searchLng,
+              })
+            }
             title="Search"
           />
         );
       },
     });
-  }, [navigation]);
+  }, [userLocation]);
   // ***** END ADD SEARCH ICON *****
 
   // ***** START GET LOCATION PERMISSIONS *****
@@ -167,7 +179,7 @@ function Map({ navigation }) {
       </View>
     );
   } else {
-    // console.log(region);
+    console.log(userLocation);
     return (
       <MapView
         showsUserLocation

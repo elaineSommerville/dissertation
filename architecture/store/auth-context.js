@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const AuthContext = createContext({
@@ -26,7 +26,7 @@ function AuthContextProvider({ children }) {
     authenticate: authenticate,
     logout: logout,
   };
-  console.log(value);
+  // console.log(value);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 

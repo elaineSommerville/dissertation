@@ -6,9 +6,10 @@ import {
   Image,
   Pressable,
   Dimensions,
+  Button,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useState, useEffect, useRef } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 import { fetchLocation } from "../util/http";
 import LoadingOverlay from "../components/ui/LoadingOverlay";
 import ErrorOverlay from "../components/ui/ErrorOverlay";
@@ -23,6 +24,8 @@ import { SliderBox } from "react-native-image-slider-box";
 // ./node_modules/react-native-snap-carousel/src/pagination/Pagination.js
 // ./node_modules/react-native-snap-carousel/src/pagination/PaginationDot.js
 // ./node_modules/react-native-snap-carousel/src/parallaximage/ParallaxImage.js
+
+import AuthContextProvider, { AuthContext } from "../store/auth-context";
 
 export const SLIDER_WIDTH = Dimensions.get("window").width;
 export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.7);
@@ -68,6 +71,8 @@ function LocationDetailsScreen({ route, navigation }) {
   const videoUris = [];
   const videoCaptions = [];
   const videoThumbnails = [];
+
+  const authCtx = useContext(AuthContext);
 
   function renderVisitorInfo(visitorInfo, openToPublic) {
     if (!openToPublic) {
@@ -134,7 +139,11 @@ function LocationDetailsScreen({ route, navigation }) {
   }
 
   if (isLoading) {
-    return <LoadingOverlay />;
+    return (
+      <AuthContextProvider>
+        <LoadingOverlay />
+      </AuthContextProvider>
+    );
   } else {
     // once location data has been received, push images into imageUri array
     // for image slider
@@ -149,207 +158,235 @@ function LocationDetailsScreen({ route, navigation }) {
     });
 
     return (
-      <ScrollView style={styles.rootContainer}>
-        <View style={styles.innerContainer}>
-          <View style={styles.typeView}>
-            <Ionicons name="home-outline" size={30} />
-          </View>
-          <View style={styles.nameAddressView}>
-            <Text style={styles.nameView}>{name}</Text>
-            <Text style={styles.addressView}>{address}</Text>
-          </View>
-        </View>
-        <SliderBox
-          images={imageUris}
-          sliderBoxHeight={200}
-          onCurrentImagePressed={(index) =>
-            navigation.navigate("imageScreen", {
-              uri: imageUris[index],
-              caption: imageCaptions[index],
-            })
-          }
-          dotColor="#FFEE58"
-          inactiveDotColor="#90A4AE"
-          paginationBoxVerticalPadding={0}
-          autoplay
-          circleLoop
-          resizeMethod={"resize"}
-          resizeMode={"cover"}
-          paginationBoxStyle={{
-            position: "absolute",
-            bottom: 0,
-            paddingLeft: 0,
-            alignItems: "center",
-            alignSelf: "center",
-            justifyContent: "flex-start",
-          }}
-          dotStyle={{
-            width: 10,
-            height: 10,
-            borderRadius: 5,
-            marginHorizontal: 0,
-            padding: 0,
-            margin: 0,
-            marginBottom: 10,
-            backgroundColor: "rgba(128, 128, 128, 0.92)",
-          }}
-          ImageComponentStyle={{
-            borderRadius: 10,
-            width: "87%",
-            marginTop: 5,
-            marginLeft: -50,
-          }}
-          imageLoadingColor="#2196F3"
-        />
-        <View style={styles.innerContainer}>
-          <Text style={styles.heading}>Type</Text>
-          <Text style={styles.heading}>Style</Text>
-        </View>
-        <View style={styles.innerContainer}>
-          <Text style={styles.info}>{type}</Text>
-          <Text style={styles.info}>{style}</Text>
-        </View>
-        <View style={styles.innerContainer}>
-          <Text style={styles.heading}>Build Date</Text>
-          <Text style={styles.heading}>Architect</Text>
-        </View>
-        <View style={styles.innerContainer}>
-          <Text style={styles.info}>{buildDateStr}</Text>
-          <View style={styles.listView}>
-            {architects.map((architect, index) => {
-              return (
-                <Text style={styles.info} key={index}>
-                  {architect.name}
-                </Text>
-              );
-            })}
-          </View>
-        </View>
-        <View style={styles.innerContainer}>
-          <View style={styles.descriptionView}>
-            <Text style={styles.heading}>Description</Text>
-            <Text>{description}</Text>
-          </View>
-        </View>
-        <View style={styles.innerContainer}>
-          <View style={styles.descriptionView}>
-            <Text style={styles.heading}>Visitor Information</Text>
-          </View>
-        </View>
-        <View style={styles.innerContainer}>
-          <View style={styles.descriptionView}>
-            {renderVisitorInfo(visitorInfo, openToPublic)}
-            {/* {renderOpeningTimes(visitorInfo)} */}
-            <View style={styles.headerRow}>
-              <Ionicons name="time-outline" size={25} />
-              <Text style={styles.heading}>Opening Hours</Text>
+      <AuthContextProvider>
+        <ScrollView style={styles.rootContainer}>
+          <View style={styles.innerContainer}>
+            <View style={styles.typeView}>
+              <Ionicons name="home-outline" size={30} />
             </View>
-            {visitorInfo.openingTimes.map((item, key) => {
-              if (item.status === "open") {
-                return (
-                  <View key={key}>
-                    <Text>
-                      <Ionicons name="lock-open-outline" size={25} />
-                      {item.day[0].toUpperCase() + item.day.substring(1)}
-                      {item.openFrom} - {item.closeAt}
-                    </Text>
-                  </View>
-                );
-              } else {
-                return (
-                  <View key={key}>
-                    <Text>
-                      <Ionicons name="lock-closed-outline" size={25} />
-                      {item.day[0].toUpperCase() + item.day.substring(1)} Closed
-                    </Text>
-                  </View>
-                );
-              }
-            })}
-            {/* this ois the start of the admission fees stuff */}
-            <View style={styles.headerRow}>
-              <Ionicons name="cash-outline" size={25} />
-              <Text style={styles.heading}>Admission Fees</Text>
+            <View style={styles.nameAddressView}>
+              <Text style={styles.nameView}>{name}</Text>
+              <Text style={styles.addressView}>{address}</Text>
             </View>
-            {visitorInfo.admissionFees.map((item, key) => {
-              return (
-                <View key={key}>
-                  <Text>
-                    {item.feeName[0].toUpperCase() + item.feeName.substring(1)}
-                    {"    "}£{item.feeAmount.toFixed(2)}
-                  </Text>
-                </View>
-              );
-            })}
           </View>
-        </View>
-        <View style={styles.headerRow}>
-          <Ionicons name="film-outline" size={25} />
-          <Text style={styles.heading}>Videos</Text>
-        </View>
-        <SliderBox
-          images={videoThumbnails}
-          sliderBoxHeight={200}
-          onCurrentImagePressed={(index) =>
-            navigation.navigate("videoScreen", {
-              uri: videoUris[index],
-              caption: videoCaptions[index],
-            })
-          }
-          dotColor="#FFEE58"
-          inactiveDotColor="#90A4AE"
-          paginationBoxVerticalPadding={0}
-          autoplay
-          circleLoop
-          resizeMethod={"resize"}
-          resizeMode={"cover"}
-          paginationBoxStyle={{
-            position: "absolute",
-            bottom: 0,
-            paddingLeft: 0,
-            alignItems: "center",
-            alignSelf: "center",
-            justifyContent: "flex-start",
-          }}
-          dotStyle={{
-            width: 10,
-            height: 10,
-            borderRadius: 5,
-            marginHorizontal: 0,
-            padding: 0,
-            margin: 0,
-            marginBottom: 10,
-            backgroundColor: "rgba(128, 128, 128, 0.92)",
-          }}
-          ImageComponentStyle={{
-            borderRadius: 10,
-            width: "87%",
-            marginTop: 5,
-            marginLeft: -50,
-          }}
-          imageLoadingColor="#2196F3"
-        />
-        <View style={styles.headerRow}>
-          <Ionicons name="book-outline" size={25} />
-          <Text style={styles.heading}>Stories</Text>
-        </View>
-        <View style={{ flex: 1, flexDirection: "row" }}>
-          <Carousel
-            layout={"default"}
-            layoutCardOffset={0}
-            ref={isCarousel}
-            data={stories}
-            sliderWidth={SLIDER_WIDTH}
-            itemWidth={ITEM_WIDTH}
-            renderItem={Story}
-            useScrollView={true}
-            onSnapToItem={(index) => setIndex(index)}
-            autoplay={true}
-            enableMomentum={false}
-            lockScrollWhileSnapping={true}
+          <SliderBox
+            images={imageUris}
+            sliderBoxHeight={200}
+            onCurrentImagePressed={(index) =>
+              navigation.navigate("imageScreen", {
+                uri: imageUris[index],
+                caption: imageCaptions[index],
+              })
+            }
+            dotColor="#FFEE58"
+            inactiveDotColor="#90A4AE"
+            paginationBoxVerticalPadding={0}
+            autoplay
+            circleLoop
+            resizeMethod={"resize"}
+            resizeMode={"cover"}
+            paginationBoxStyle={{
+              position: "absolute",
+              bottom: 0,
+              paddingLeft: 0,
+              alignItems: "center",
+              alignSelf: "center",
+              justifyContent: "flex-start",
+            }}
+            dotStyle={{
+              width: 10,
+              height: 10,
+              borderRadius: 5,
+              marginHorizontal: 0,
+              padding: 0,
+              margin: 0,
+              marginBottom: 10,
+              backgroundColor: "rgba(128, 128, 128, 0.92)",
+            }}
+            ImageComponentStyle={{
+              borderRadius: 10,
+              width: "87%",
+              marginTop: 5,
+              marginLeft: -50,
+            }}
+            imageLoadingColor="#2196F3"
           />
-        </View>
-      </ScrollView>
+          {authCtx.isAuthenticated && (
+            <Button
+              title="+ Add an image"
+              onPress={() => {
+                navigation.navigate("addImage", { locationId: locationId });
+              }}
+            />
+          )}
+          <View style={styles.innerContainer}>
+            <Text style={styles.heading}>Type</Text>
+            <Text style={styles.heading}>Style</Text>
+          </View>
+          <View style={styles.innerContainer}>
+            <Text style={styles.info}>{type}</Text>
+            <Text style={styles.info}>{style}</Text>
+          </View>
+          <View style={styles.innerContainer}>
+            <Text style={styles.heading}>Build Date</Text>
+            <Text style={styles.heading}>Architect</Text>
+          </View>
+          <View style={styles.innerContainer}>
+            <Text style={styles.info}>{buildDateStr}</Text>
+            <View style={styles.listView}>
+              {architects.map((architect, index) => {
+                return (
+                  <Text style={styles.info} key={index}>
+                    {architect.name}
+                  </Text>
+                );
+              })}
+            </View>
+          </View>
+          <View style={styles.innerContainer}>
+            <View style={styles.descriptionView}>
+              <Text style={styles.heading}>Description</Text>
+              <Text>{description}</Text>
+            </View>
+          </View>
+          <View style={styles.innerContainer}>
+            <View style={styles.descriptionView}>
+              <Text style={styles.heading}>Visitor Information</Text>
+            </View>
+          </View>
+          <View style={styles.innerContainer}>
+            <View style={styles.descriptionView}>
+              {renderVisitorInfo(visitorInfo, openToPublic)}
+              {/* {renderOpeningTimes(visitorInfo)} */}
+              <View style={styles.headerRow}>
+                <Ionicons name="time-outline" size={25} />
+                <Text style={styles.heading}>Opening Hours</Text>
+              </View>
+              {visitorInfo.openingTimes.map((item, key) => {
+                if (item.status === "open") {
+                  return (
+                    <View key={key}>
+                      <Text>
+                        <Ionicons name="lock-open-outline" size={25} />
+                        {item.day[0].toUpperCase() + item.day.substring(1)}
+                        {item.openFrom} - {item.closeAt}
+                      </Text>
+                    </View>
+                  );
+                } else {
+                  return (
+                    <View key={key}>
+                      <Text>
+                        <Ionicons name="lock-closed-outline" size={25} />
+                        {item.day[0].toUpperCase() + item.day.substring(1)}{" "}
+                        Closed
+                      </Text>
+                    </View>
+                  );
+                }
+              })}
+              {/* this ois the start of the admission fees stuff */}
+              <View style={styles.headerRow}>
+                <Ionicons name="cash-outline" size={25} />
+                <Text style={styles.heading}>Admission Fees</Text>
+              </View>
+              {visitorInfo.admissionFees.map((item, key) => {
+                return (
+                  <View key={key}>
+                    <Text>
+                      {item.feeName[0].toUpperCase() +
+                        item.feeName.substring(1)}
+                      {"    "}£{item.feeAmount.toFixed(2)}
+                    </Text>
+                  </View>
+                );
+              })}
+            </View>
+          </View>
+          <View style={styles.headerRow}>
+            <Ionicons name="film-outline" size={25} />
+            <Text style={styles.heading}>Videos</Text>
+          </View>
+          <SliderBox
+            images={videoThumbnails}
+            sliderBoxHeight={200}
+            onCurrentImagePressed={(index) =>
+              navigation.navigate("videoScreen", {
+                uri: videoUris[index],
+                caption: videoCaptions[index],
+              })
+            }
+            dotColor="#FFEE58"
+            inactiveDotColor="#90A4AE"
+            paginationBoxVerticalPadding={0}
+            autoplay
+            circleLoop
+            resizeMethod={"resize"}
+            resizeMode={"cover"}
+            paginationBoxStyle={{
+              position: "absolute",
+              bottom: 0,
+              paddingLeft: 0,
+              alignItems: "center",
+              alignSelf: "center",
+              justifyContent: "flex-start",
+            }}
+            dotStyle={{
+              width: 10,
+              height: 10,
+              borderRadius: 5,
+              marginHorizontal: 0,
+              padding: 0,
+              margin: 0,
+              marginBottom: 10,
+              backgroundColor: "rgba(128, 128, 128, 0.92)",
+            }}
+            ImageComponentStyle={{
+              borderRadius: 10,
+              width: "87%",
+              marginTop: 5,
+              marginLeft: -50,
+            }}
+            imageLoadingColor="#2196F3"
+          />
+          {authCtx.isAuthenticated && (
+            <Button
+              title="+ Add a video"
+              onPress={() => {
+                navigation.navigate("addVideo");
+              }}
+            />
+          )}
+          <View style={styles.headerRow}>
+            <Ionicons name="book-outline" size={25} />
+            <Text style={styles.heading}>Stories</Text>
+          </View>
+          <View style={{ flex: 1, flexDirection: "row" }}>
+            <Carousel
+              layout={"default"}
+              layoutCardOffset={0}
+              ref={isCarousel}
+              data={stories}
+              sliderWidth={SLIDER_WIDTH}
+              itemWidth={ITEM_WIDTH}
+              renderItem={Story}
+              useScrollView={true}
+              onSnapToItem={(index) => setIndex(index)}
+              autoplay={true}
+              enableMomentum={false}
+              lockScrollWhileSnapping={true}
+            />
+          </View>
+          {authCtx.isAuthenticated && (
+            <Button
+              title="+ Add a story"
+              onPress={() => {
+                navigation.navigate("addStory");
+              }}
+            />
+          )}
+        </ScrollView>
+      </AuthContextProvider>
     );
   }
 }

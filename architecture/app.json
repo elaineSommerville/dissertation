@@ -28,6 +28,15 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow access to photos to upload images of historical locations.",
+          "cameraPermission": "Allow to open the camera to take photos or scan images of historical locations."
+        }
+      ]
+    ]
   }
 }

@@ -1,9 +1,13 @@
 const express = require("express");
+const bodyParser = require("body-parser");
+var app = express();
 
 // apiRoutes is an instance of the express router.
 // We use it to define our routes.
 // The router will be added as a middleware and will take control of requests starting with path /record.
 const apiRoutes = express.Router();
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 
 // This will help us connect to the database
 const dbo = require("../db/conn");
@@ -312,4 +316,51 @@ apiRoutes.route("/location/:id").delete((req, response) => {
 });
 
 // --- END OF LOCATION ---
+
+// --- START UPLOADS ---
+
+apiRoutes
+  .route("/location/:id/image")
+  // .route("/location/:id/image?token=:token")
+  .post(function (req, response) {
+    // check isAuthenticated === true
+    console.log("in api location/:id/image");
+    console.log(req.params);
+    const token = req.params.token;
+    // TO DO: verify token
+    if (token) {
+      console.log("token present");
+      // upload to mongodb gridfs
+      // get id from gridfs
+      // upsert image into location with ID and other data
+      let myquery = { _id: ObjectId(req.params.id) };
+      let updateDocument = {
+        $push: {
+          images: {
+            name: req.body.caption,
+            date: req.body.date,
+            width: req.body.image.width,
+            height: req.body.image.height,
+            imageData: req.body.image.imageData,
+            submittedBy: "placeholder user id",
+            submittedOn: Math.floor(Date.now() / 1000),
+          },
+        },
+      };
+      db_connect
+        .collection("locations")
+        .updateOne(myquery, updateDocument, function (err, res) {
+          if (err) throw err;
+          console.log("1 document updated");
+          response.json(res);
+        });
+      response.json(obj);
+    } else {
+      response.json({
+        // responseCode: 403,
+        responseMessage: "Forbidden. User not authorised to upload images.",
+      });
+    }
+  });
+// --- END UPLOADS ---
 module.exports = apiRoutes;
