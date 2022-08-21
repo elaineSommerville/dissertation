@@ -20,6 +20,7 @@ import IconButton from "./components/ui/IconButton";
 import AddImage from "./screens/AddImage";
 import AddVideo from "./screens/AddVideo";
 import AddStory from "./screens/AddStory";
+import AddContent from "./screens/AddContent";
 
 const Stack = createNativeStackNavigator();
 
@@ -174,6 +175,13 @@ function AuthenticatedStack() {
         component={AddStory}
         options={{
           title: "Add a story",
+        }}
+      />
+      <Stack.Screen
+        name="addContent"
+        component={AddContent}
+        options={{
+          title: "Contribute",
         }}
       />
     </Stack.Navigator>

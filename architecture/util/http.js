@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // need to use IP of laptop running server when testing on phone
-const BACKEND_URL = "http://192.168.1.8:5000";
+const BACKEND_URL = "http://192.168.0.19:5000";
 // const BACKEND_URL = "http://192.168.1.9:5000";
 // const BACKEND_URL = "http://localhost:5000";
 //
@@ -49,39 +49,25 @@ export async function fetchLocation(locationId) {
   return response.data;
 }
 
-export async function uploadImage(token, locationId, image, caption, date) {
-  // console.log("in uploadImage");
-  // console.log(token);
-  // console.log(locationId);
-  console.log(image.imageData.length);
-  // console.log("token: " + token);
-  // console.log(caption);
-  // console.log(date);
-  // const response = await axios.post(
-  //   BACKEND_URL + "/location/" + locationId + "/image?token=" + token,
-  //   {
-  //     imageData: image.imageData,
-  //     width: image.width,
-  //     height: image.height,
-  //     caption: caption,
-  //     date: date,
-  //   }
-  // );
-
-  const response = await axios({
-    method: "post",
-    url: BACKEND_URL + "/location/" + locationId + "/image?token=" + token,
-    data: {
-      // imageData: image.imageData,
+export async function uploadImage(
+  token,
+  locationId,
+  image,
+  caption,
+  date,
+  uri
+) {
+  const response = await axios.post(
+    BACKEND_URL + "/location/" + locationId + "/image",
+    {
+      token: token,
       width: image.width,
       height: image.height,
       caption: caption,
       date: date,
       uri: uri,
-    },
-    maxContentLength: 10000000,
-    maxBodyLength: 10000000,
-  });
+    }
+  );
   return response.data;
 }
 
@@ -89,9 +75,9 @@ export async function uploadStory(token, locationId, title, date, body) {
   console.log("http: in uploadStory");
   console.log("locationid:" + locationId);
   const response = await axios.post(
-    // BACKEND_URL + "/location/" + locationId + "/story?token=" + token,
     BACKEND_URL + "/location/" + locationId + "/story",
     {
+      token: token,
       title: title,
       date: date,
       body: body,

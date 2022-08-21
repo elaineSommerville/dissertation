@@ -215,7 +215,10 @@ function LocationDetailsScreen({ route, navigation }) {
             <Button
               title="+ Add an image"
               onPress={() => {
-                navigation.navigate("addImage", { locationId: locationId });
+                navigation.navigate("addContent", {
+                  locationId: locationId,
+                  contentType: "image",
+                });
               }}
             />
           )}
@@ -353,7 +356,10 @@ function LocationDetailsScreen({ route, navigation }) {
             <Button
               title="+ Add a video"
               onPress={() => {
-                navigation.navigate("addVideo");
+                navigation.navigate("addVideo", {
+                  locationId: locationId,
+                  contentType: "video",
+                });
               }}
             />
           )}
@@ -381,7 +387,10 @@ function LocationDetailsScreen({ route, navigation }) {
             <Button
               title="+ Add a story"
               onPress={() => {
-                navigation.navigate("addStory", { locationId: locationId });
+                navigation.navigate("addContent", {
+                  locationId: locationId,
+                  contentType: "story",
+                });
               }}
             />
           )}

@@ -19,12 +19,22 @@ import {
 } from "../../store/image-context";
 import PrimaryButton from "../PrimaryButton";
 import { uploadImage } from "../../util/http";
+import { initializeApp } from "firebase/app";
+import {
+  getStorage,
+  ref,
+  uploadString,
+  getDownloadURL,
+} from "firebase/storage";
+import { FIREBASE_API_KEY } from "@env";
 
 function ImagePicker({ locationId }) {
   const imageCtx = useContext(UploadedImageContext);
   const [pickedImage, setPickedImage] = useState();
   const [caption, setCaption] = useState("");
   const [date, setDate] = useState("");
+  const [storeRef, setStoreRef] = useState();
+  // const [firebaseUrl, setFirebaseUrl] = useState("");
   // const imageCtx = useContext(UploadedImageContext);
   const [cameraPermissionInformation, requestPermission] =
     useCameraPermissions();
@@ -36,6 +46,31 @@ function ImagePicker({ locationId }) {
 
   function changeDateHandler(date) {
     setDate(date);
+  }
+
+  // setStoreRef(storageRef);
+
+  function uploadToFirebase(fileName, fileData) {
+    // console.log("fileName: " + fileName);
+    // console.log("fileData: " + fileData);
+    // firebase initialisation
+    const firebaseConfig = {
+      apiKey: FIREBASE_API_KEY,
+      storageBucket: "dissertation-poc.appspot.com",
+    };
+    const app = initializeApp(firebaseConfig);
+    const storage = getStorage(app);
+    const storageRef = ref(storage, "images/" + fileName);
+    const metadata = {
+      contentType: "image/jpeg",
+    };
+    uploadString(storageRef, fileData, "base64", metadata).then((snapshot) => {
+      getDownloadURL(snapshot.ref).then(async (url) => {
+        console.log(url);
+      });
+    });
+
+    // uploadBytes(storageRef, file, metadata);
   }
 
   async function verifyPermissions() {
@@ -64,11 +99,24 @@ function ImagePicker({ locationId }) {
       allowsEditing: true,
       aspect: [16, 9],
       quality: 0.5,
-      // base64: true,
+      base64: true,
     });
     setPickedImage(image);
+    console.log(image.uri.replace(/^.*[\\\/]/, ""));
     imageCtx.confirmImage(image);
   }
+
+  function upload() {
+    let fileName = imageCtx.uri.replace(/^.*[\\\/]/, "");
+    let fileData = imageCtx.imageData;
+    uploadToFirebase(fileName, fileData);
+    // console.log(firebaseUrl);
+    // uploadHandler();
+  }
+  // console.log("in uploadToFirebase");
+  //
+  //   console.log("in uploadHandler");
+  //   console.log(response);
 
   async function uploadHandler() {
     if (imageCtx.uri === undefined) {
@@ -79,12 +127,14 @@ function ImagePicker({ locationId }) {
       return;
     }
     try {
+      const uri = firebaseUrl;
       const result = await uploadImage(
         "mysecuretoken",
         locationId,
         imageCtx,
         caption,
-        date
+        date,
+        uri
       );
       setUploadImageResponse(result);
     } catch (error) {
@@ -95,11 +145,12 @@ function ImagePicker({ locationId }) {
 
   let imagePreview = <Text>No image taken yet</Text>;
 
-  if (pickedImage) {
+  // if (pickedImage) {
+  if (imageCtx.imageData) {
     imagePreview = (
       <Image style={styles.image} source={{ uri: pickedImage.uri }} />
     );
-    uploadButton = <PrimaryButton title="Upload" onPress={uploadHandler} />;
+    uploadButton = <PrimaryButton title="Upload" onPress={upload} />;
   } else {
     uploadButton = (
       <PrimaryButton title="Take photo" onPress={takeImageHandler} />
@@ -123,7 +174,6 @@ function ImagePicker({ locationId }) {
           value={date}
         />
       </View>
-      {/*  */}
       {uploadButton}
     </View>
   );
