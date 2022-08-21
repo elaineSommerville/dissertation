@@ -57,14 +57,44 @@ export async function uploadImage(token, locationId, image, caption, date) {
   // console.log("token: " + token);
   // console.log(caption);
   // console.log(date);
-  const response = await axios.post(
-    BACKEND_URL + "/location/" + locationId + "/image?token=" + token,
-    {
+  // const response = await axios.post(
+  //   BACKEND_URL + "/location/" + locationId + "/image?token=" + token,
+  //   {
+  //     imageData: image.imageData,
+  //     width: image.width,
+  //     height: image.height,
+  //     caption: caption,
+  //     date: date,
+  //   }
+  // );
+
+  const response = await axios({
+    method: "post",
+    url: BACKEND_URL + "/location/" + locationId + "/image?token=" + token,
+    data: {
       // imageData: image.imageData,
       width: image.width,
       height: image.height,
       caption: caption,
       date: date,
+      uri: uri,
+    },
+    maxContentLength: 10000000,
+    maxBodyLength: 10000000,
+  });
+  return response.data;
+}
+
+export async function uploadStory(token, locationId, title, date, body) {
+  console.log("http: in uploadStory");
+  console.log("locationid:" + locationId);
+  const response = await axios.post(
+    // BACKEND_URL + "/location/" + locationId + "/story?token=" + token,
+    BACKEND_URL + "/location/" + locationId + "/story",
+    {
+      title: title,
+      date: date,
+      body: body,
     }
   );
   return response.data;

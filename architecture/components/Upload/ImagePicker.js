@@ -64,25 +64,25 @@ function ImagePicker({ locationId }) {
       allowsEditing: true,
       aspect: [16, 9],
       quality: 0.5,
-      base64: true,
+      // base64: true,
     });
     setPickedImage(image);
     imageCtx.confirmImage(image);
   }
 
   async function uploadHandler() {
-    if (imageCtx.imageData === undefined) {
-      // Alert.alert(
-      //   "No photo taken",
-      //   "You must take a photo before you can upload."
-      // );
+    if (imageCtx.uri === undefined) {
+      Alert.alert(
+        "No photo taken",
+        "You must take a photo before you can upload."
+      );
       return;
     }
     try {
       const result = await uploadImage(
         "mysecuretoken",
         locationId,
-        // imageCtx,
+        imageCtx,
         caption,
         date
       );
@@ -98,6 +98,11 @@ function ImagePicker({ locationId }) {
   if (pickedImage) {
     imagePreview = (
       <Image style={styles.image} source={{ uri: pickedImage.uri }} />
+    );
+    uploadButton = <PrimaryButton title="Upload" onPress={uploadHandler} />;
+  } else {
+    uploadButton = (
+      <PrimaryButton title="Take photo" onPress={takeImageHandler} />
     );
   }
 
@@ -118,8 +123,8 @@ function ImagePicker({ locationId }) {
           value={date}
         />
       </View>
-      <Button title="Take photo" onPress={takeImageHandler} />
-      <PrimaryButton title="Upload" onPress={uploadHandler} />
+      {/*  */}
+      {uploadButton}
     </View>
   );
 }
