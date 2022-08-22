@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // need to use IP of laptop running server when testing on phone
-const BACKEND_URL = "http://192.168.0.19:5000";
+const BACKEND_URL = "http://192.168.1.8:5000";
 // const BACKEND_URL = "http://192.168.1.9:5000";
 // const BACKEND_URL = "http://localhost:5000";
 //
@@ -49,14 +49,7 @@ export async function fetchLocation(locationId) {
   return response.data;
 }
 
-export async function uploadImage(
-  token,
-  locationId,
-  image,
-  caption,
-  date,
-  uri
-) {
+export async function uploadImage(token, locationId, image, caption, date) {
   const response = await axios.post(
     BACKEND_URL + "/location/" + locationId + "/image",
     {
@@ -65,13 +58,13 @@ export async function uploadImage(
       height: image.height,
       caption: caption,
       date: date,
-      uri: uri,
+      image: image.base64,
     }
   );
   return response.data;
 }
 
-export async function uploadStory(token, locationId, title, date, body) {
+export async function uploadStory(token, locationId, title, date, body, image) {
   console.log("http: in uploadStory");
   console.log("locationid:" + locationId);
   const response = await axios.post(
@@ -81,6 +74,7 @@ export async function uploadStory(token, locationId, title, date, body) {
       title: title,
       date: date,
       body: body,
+      image: image,
     }
   );
   return response.data;

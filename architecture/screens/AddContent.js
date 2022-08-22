@@ -24,6 +24,7 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import { FIREBASE_API_KEY, FIREBASE_BUCKET } from "@env";
+import { uploadImage } from "../util/http";
 
 function AddContent({ route }) {
   const [title, setTitle] = useState("");
@@ -34,6 +35,13 @@ function AddContent({ route }) {
     useCameraPermissions();
   const contentType = route.params.contentType;
   const locationId = route.params.locationId;
+
+  const firebaseConfig = {
+    apiKey: FIREBASE_API_KEY,
+    storageBucket: "dissertation-poc.appspot.com",
+  };
+  const app = initializeApp(firebaseConfig);
+  const storage = getStorage(app);
 
   // START TEXT INPUT HANDLERS
   function changeTitleHandler(enteredTitle) {
@@ -75,7 +83,7 @@ function AddContent({ route }) {
     const image = await launchCameraAsync({
       allowsEditing: true,
       aspect: [16, 9],
-      quality: 0.5,
+      quality: 0.1,
       base64: true,
     });
     setPickedImage(image);
@@ -83,28 +91,32 @@ function AddContent({ route }) {
   }
   // END USE CAMERA
 
-  function uploadFile() {
-    console.log("in uploadFile");
+  async function uploadFile() {
     const fileName = pickedImage.uri.replace(/^.*[\\\/]/, "");
-    console.log("filename: " + fileName);
-    const firebaseConfig = {
-      apiKey: FIREBASE_API_KEY,
-      storageBucket: "dissertation-poc.appspot.com",
-    };
-    const app = initializeApp(firebaseConfig);
-    const storage = getStorage(app);
-
     const data = pickedImage.base64;
+    const result = await uploadImage(
+      "mysecuretoken",
+      locationId,
+      pickedImage,
+      title,
+      date
+    );
+    // const storageRef = ref(storage, "images/" + fileName);
+    // const metadata = {
+    //   contentType: "image/jpeg",
+    // };
 
-    const storageRef = ref(storage, "images/" + fileName);
-    const metadata = {
-      contentType: "image/jpeg",
-    };
-    uploadString(storageRef, data, "base64", metadata).then((snapshot) => {
-      getDownloadURL(snapshot.ref).then(async (url) => {
-        console.log(url);
-      });
-    });
+    // console.log(pickedImage.base64);
+    // const uploadTask = await uploadString(
+    //   storageRef,
+    //   data,
+    //   "base64",
+    //   metadata
+    // ).then((snapshot) => {
+    //   getDownloadURL(snapshot.ref).then(async (url) => {
+    //     console.log(url);
+    //   });
+    // });
   }
 
   let imagePreview = <Text>No image taken yet</Text>;
@@ -112,7 +124,7 @@ function AddContent({ route }) {
   let uploadButton = (
     <PrimaryButton title="Take photo" onPress={takeImageHandler} />
   );
-  if (pickedImage) {
+  if (pickedImage && pickedImage.base64) {
     imagePreview = (
       <Image style={styles.image} source={{ uri: pickedImage.uri }} />
     );

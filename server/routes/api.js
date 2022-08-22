@@ -1,19 +1,9 @@
 const express = require("express");
-// import express from "express";
-// const bodyParser = require("body-parser");
-// var app = express();
-// app.use(express.json({ limit: "50mb" }));
-// app.use(
-//   express.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 })
-// );
+
 // apiRoutes is an instance of the express router.
 // We use it to define our routes.
 // The router will be added as a middleware and will take control of requests starting with path /record.
 const apiRoutes = express.Router();
-// app.use(express.bodyParser({ limit: "16mb" }));
-
-// app.use(express.json({ limit: "50mb", extended: true }));
-// app.use(express.urlencoded({ limit: "16mb", extended: true }));
 
 // This will help us connect to the database
 const dbo = require("../db/conn");
@@ -325,51 +315,41 @@ apiRoutes.route("/location/:id").delete((req, response) => {
 
 // --- START UPLOADS ---
 
-apiRoutes
-  .route("/location/:id/image?token=:token")
-  .post(function (req, response) {
-    // check isAuthenticated === true
-    console.log("in api location/:id/image");
-    console.log(req.params);
-    console.log(req.body.caption);
-    console.log(req.body.date);
-    const token = req.params.token;
-    // TO DO: verify token
-    if (token) {
-      console.log("token present");
-      // upload to mongodb gridfs
-      // get id from gridfs
-      // upsert image into location with ID and other data
-      let myquery = { _id: ObjectId(req.params.id) };
-      let updateDocument = {
-        $push: {
-          images: {
-            name: req.body.caption,
-            date: req.body.date,
-            width: req.body.width,
-            height: req.body.height,
-            // imageData: req.body.imageData,
-            uri: uri,
-            submittedBy: "placeholder user id",
-            submittedOn: Math.floor(Date.now() / 1000),
-          },
+apiRoutes.route("/location/:id/image").post(function (req, response) {
+  // check isAuthenticated === true
+  let db_connect = dbo.getDb();
+  console.log("in api location/:id/image");
+  console.log(req.params);
+  const token = req.body.token;
+  // TO DO: verify token
+  if (token) {
+    console.log("token present");
+    // upload to mongodb gridfs
+    // get id from gridfs
+    // upsert image into location with ID and other data
+    let myquery = { _id: ObjectId(req.params.id) };
+    let updateDocument = {
+      $push: {
+        images: {
+          caption: req.body.caption,
+          date: req.body.date,
+          width: req.body.width,
+          height: req.body.height,
+          imageData: req.body.image,
+          submittedBy: "placeholder user id",
+          submittedOn: Math.floor(Date.now() / 1000),
         },
-      };
-      db_connect
-        .collection("locations")
-        .updateOne(myquery, updateDocument, function (err, res) {
-          if (err) throw err;
-          console.log("1 document updated");
-          response.json(res);
-        });
-      response.json(obj);
-    } else {
-      response.json({
-        // responseCode: 403,
-        responseMessage: "Forbidden. User not authorised to upload images.",
+      },
+    };
+    db_connect
+      .collection("locations")
+      .updateOne(myquery, updateDocument, function (err, res) {
+        if (err) throw err;
+        console.log("1 document updated");
+        response.json(res);
       });
-    }
-  });
+  }
+});
 
 apiRoutes.route("/location/:id/story").post(function (req, response) {
   // check isAuthenticated === true

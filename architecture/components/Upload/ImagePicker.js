@@ -64,7 +64,9 @@ function ImagePicker({ locationId }) {
     const metadata = {
       contentType: "image/jpeg",
     };
-    uploadString(storageRef, fileData, "base64", metadata).then((snapshot) => {
+    let fileData2 =
+      "aGVyZSBpcyBhIHdlZSBmaWxlIGhlcmUgaXMgYSB3ZWUgZmlsZSBoZXJlIGlzIGEgd2VlIGZpbGUgaGVyZSBpcyBhIHdlZSBmaWxlIGhlcmUgaXMgYSB3ZWUgZmlsZSBoZXJlIGlzIGEgd2VlIGZpbGUgaGVyZSBpcyBhIHdlZSBmaWxlIGhlcmUgaXMgYSB3ZWUgZmlsZSBoZXJlIGlzIGEgd2VlIGZpbGUgaGVyZSBpcyBhIHdlZSBmaWxlIGhlcmUgaXMgYSB3ZWUgZmlsZSBoZXJlIGlzIGEgd2VlIGZpbGUgaGVyZSBpcyBhIHdlZSBmaWxlIGhlcmUgaXMgYSB3ZWUgZmlsZSBoZXJlIGlzIGEgd2VlIGZpbGUgaGVyZSBpcyBhIHdlZSBmaWxlIGhlcmUgaXMgYSB3ZWUgZmlsZSBoZXJlIGlzIGEgd2VlIGZpbGUgaGVyZSBpcyBhIHdlZSBmaWxlIGhlcmUgaXMgYSB3ZWUgZmlsZSBoZXJlIGlzIGEgd2VlIGZpbGUgaGVyZSBpcyBhIHdlZSBmaWxlIGhlcmUgaXMgYSB3ZWUgZmlsZSBoZXJlIGlzIGEgd2VlIGZpbGUgaGVyZSBpcyBhIHdlZSBmaWxlIGhlcmUgaXMgYSB3ZWUgZmlsZSBoZXJlIGlzIGEgd2VlIGZpbGUgaGVyZSBpcyBhIHdlZSBmaWxlIGhlcmUgaXMgYSB3ZWUgZmlsZSBoZXJlIGlzIGEgd2VlIGZpbGUgaGVyZSBpcyBhIHdlZSBmaWxlIGhlcmUgaXMgYSB3ZWUgZmlsZSBoZXJlIGlzIGEgd2VlIGZpbGUgaGVyZSBpcyBhIHdlZSBmaWxlIGhlcmUgaXMgYSB3ZWUgZmlsZSBoZXJlIGlzIGEgd2VlIGZpbGUgaGVyZSBpcyBhIHdlZSBmaWxlIA==";
+    uploadString(storageRef, fileData2, "base64", metadata).then((snapshot) => {
       getDownloadURL(snapshot.ref).then(async (url) => {
         console.log(url);
       });
