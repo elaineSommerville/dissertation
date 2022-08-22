@@ -17,9 +17,6 @@ import StoryScreen from "./screens/StoryScreen";
 import WelcomeScreen from "./screens/WelcomeScreen";
 import AuthContextProvider, { AuthContext } from "./store/auth-context";
 import IconButton from "./components/ui/IconButton";
-import AddImage from "./screens/AddImage";
-import AddVideo from "./screens/AddVideo";
-import AddStory from "./screens/AddStory";
 import AddContent from "./screens/AddContent";
 
 const Stack = createNativeStackNavigator();
@@ -154,27 +151,6 @@ function AuthenticatedStack() {
         options={{
           title: "Search",
           animation: "slide_from_bottom",
-        }}
-      />
-      <Stack.Screen
-        name="addImage"
-        component={AddImage}
-        options={{
-          title: "Add an image",
-        }}
-      />
-      <Stack.Screen
-        name="addVideo"
-        component={AddVideo}
-        options={{
-          title: "Add a video",
-        }}
-      />
-      <Stack.Screen
-        name="addStory"
-        component={AddStory}
-        options={{
-          title: "Add a story",
         }}
       />
       <Stack.Screen

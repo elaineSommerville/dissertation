@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -6,8 +6,8 @@ import {
   Text,
   TextInput,
   Image,
+  Alert,
 } from "react-native";
-import ImagePicker from "../components/Upload/ImagePicker";
 import {
   launchCameraAsync,
   useCameraPermissions,
@@ -15,33 +15,26 @@ import {
 } from "expo-image-picker";
 import UploadedImageContextProvider from "../store/image-context";
 import PrimaryButton from "../components/PrimaryButton";
-import { initializeApp } from "firebase/app";
-import {
-  getStorage,
-  ref,
-  uploadString,
-  uploadBytes,
-  getDownloadURL,
-} from "firebase/storage";
-import { FIREBASE_API_KEY, FIREBASE_BUCKET } from "@env";
-import { uploadImage } from "../util/http";
+import { uploadImage, uploadStory, uploadVideo } from "../util/http";
+import { AuthContext } from "../store/auth-context";
+import { useNavigation } from "@react-navigation/native";
 
 function AddContent({ route }) {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [date, setDate] = useState("");
+  const [videoUri, setVideoUri] = useState("");
+  // const [contentType, setContentType] = useState("");
   const [pickedImage, setPickedImage] = useState();
+  const [uploadContentResponse, setUploadContentResponse] = useState();
   const [cameraPermissionInformation, requestPermission] =
     useCameraPermissions();
   const contentType = route.params.contentType;
   const locationId = route.params.locationId;
-
-  const firebaseConfig = {
-    apiKey: FIREBASE_API_KEY,
-    storageBucket: "dissertation-poc.appspot.com",
-  };
-  const app = initializeApp(firebaseConfig);
-  const storage = getStorage(app);
+  const authCtx = useContext(AuthContext);
+  const navigation = useNavigation();
+  // const [token, setToken] = useState("");
+  const token = authCtx.token;
 
   // START TEXT INPUT HANDLERS
   function changeTitleHandler(enteredTitle) {
@@ -54,6 +47,10 @@ function AddContent({ route }) {
 
   function changeBodyHandler(enteredBody) {
     setBody(enteredBody);
+  }
+
+  function changeVideoUriHandler(enteredVideoUri) {
+    setVideoUri(enteredVideoUri);
   }
   // END TEXT INPUT HANDLERS
 
@@ -83,80 +80,171 @@ function AddContent({ route }) {
     const image = await launchCameraAsync({
       allowsEditing: true,
       aspect: [16, 9],
-      quality: 0.1,
+      quality: 0.5,
       base64: true,
     });
     setPickedImage(image);
-    // imageCtx.confirmImage(image);
   }
   // END USE CAMERA
 
-  async function uploadFile() {
-    const fileName = pickedImage.uri.replace(/^.*[\\\/]/, "");
-    const data = pickedImage.base64;
-    const result = await uploadImage(
-      "mysecuretoken",
-      locationId,
-      pickedImage,
-      title,
-      date
-    );
-    // const storageRef = ref(storage, "images/" + fileName);
-    // const metadata = {
-    //   contentType: "image/jpeg",
-    // };
+  async function uploadImageHandler() {
+    console.log("in uploadImageHandler");
+    try {
+      console.log("in try");
+      const response = await uploadImage(
+        token,
+        contentType,
+        locationId,
+        pickedImage,
+        title,
+        date
+      );
+      setUploadContentResponse(response);
+      navigation.goBack();
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-    // console.log(pickedImage.base64);
-    // const uploadTask = await uploadString(
-    //   storageRef,
-    //   data,
-    //   "base64",
-    //   metadata
-    // ).then((snapshot) => {
-    //   getDownloadURL(snapshot.ref).then(async (url) => {
-    //     console.log(url);
-    //   });
-    // });
+  async function uploadVideoHandler() {
+    console.log("in uploadVideoHandler");
+    try {
+      console.log(videoUri);
+      console.log("in try");
+      const response = await uploadVideo(
+        token,
+        contentType,
+        locationId,
+        videoUri,
+        title,
+        date
+      );
+      setUploadContentResponse(response);
+      navigation.goBack();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function uploadStoryHandler() {
+    console.log("in uploadStoryHandler");
+    try {
+      console.log("in try");
+      const response = await uploadStory(
+        token,
+        contentType,
+        locationId,
+        pickedImage,
+        title,
+        date,
+        body
+      );
+      setUploadContentResponse(response);
+      navigation.goBack();
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   let imagePreview = <Text>No image taken yet</Text>;
 
-  let uploadButton = (
-    <PrimaryButton title="Take photo" onPress={takeImageHandler} />
-  );
   if (pickedImage && pickedImage.base64) {
     imagePreview = (
       <Image style={styles.image} source={{ uri: pickedImage.uri }} />
     );
-    uploadButton = <PrimaryButton title="Upload" onPress={uploadFile} />;
+  }
+
+  let inputForm = <></>;
+  switch (contentType) {
+    case "images":
+      inputForm = (
+        <>
+          <View style={styles.imagePreview}>{imagePreview}</View>
+          <View>
+            <Text style={styles.label}>Title</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={changeTitleHandler}
+              value={title}
+            />
+            <Text style={styles.label}>Date</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={changeDateHandler}
+              value={date}
+            />
+          </View>
+          <PrimaryButton title="Take photo" onPress={takeImageHandler} />
+          <PrimaryButton title="Upload" onPress={uploadImageHandler} />
+        </>
+      );
+      break;
+    case "stories":
+      inputForm = (
+        <>
+          <View style={styles.imagePreview}>{imagePreview}</View>
+          <View>
+            <Text style={styles.label}>Title</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={changeTitleHandler}
+              value={title}
+            />
+            <Text style={styles.label}>Date</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={changeDateHandler}
+              value={date}
+            />
+            <Text style={styles.label}>Story</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={changeBodyHandler}
+              value={body}
+            />
+          </View>
+          <PrimaryButton title="Take photo" onPress={takeImageHandler} />
+          <PrimaryButton title="Upload" onPress={uploadStoryHandler} />
+        </>
+      );
+      break;
+    case "videos":
+      inputForm = (
+        <>
+          <View>
+            <Text style={styles.label}>Title</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={changeTitleHandler}
+              value={title}
+            />
+            <Text style={styles.label}>Date</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={changeDateHandler}
+              value={date}
+            />
+            <Text style={styles.label}>
+              Video URI. Please upload your video to YouTube and paste the URI
+              below.
+            </Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={changeVideoUriHandler}
+              value={videoUri}
+            />
+          </View>
+          <PrimaryButton title="Submit" onPress={uploadVideoHandler} />
+        </>
+      );
+      break;
+    default:
+      inputForm = <></>;
   }
 
   return (
     <UploadedImageContextProvider>
-      <ScrollView style={styles.form}>
-        <View style={styles.imagePreview}>{imagePreview}</View>
-        <View>
-          <Text style={styles.label}>Title</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={changeTitleHandler}
-            value={title}
-          />
-          <Text style={styles.label}>Date</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={changeDateHandler}
-            value={date}
-          />
-          <Text style={styles.label}>Description</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={changeBodyHandler}
-            value={body}
-          />
-        </View>
-        {uploadButton}
-      </ScrollView>
+      <ScrollView style={styles.form}>{inputForm}</ScrollView>
     </UploadedImageContextProvider>
   );
 }

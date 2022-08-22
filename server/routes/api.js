@@ -316,22 +316,16 @@ apiRoutes.route("/location/:id").delete((req, response) => {
 // --- START UPLOADS ---
 
 apiRoutes.route("/location/:id/image").post(function (req, response) {
-  // check isAuthenticated === true
   let db_connect = dbo.getDb();
-  console.log("in api location/:id/image");
-  console.log(req.params);
   const token = req.body.token;
   // TO DO: verify token
   if (token) {
-    console.log("token present");
-    // upload to mongodb gridfs
-    // get id from gridfs
-    // upsert image into location with ID and other data
     let myquery = { _id: ObjectId(req.params.id) };
-    let updateDocument = {
+    let updateDocument = "";
+    updateDocument = {
       $push: {
         images: {
-          caption: req.body.caption,
+          title: req.body.title,
           date: req.body.date,
           width: req.body.width,
           height: req.body.height,
@@ -344,35 +338,30 @@ apiRoutes.route("/location/:id/image").post(function (req, response) {
     db_connect
       .collection("locations")
       .updateOne(myquery, updateDocument, function (err, res) {
-        if (err) throw err;
+        if (err) {
+          return console.log("error: " + err);
+        }
         console.log("1 document updated");
         response.json(res);
       });
+  } else {
+    return response.json("No token present.");
   }
 });
 
-apiRoutes.route("/location/:id/story").post(function (req, response) {
-  // check isAuthenticated === true
-  console.log("in api location/:id/story");
-  console.log(ObjectId(req.params.id));
-  console.log("title: " + req.body.title);
-  console.log("date: " + req.body.date);
-  console.log("body: " + req.body.body);
-  // const token = req.params.token;
-  const token = "myhardcodedtoken";
+apiRoutes.route("/location/:id/video").post(function (req, response) {
+  let db_connect = dbo.getDb();
+  const token = req.body.token;
   // TO DO: verify token
   if (token) {
-    console.log("token present");
-    // upload to mongodb gridfs
-    // get id from gridfs
-    // upsert image into location with ID and other data
     let myquery = { _id: ObjectId(req.params.id) };
-    let updateDocument = {
+    let updateDocument = "";
+    updateDocument = {
       $push: {
-        stories: {
+        images: {
           title: req.body.title,
           date: req.body.date,
-          body: req.body.body,
+          videoUri: req.body.videoUri,
           submittedBy: "placeholder user id",
           submittedOn: Math.floor(Date.now() / 1000),
         },
@@ -381,16 +370,49 @@ apiRoutes.route("/location/:id/story").post(function (req, response) {
     db_connect
       .collection("locations")
       .updateOne(myquery, updateDocument, function (err, res) {
-        if (err) throw err;
+        if (err) {
+          return console.log("error: " + err);
+        }
         console.log("1 document updated");
         response.json(res);
       });
-    response.json(obj);
   } else {
-    response.json({
-      // responseCode: 403,
-      responseMessage: "Forbidden. User not authorised to upload images.",
-    });
+    return response.json("No token present.");
+  }
+});
+
+apiRoutes.route("/location/:id/story").post(function (req, response) {
+  let db_connect = dbo.getDb();
+  const token = req.body.token;
+  // TO DO: verify token
+  if (token) {
+    let myquery = { _id: ObjectId(req.params.id) };
+    let updateDocument = "";
+    updateDocument = {
+      $push: {
+        images: {
+          title: req.body.title,
+          date: req.body.date,
+          body: req.body.body,
+          width: req.body.width,
+          height: req.body.height,
+          imageData: req.body.image,
+          submittedBy: "placeholder user id",
+          submittedOn: Math.floor(Date.now() / 1000),
+        },
+      },
+    };
+    db_connect
+      .collection("locations")
+      .updateOne(myquery, updateDocument, function (err, res) {
+        if (err) {
+          return console.log("error: " + err);
+        }
+        console.log("1 document updated");
+        response.json(res);
+      });
+  } else {
+    return response.json("No token present.");
   }
 });
 // --- END UPLOADS ---

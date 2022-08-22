@@ -49,32 +49,71 @@ export async function fetchLocation(locationId) {
   return response.data;
 }
 
-export async function uploadImage(token, locationId, image, caption, date) {
+export async function uploadImage(
+  token,
+  contentType,
+  locationId,
+  image,
+  title,
+  date
+) {
   const response = await axios.post(
     BACKEND_URL + "/location/" + locationId + "/image",
     {
       token: token,
+      type: contentType,
       width: image.width,
       height: image.height,
-      caption: caption,
-      date: date,
       image: image.base64,
+      title: title,
+      date: date,
     }
   );
   return response.data;
 }
 
-export async function uploadStory(token, locationId, title, date, body, image) {
-  console.log("http: in uploadStory");
-  console.log("locationid:" + locationId);
+export async function uploadVideo(
+  token,
+  contentType,
+  locationId,
+  videoUri,
+  title,
+  date
+) {
+  console.log("uploadVideo: videoUri-" + videoUri);
+  const response = await axios.post(
+    BACKEND_URL + "/location/" + locationId + "/video",
+    {
+      token: token,
+      type: contentType,
+      videoUri: videoUri,
+      title: title,
+      date: date,
+    }
+  );
+  return response.data;
+}
+
+export async function uploadStory(
+  token,
+  contentType,
+  locationId,
+  image,
+  title,
+  date,
+  body
+) {
   const response = await axios.post(
     BACKEND_URL + "/location/" + locationId + "/story",
     {
       token: token,
+      type: contentType,
+      width: image.width,
+      height: image.height,
+      image: image.base64,
       title: title,
       date: date,
       body: body,
-      image: image,
     }
   );
   return response.data;
