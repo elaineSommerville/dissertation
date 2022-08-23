@@ -1,19 +1,9 @@
 const express = require("express");
-// import express from "express";
-// const bodyParser = require("body-parser");
-// var app = express();
-// app.use(express.json({ limit: "50mb" }));
-// app.use(
-//   express.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 })
-// );
+
 // apiRoutes is an instance of the express router.
 // We use it to define our routes.
 // The router will be added as a middleware and will take control of requests starting with path /record.
 const apiRoutes = express.Router();
-// app.use(express.bodyParser({ limit: "16mb" }));
-
-// app.use(express.json({ limit: "50mb", extended: true }));
-// app.use(express.urlencoded({ limit: "16mb", extended: true }));
 
 // This will help us connect to the database
 const dbo = require("../db/conn");
@@ -325,74 +315,21 @@ apiRoutes.route("/location/:id").delete((req, response) => {
 
 // --- START UPLOADS ---
 
-apiRoutes
-  .route("/location/:id/image?token=:token")
-  .post(function (req, response) {
-    // check isAuthenticated === true
-    console.log("in api location/:id/image");
-    console.log(req.params);
-    console.log(req.body.caption);
-    console.log(req.body.date);
-    const token = req.params.token;
-    // TO DO: verify token
-    if (token) {
-      console.log("token present");
-      // upload to mongodb gridfs
-      // get id from gridfs
-      // upsert image into location with ID and other data
-      let myquery = { _id: ObjectId(req.params.id) };
-      let updateDocument = {
-        $push: {
-          images: {
-            name: req.body.caption,
-            date: req.body.date,
-            width: req.body.width,
-            height: req.body.height,
-            // imageData: req.body.imageData,
-            uri: uri,
-            submittedBy: "placeholder user id",
-            submittedOn: Math.floor(Date.now() / 1000),
-          },
-        },
-      };
-      db_connect
-        .collection("locations")
-        .updateOne(myquery, updateDocument, function (err, res) {
-          if (err) throw err;
-          console.log("1 document updated");
-          response.json(res);
-        });
-      response.json(obj);
-    } else {
-      response.json({
-        // responseCode: 403,
-        responseMessage: "Forbidden. User not authorised to upload images.",
-      });
-    }
-  });
-
-apiRoutes.route("/location/:id/story").post(function (req, response) {
-  // check isAuthenticated === true
-  console.log("in api location/:id/story");
-  console.log(ObjectId(req.params.id));
-  console.log("title: " + req.body.title);
-  console.log("date: " + req.body.date);
-  console.log("body: " + req.body.body);
-  // const token = req.params.token;
-  const token = "myhardcodedtoken";
+apiRoutes.route("/location/:id/image").post(function (req, response) {
+  let db_connect = dbo.getDb();
+  const token = req.body.token;
   // TO DO: verify token
   if (token) {
-    console.log("token present");
-    // upload to mongodb gridfs
-    // get id from gridfs
-    // upsert image into location with ID and other data
     let myquery = { _id: ObjectId(req.params.id) };
-    let updateDocument = {
+    let updateDocument = "";
+    updateDocument = {
       $push: {
-        stories: {
+        images: {
           title: req.body.title,
           date: req.body.date,
-          body: req.body.body,
+          width: req.body.width,
+          height: req.body.height,
+          imageData: req.body.image,
           submittedBy: "placeholder user id",
           submittedOn: Math.floor(Date.now() / 1000),
         },
@@ -401,16 +338,81 @@ apiRoutes.route("/location/:id/story").post(function (req, response) {
     db_connect
       .collection("locations")
       .updateOne(myquery, updateDocument, function (err, res) {
-        if (err) throw err;
+        if (err) {
+          return console.log("error: " + err);
+        }
         console.log("1 document updated");
         response.json(res);
       });
-    response.json(obj);
   } else {
-    response.json({
-      // responseCode: 403,
-      responseMessage: "Forbidden. User not authorised to upload images.",
-    });
+    return response.json("No token present.");
+  }
+});
+
+apiRoutes.route("/location/:id/video").post(function (req, response) {
+  let db_connect = dbo.getDb();
+  const token = req.body.token;
+  // TO DO: verify token
+  if (token) {
+    let myquery = { _id: ObjectId(req.params.id) };
+    let updateDocument = "";
+    updateDocument = {
+      $push: {
+        images: {
+          title: req.body.title,
+          date: req.body.date,
+          videoUri: req.body.videoUri,
+          submittedBy: "placeholder user id",
+          submittedOn: Math.floor(Date.now() / 1000),
+        },
+      },
+    };
+    db_connect
+      .collection("locations")
+      .updateOne(myquery, updateDocument, function (err, res) {
+        if (err) {
+          return console.log("error: " + err);
+        }
+        console.log("1 document updated");
+        response.json(res);
+      });
+  } else {
+    return response.json("No token present.");
+  }
+});
+
+apiRoutes.route("/location/:id/story").post(function (req, response) {
+  let db_connect = dbo.getDb();
+  const token = req.body.token;
+  // TO DO: verify token
+  if (token) {
+    let myquery = { _id: ObjectId(req.params.id) };
+    let updateDocument = "";
+    updateDocument = {
+      $push: {
+        images: {
+          title: req.body.title,
+          date: req.body.date,
+          body: req.body.body,
+          width: req.body.width,
+          height: req.body.height,
+          imageData: req.body.image,
+          submittedBy: "placeholder user id",
+          submittedOn: Math.floor(Date.now() / 1000),
+        },
+      },
+    };
+    db_connect
+      .collection("locations")
+      .updateOne(myquery, updateDocument, function (err, res) {
+        if (err) {
+          return console.log("error: " + err);
+        }
+        console.log("1 document updated");
+        response.json(res);
+      });
+  } else {
+    return response.json("No token present.");
   }
 });
 // --- END UPLOADS ---

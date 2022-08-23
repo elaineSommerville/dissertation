@@ -49,49 +49,68 @@ export async function fetchLocation(locationId) {
   return response.data;
 }
 
-export async function uploadImage(token, locationId, image, caption, date) {
-  // console.log("in uploadImage");
-  // console.log(token);
-  // console.log(locationId);
-  console.log(image.imageData.length);
-  // console.log("token: " + token);
-  // console.log(caption);
-  // console.log(date);
-  // const response = await axios.post(
-  //   BACKEND_URL + "/location/" + locationId + "/image?token=" + token,
-  //   {
-  //     imageData: image.imageData,
-  //     width: image.width,
-  //     height: image.height,
-  //     caption: caption,
-  //     date: date,
-  //   }
-  // );
-
-  const response = await axios({
-    method: "post",
-    url: BACKEND_URL + "/location/" + locationId + "/image?token=" + token,
-    data: {
-      // imageData: image.imageData,
+export async function uploadImage(
+  token,
+  contentType,
+  locationId,
+  image,
+  title,
+  date
+) {
+  const response = await axios.post(
+    BACKEND_URL + "/location/" + locationId + "/image",
+    {
+      token: token,
+      type: contentType,
       width: image.width,
       height: image.height,
-      caption: caption,
+      image: image.base64,
+      title: title,
       date: date,
-      uri: uri,
-    },
-    maxContentLength: 10000000,
-    maxBodyLength: 10000000,
-  });
+    }
+  );
   return response.data;
 }
 
-export async function uploadStory(token, locationId, title, date, body) {
-  console.log("http: in uploadStory");
-  console.log("locationid:" + locationId);
+export async function uploadVideo(
+  token,
+  contentType,
+  locationId,
+  videoUri,
+  title,
+  date
+) {
+  console.log("uploadVideo: videoUri-" + videoUri);
   const response = await axios.post(
-    // BACKEND_URL + "/location/" + locationId + "/story?token=" + token,
+    BACKEND_URL + "/location/" + locationId + "/video",
+    {
+      token: token,
+      type: contentType,
+      videoUri: videoUri,
+      title: title,
+      date: date,
+    }
+  );
+  return response.data;
+}
+
+export async function uploadStory(
+  token,
+  contentType,
+  locationId,
+  image,
+  title,
+  date,
+  body
+) {
+  const response = await axios.post(
     BACKEND_URL + "/location/" + locationId + "/story",
     {
+      token: token,
+      type: contentType,
+      width: image.width,
+      height: image.height,
+      image: image.base64,
       title: title,
       date: date,
       body: body,
