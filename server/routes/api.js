@@ -326,7 +326,7 @@ apiRoutes.route("/location/:id/image").post(function (req, response) {
       $push: {
         images: {
           title: req.body.title,
-          date: req.body.date,
+          sourceDate: req.body.date,
           width: req.body.width,
           height: req.body.height,
           imageData: req.body.image,
@@ -352,6 +352,10 @@ apiRoutes.route("/location/:id/image").post(function (req, response) {
 apiRoutes.route("/location/:id/video").post(function (req, response) {
   let db_connect = dbo.getDb();
   const token = req.body.token;
+  const thumbnail =
+    "https://img.youtube.com/vi/" +
+    req.body.videoUri.substring(uri.length - 11, uri.length) +
+    "/maxresdefault.jpg";
   // TO DO: verify token
   if (token) {
     let myquery = { _id: ObjectId(req.params.id) };
@@ -360,8 +364,9 @@ apiRoutes.route("/location/:id/video").post(function (req, response) {
       $push: {
         images: {
           title: req.body.title,
-          date: req.body.date,
+          sourceDate: req.body.date,
           videoUri: req.body.videoUri,
+          thumbnail: thumbnail,
           submittedBy: "placeholder user id",
           submittedOn: Math.floor(Date.now() / 1000),
         },
@@ -392,7 +397,7 @@ apiRoutes.route("/location/:id/story").post(function (req, response) {
       $push: {
         images: {
           title: req.body.title,
-          date: req.body.date,
+          sourceDate: req.body.date,
           body: req.body.body,
           width: req.body.width,
           height: req.body.height,
