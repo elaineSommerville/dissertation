@@ -114,6 +114,7 @@ export async function uploadStory(
       title: title,
       date: date,
       body: body,
+      userId: userId,
     }
   );
   return response.data;
