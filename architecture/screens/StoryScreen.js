@@ -1,13 +1,17 @@
 import { Text, View, Image, StyleSheet } from "react-native";
 function StoryScreen({ route }) {
-  const image = route.params.story.image;
   const title = route.params.story.title;
   const subtitle = route.params.story.subtitle;
   const body = route.params.story.body;
-  console.log(route.params);
+  let source = "data:image/jpeg;base64, ";
+  if ("uri" in route.params.story) {
+    source = route.params.story.uri;
+  } else {
+    source += route.params.story.imageData;
+  }
   return (
     <View style={styles.rootContainer}>
-      <Image source={{ uri: image }} style={styles.image} />
+      <Image source={{ uri: source }} style={styles.image} />
       <View style={styles.textContainer}>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.subtitle}>{subtitle}</Text>

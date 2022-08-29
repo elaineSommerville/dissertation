@@ -110,7 +110,12 @@ function LocationDetailsScreen({ route, navigation }) {
   }
 
   function Story({ item, index }) {
-    // const navigation = useNavigation();
+    let source = "data:image/jpeg;base64, ";
+    if ("uri" in item) {
+      source = item.uri;
+    } else {
+      source += item.imageData;
+    }
     return (
       <Pressable
         onPress={() =>
@@ -120,7 +125,7 @@ function LocationDetailsScreen({ route, navigation }) {
         }
       >
         <View style={styles.storyCard} key={index}>
-          <Image style={styles.storyImage} source={{ uri: item.image }} />
+          <Image style={styles.storyImage} source={{ uri: source }} />
           <Text style={styles.storyTitle}>{item.title}</Text>
           <Text style={styles.storySubtitle}>{item.subtitle}</Text>
         </View>
@@ -147,9 +152,15 @@ function LocationDetailsScreen({ route, navigation }) {
   } else {
     // once location data has been received, push images into imageUri array
     // for image slider
+
     images.map((image) => {
-      imageUris.push(image.uri);
-      imageCaptions.push(image.name);
+      if ("imageData" in image) {
+        imageUris.push("data:image/jpeg;base64," + image.imageData);
+        imageCaptions.push(image.name);
+      } else {
+        imageUris.push(image.uri);
+        imageCaptions.push(image.name);
+      }
     });
     videos.map((video) => {
       videoUris.push(video.uri);
