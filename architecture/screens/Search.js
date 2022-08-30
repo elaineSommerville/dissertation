@@ -34,7 +34,7 @@ function Search({ navigation, route }) {
             "search locations: " + search + ", " + longitude + ", " + latitude
           );
           const result = await searchLocations(search, longitude, latitude);
-          setSearchResults(result);
+          setSearchResults(result.data);
         } catch (error) {
           setError(error.message);
         }

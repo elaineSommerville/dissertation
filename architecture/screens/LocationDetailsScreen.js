@@ -42,7 +42,7 @@ function LocationDetailsScreen({ route, navigation }) {
     async function getLocation(locationId) {
       try {
         const location = await fetchLocation(locationId);
-        setFetchedLocation(location);
+        setFetchedLocation(location.data);
       } catch (error) {
         setError("Could not fetch location details...");
       }

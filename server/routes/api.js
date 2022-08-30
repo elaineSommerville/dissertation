@@ -127,40 +127,44 @@ apiRoutes.route("/location/search/:query").post(function (req, res) {
   let userLocation = req.body;
   let db_connect = dbo.getDb();
   console.log("query: " + query);
-  db_connect
-    .collection("locations")
-    // TO DO
-    .aggregate([
-      {
-        $geoNear: {
-          near: userLocation,
-          spherical: true,
-          distanceField: "distance",
-          maxDistance: 50000,
-          query: {
-            $or: [
-              { name: new RegExp(query, "i") },
-              { type: new RegExp(query, "i") },
-              { "visitorInfo.address": new RegExp(query, "i") },
-              { "architect.name": new RegExp(query, "i") },
-            ],
+  try {
+    db_connect
+      .collection("locations")
+      // TO DO
+      .aggregate([
+        {
+          $geoNear: {
+            near: userLocation,
+            spherical: true,
+            distanceField: "distance",
+            maxDistance: 50000,
+            query: {
+              $or: [
+                { name: new RegExp(query, "i") },
+                { type: new RegExp(query, "i") },
+                { "visitorInfo.address": new RegExp(query, "i") },
+                { "architect.name": new RegExp(query, "i") },
+              ],
+            },
           },
         },
-      },
-    ])
-    .project({
-      name: 1,
-      type: 1,
-      location: 1,
-      buildDate: 1,
-      "visitorInfo.address": 1,
-      distance: 1,
-    }) // thumbnail too?
-    .toArray(function (err, result) {
-      if (err) throw err;
-      res.json(result);
-      // res.json("search result");
-    });
+      ])
+      .project({
+        name: 1,
+        type: 1,
+        location: 1,
+        buildDate: 1,
+        "visitorInfo.address": 1,
+        distance: 1,
+      }) // thumbnail too?
+      .toArray(function (err, result) {
+        // if (err) throw err;
+        res.json(result);
+        // res.json("search result");
+      });
+  } catch (err) {
+    throw err;
+  }
 });
 
 apiRoutes.route("/location/distance/:id").post(function (req, res) {
