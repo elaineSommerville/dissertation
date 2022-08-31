@@ -10,6 +10,7 @@ import {
   uploadStory,
 } from "./http";
 
+const BACKEND_URL = "http://192.168.1.8:5000";
 let query;
 let lng;
 let lat;
@@ -81,7 +82,12 @@ describe.concurrent("fetchLocation()", () => {
       latitudeDelta: 0.05, // essentially configures the zoom
       longitudeDelta: 0.05, // essentially configures the zoom
     };
-    response = await fetchLocationsHeadersWithinMap(region);
+    // should not use the fetchLocationsHeadersWithinMap function, but instead
+    // use axios directly to avoid relying on another function which is
+    // being tested
+    response = await axios.post(BACKEND_URL + "/location/map/header", {
+      region,
+    });
     validLocationId = response.data[0]._id;
   });
 
