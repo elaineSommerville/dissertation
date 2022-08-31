@@ -16,37 +16,40 @@ export async function searchLocations(query, lng, lat) {
     type: "Point",
     coordinates: [lng, lat],
   });
-  return response.data;
+  return response;
 }
 
-export async function getDistance(lat, lng, id) {
-  const response = await axios.post(BACKEND_URL + "/location/distance/" + id, {
-    type: "Point",
-    coordinates: [lng, lat],
-  });
-  return response.data;
-}
+// not used anymore
+// export async function getDistance(lat, lng, id) {
+//   const response = await axios.post(BACKEND_URL + "/location/distance/" + id, {
+//     type: "Point",
+//     coordinates: [lng, lat],
+//   });
+//   return response.data;
+// }
 
-export async function fetchLocations() {
-  const response = await axios.get(BACKEND_URL + "/location");
-  return response.data;
-}
+// not used anymore
+// export async function fetchLocations() {
+//   const response = await axios.get(BACKEND_URL + "/location");
+//   return response.data;
+// }
 
-export async function fetchLocationsHeaders() {
-  const response = await axios.get(BACKEND_URL + "/location/header");
-  return response.data;
-}
+// not used anymore
+// export async function fetchLocationsHeaders() {
+//   const response = await axios.get(BACKEND_URL + "/location/header");
+//   return response.data;
+// }
 
 export async function fetchLocationsHeadersWithinMap(region) {
   const response = await axios.post(BACKEND_URL + "/location/map/header", {
     region,
   });
-  return response.data;
+  return response;
 }
 
 export async function fetchLocation(locationId) {
   const response = await axios.get(BACKEND_URL + "/location/" + locationId);
-  return response.data;
+  return response;
 }
 
 export async function uploadImage(
@@ -69,7 +72,7 @@ export async function uploadImage(
       date: date,
     }
   );
-  return response.data;
+  return response;
 }
 
 export async function uploadVideo(
@@ -91,7 +94,7 @@ export async function uploadVideo(
       date: date,
     }
   );
-  return response.data;
+  return response;
 }
 
 export async function uploadStory(
@@ -114,8 +117,7 @@ export async function uploadStory(
       title: title,
       date: date,
       body: body,
-      userId: userId,
     }
   );
-  return response.data;
+  return response;
 }

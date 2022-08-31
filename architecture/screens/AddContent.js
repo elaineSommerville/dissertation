@@ -99,7 +99,7 @@ function AddContent({ route }) {
         title,
         date
       );
-      setUploadContentResponse(response);
+      setUploadContentResponse(response.data);
       navigation.goBack();
     } catch (error) {
       console.log(error);
@@ -119,7 +119,7 @@ function AddContent({ route }) {
         title,
         date
       );
-      setUploadContentResponse(response);
+      setUploadContentResponse(response.data);
       navigation.goBack();
     } catch (error) {
       console.log(error);
@@ -139,7 +139,7 @@ function AddContent({ route }) {
         date,
         body
       );
-      setUploadContentResponse(response);
+      setUploadContentResponse(response.data);
       navigation.goBack();
     } catch (error) {
       console.log(error);

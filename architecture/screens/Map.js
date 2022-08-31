@@ -113,7 +113,7 @@ function Map({ navigation }) {
       setIsLocationsLoading(true);
       try {
         const locationsWithinMap = await fetchLocationsHeadersWithinMap(region);
-        setFetchedLocationsHeadersWithinMap(locationsWithinMap);
+        setFetchedLocationsHeadersWithinMap(locationsWithinMap.data);
       } catch (error) {
         setError(error.message);
       }
