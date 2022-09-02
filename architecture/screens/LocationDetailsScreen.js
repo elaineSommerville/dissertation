@@ -276,45 +276,58 @@ function LocationDetailsScreen({ route, navigation }) {
                 <Ionicons name="time-outline" size={25} />
                 <Text style={styles.heading}>Opening Hours</Text>
               </View>
-              {visitorInfo.openingTimes.map((item, key) => {
-                if (item.status === "open") {
-                  return (
-                    <View key={key}>
-                      <Text>
-                        <Ionicons name="lock-open-outline" size={25} />
-                        {item.day[0].toUpperCase() + item.day.substring(1)}
-                        {item.openFrom} - {item.closeAt}
-                      </Text>
-                    </View>
-                  );
-                } else {
-                  return (
-                    <View key={key}>
-                      <Text>
-                        <Ionicons name="lock-closed-outline" size={25} />
-                        {item.day[0].toUpperCase() + item.day.substring(1)}{" "}
-                        Closed
-                      </Text>
-                    </View>
-                  );
-                }
-              })}
+              {"openingTimes" in visitorInfo ? (
+                visitorInfo.openingTimes.map((item, key) => {
+                  if (item.status === "open") {
+                    return (
+                      <View key={key}>
+                        <Text>
+                          <Ionicons name="lock-open-outline" size={25} />
+                          {item.day[0].toUpperCase() + item.day.substring(1)}
+                          {item.openFrom} - {item.closeAt}
+                        </Text>
+                      </View>
+                    );
+                  } else {
+                    return (
+                      <View key={key}>
+                        <Text>
+                          <Ionicons name="lock-closed-outline" size={25} />
+                          {item.day[0].toUpperCase() +
+                            item.day.substring(1)}{" "}
+                          Closed
+                        </Text>
+                      </View>
+                    );
+                  }
+                })
+              ) : (
+                <View>
+                  <Text>No information available</Text>
+                </View>
+              )}
               {/* this ois the start of the admission fees stuff */}
               <View style={styles.headerRow}>
                 <Ionicons name="cash-outline" size={25} />
                 <Text style={styles.heading}>Admission Fees</Text>
               </View>
-              {visitorInfo.admissionFees.map((item, key) => {
-                return (
-                  <View key={key}>
-                    <Text>
-                      {item.feeName[0].toUpperCase() +
-                        item.feeName.substring(1)}
-                      {"    "}£{item.feeAmount.toFixed(2)}
-                    </Text>
-                  </View>
-                );
-              })}
+              {"admissionFees" in visitorInfo ? (
+                visitorInfo.admissionFees.map((item, key) => {
+                  return (
+                    <View key={key}>
+                      <Text>
+                        {item.feeName[0].toUpperCase() +
+                          item.feeName.substring(1)}
+                        {"    "}£{item.feeAmount.toFixed(2)}
+                      </Text>
+                    </View>
+                  );
+                })
+              ) : (
+                <View>
+                  <Text>No information available</Text>
+                </View>
+              )}
             </View>
           </View>
           <View style={styles.headerRow}>
