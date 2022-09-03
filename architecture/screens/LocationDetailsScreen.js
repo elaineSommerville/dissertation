@@ -86,18 +86,30 @@ function LocationDetailsScreen({ route, navigation }) {
         );
       }
       return (
-        <View>
+        <View style={{ width: "100%" }}>
           <View style={styles.visitorInfoRow}>
-            <Ionicons name="call-outline" size={25} />
-            <Text style={styles.visitorInfoText}>{visitorInfo.phone}</Text>
+            <View style={styles.visitorInfoIcon}>
+              <Ionicons name="call-outline" size={25} />
+            </View>
+            <View style={styles.visitorInfoText}>
+              <Text style={styles.visitorInfoText}>{visitorInfo.phone}</Text>
+            </View>
           </View>
           <View style={styles.visitorInfoRow}>
-            <Ionicons name="globe-outline" size={25} />
-            <Text style={styles.visitorInfoText}>{visitorInfo.uri}</Text>
+            <View style={styles.visitorInfoIcon}>
+              <Ionicons name="globe-outline" size={25} />
+            </View>
+            <View style={styles.visitorInfoText}>
+              <Text style={styles.visitorInfoText}>{visitorInfo.uri}</Text>
+            </View>
           </View>
           <View style={styles.visitorInfoRow}>
-            <Ionicons name="mail-outline" size={25} />
-            <Text style={styles.visitorInfoText}>{visitorInfo.email}</Text>
+            <View style={styles.visitorInfoIcon}>
+              <Ionicons name="mail-outline" size={25} />
+            </View>
+            <View style={styles.visitorInfoText}>
+              <Text style={styles.visitorInfoText}>{visitorInfo.email}</Text>
+            </View>
           </View>
         </View>
       );
@@ -170,7 +182,7 @@ function LocationDetailsScreen({ route, navigation }) {
     return (
       <AuthContextProvider>
         <ScrollView style={styles.rootContainer}>
-          <View style={styles.innerContainer}>
+          <View style={styles.rowView}>
             <View style={styles.typeView}>
               <Ionicons name="home-outline" size={30} />
             </View>
@@ -232,92 +244,121 @@ function LocationDetailsScreen({ route, navigation }) {
               }}
             />
           )}
-          <View style={styles.innerContainer}>
-            <Text style={styles.heading}>Type</Text>
-            <Text style={styles.heading}>Style</Text>
+          <View style={styles.rowView}>
+            <Text style={styles.heading50}>Type</Text>
+            <Text style={styles.heading50}>Style</Text>
           </View>
-          <View style={styles.innerContainer}>
-            <Text style={styles.info}>{type}</Text>
-            <Text style={styles.info}>{style}</Text>
+          <View style={styles.rowView}>
+            <Text style={styles.info50}>{type}</Text>
+            <Text style={styles.info50}>{style}</Text>
           </View>
-          <View style={styles.innerContainer}>
-            <Text style={styles.heading}>Build Date</Text>
-            <Text style={styles.heading}>Architect</Text>
+          <View style={styles.rowView}>
+            <Text style={styles.heading50}>Build Date</Text>
+            <Text style={styles.heading50}>Architect</Text>
           </View>
-          <View style={styles.innerContainer}>
-            <Text style={styles.info}>{buildDateStr}</Text>
+          <View style={styles.rowView}>
+            <Text style={styles.info50}>{buildDateStr}</Text>
             <View style={styles.listView}>
               {architects.map((architect, index) => {
                 return (
-                  <Text style={styles.info} key={index}>
+                  <Text style={styles.info50} key={index}>
                     {architect.name}
                   </Text>
                 );
               })}
             </View>
           </View>
-          <View style={styles.innerContainer}>
-            <View style={styles.descriptionView}>
+          <View style={styles.rowView}>
+            <View style={styles.columnView}>
               <Text style={styles.heading}>Description</Text>
-              <Text style={styles.description}>{description}</Text>
+              <Text style={styles.info}>{description}</Text>
             </View>
           </View>
-          <View style={styles.innerContainer}>
-            <View style={styles.descriptionView}>
+          <View style={styles.rowView}>
+            <View style={styles.columnView}>
               <Text style={styles.heading}>Visitor Information</Text>
             </View>
           </View>
-          <View style={styles.innerContainer}>
-            <View style={styles.descriptionView}>
+          <View style={styles.rowView}>
+            <View style={styles.columnView}>
               {renderVisitorInfo(visitorInfo, openToPublic)}
-              {/* {renderOpeningTimes(visitorInfo)} */}
-              <View style={styles.headerRow}>
-                <Ionicons name="time-outline" size={25} />
-                <Text style={styles.heading}>Opening Hours</Text>
-              </View>
-              {visitorInfo.openingTimes.map((item, key) => {
-                if (item.status === "open") {
-                  return (
-                    <View key={key}>
-                      <Text>
-                        <Ionicons name="lock-open-outline" size={25} />
+            </View>
+          </View>
+          <View style={styles.columnView}>
+            {/* <View style={styles.headerRow}> */}
+            {/* <View style={styles.openingHoursIcon}>
+                  <Ionicons name="time-outline" size={25} />
+                </View> */}
+            <View>
+              <Text style={styles.heading}>Opening Hours</Text>
+            </View>
+            {/* </View> */}
+            {visitorInfo.openingTimes.map((item, key) => {
+              if (item.status === "open") {
+                return (
+                  <View style={styles.openingHoursRow} key={key}>
+                    <View style={styles.openingHoursIcon}>
+                      {/* <Ionicons name="lock-open-outline" size={25} /> */}
+                      <Ionicons name="checkmark" size={25} color="green" />
+                    </View>
+                    <View style={styles.openingHoursDay}>
+                      <Text style={styles.openingHoursDay}>
                         {item.day[0].toUpperCase() + item.day.substring(1)}
+                      </Text>
+                    </View>
+                    <View style={styles.openingHoursTimes}>
+                      <Text style={styles.openingHoursTimes}>
                         {item.openFrom} - {item.closeAt}
                       </Text>
                     </View>
-                  );
-                } else {
-                  return (
-                    <View key={key}>
-                      <Text>
-                        <Ionicons name="lock-closed-outline" size={25} />
-                        {item.day[0].toUpperCase() + item.day.substring(1)}{" "}
-                        Closed
-                      </Text>
-                    </View>
-                  );
-                }
-              })}
-              {/* this ois the start of the admission fees stuff */}
-              <View style={styles.headerRow}>
-                <Ionicons name="cash-outline" size={25} />
-                <Text style={styles.heading}>Admission Fees</Text>
-              </View>
-              {visitorInfo.admissionFees.map((item, key) => {
-                return (
-                  <View key={key}>
-                    <Text>
-                      {item.feeName[0].toUpperCase() +
-                        item.feeName.substring(1)}
-                      {"    "}£{item.feeAmount.toFixed(2)}
-                    </Text>
                   </View>
                 );
-              })}
+              } else {
+                return (
+                  <View style={styles.openingHoursRow} key={key}>
+                    <View style={styles.openingHoursIcon}>
+                      {/* <Ionicons name="lock-closed-outline" size={25} /> */}
+                      <Ionicons name="close" size={25} color="#de1028" />
+                    </View>
+                    <View style={styles.openingHoursDay}>
+                      <Text style={styles.openingHoursDay}>
+                        {item.day[0].toUpperCase() + item.day.substring(1)}
+                      </Text>
+                    </View>
+                    <View style={styles.openingHoursTimes}>
+                      <Text style={styles.openingHoursTimes}>Closed</Text>
+                    </View>
+                  </View>
+                );
+              }
+            })}
+            {/* this ois the start of the admission fees stuff */}
+            <View style={styles.headerRow}>
+              {/* <Ionicons name="cash-outline" size={25} /> */}
+              <Text style={styles.heading}>Admission Fees</Text>
             </View>
+            {visitorInfo.admissionFees.map((item, key) => {
+              return (
+                <View style={styles.openingHoursRow} key={key}>
+                  <View style={styles.openingHoursIcon}></View>
+                  <View style={styles.openingHoursDay}>
+                    <Text style={styles.openingHoursDay}>
+                      {item.feeName[0].toUpperCase() +
+                        item.feeName.substring(1)}
+                    </Text>
+                  </View>
+                  <View style={styles.openingHoursTimes}>
+                    <Text style={styles.openingHoursTimes}>
+                      £{item.feeAmount.toFixed(2)}
+                    </Text>
+                  </View>
+                </View>
+              );
+            })}
           </View>
+          {/* </View> */}
           <View style={styles.headerRow}>
-            <Ionicons name="film-outline" size={25} />
+            {/* <Ionicons name="film-outline" size={25} /> */}
             <Text style={styles.heading}>Videos</Text>
           </View>
           <SliderBox
@@ -374,7 +415,7 @@ function LocationDetailsScreen({ route, navigation }) {
             />
           )}
           <View style={styles.headerRow}>
-            <Ionicons name="book-outline" size={25} />
+            {/* <Ionicons name="book-outline" size={25} /> */}
             <Text style={styles.heading}>Stories</Text>
           </View>
           <View style={{ flex: 1, flexDirection: "row" }}>
@@ -413,8 +454,9 @@ export default LocationDetailsScreen;
 
 const styles = StyleSheet.create({
   rootContainer: {
-    marginBottom: 32,
-    marginHorizontal: 25,
+    paddingBottom: 32,
+    paddingHorizontal: 25,
+    backgroundColor: "white",
   },
   nameView: {
     // fontWeight: "bold",
@@ -435,7 +477,7 @@ const styles = StyleSheet.create({
     flex: 0.85,
     alignItems: "flex-start",
   },
-  innerContainer: {
+  rowView: {
     fontSize: 18,
     flexDirection: "row",
   },
@@ -443,22 +485,48 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 300,
   },
-  heading: {
+  heading50: {
     fontWeight: "bold",
     flex: 0.5,
     fontSize: 16,
+    paddingTop: 12,
+  },
+  info50: {
+    flex: 0.5,
     paddingTop: 4,
+    fontSize: 16,
+  },
+  heading: {
+    fontWeight: "bold",
+    fontSize: 16,
+    paddingTop: 12,
   },
   info: {
-    flex: 0.5,
-    paddingVertical: 2,
+    paddingTop: 4,
+    fontSize: 16,
+  },
+  openingHoursRow: {
+    flexDirection: "row",
+    flex: 1,
+    paddingTop: 6,
+    marginVertical: 2,
+  },
+  openingHoursIcon: {
+    flex: 1,
+  },
+  openingHoursDay: {
+    flex: 4,
+    fontSize: 16,
+  },
+  openingHoursTimes: {
+    flex: 4,
     fontSize: 16,
   },
   listView: {
     flexDirection: "column",
     flex: 0.5,
   },
-  descriptionView: {
+  columnView: {
     flexDirection: "column",
   },
   loadingScreen: {
@@ -468,10 +536,19 @@ const styles = StyleSheet.create({
   },
   visitorInfoRow: {
     flexDirection: "row",
-    alignItems: "center",
+    flex: 1,
+    // alignItems: "center",
+    paddingTop: 8,
+  },
+  visitorInfoIcon: {
+    // flex: 1,
+    // backgroundColor: "green",
   },
   visitorInfoText: {
-    paddingLeft: 12,
+    paddingLeft: 7,
+    fontSize: 16,
+    // flex: 2,
+    // backgroundColor: "red",
   },
   headerRow: {
     flexDirection: "row",
