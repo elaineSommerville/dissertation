@@ -52,7 +52,6 @@ function LocationDetailsScreen({ route, navigation }) {
   }, []);
 
   const name = fetchedLocation.name;
-  const address = fetchedLocation.address;
   const images = fetchedLocation.images;
   const videos = fetchedLocation.videos;
   const stories = fetchedLocation.stories;
@@ -177,7 +176,7 @@ function LocationDetailsScreen({ route, navigation }) {
             </View>
             <View style={styles.nameAddressView}>
               <Text style={styles.nameView}>{name}</Text>
-              <Text style={styles.addressView}>{address}</Text>
+              <Text style={styles.addressView}>{visitorInfo.address}</Text>
             </View>
           </View>
           <SliderBox
@@ -260,7 +259,7 @@ function LocationDetailsScreen({ route, navigation }) {
           <View style={styles.innerContainer}>
             <View style={styles.descriptionView}>
               <Text style={styles.heading}>Description</Text>
-              <Text>{description}</Text>
+              <Text style={styles.description}>{description}</Text>
             </View>
           </View>
           <View style={styles.innerContainer}>
@@ -418,14 +417,19 @@ const styles = StyleSheet.create({
     marginHorizontal: 25,
   },
   nameView: {
-    fontWeight: "bold",
+    // fontWeight: "bold",
+    fontSize: 24,
+    paddingVertical: 6,
   },
   addressView: {
-    color: "#888",
+    color: "#999",
+    fontSize: 16,
+    marginBottom: 6,
   },
   typeView: {
     width: 75,
     flex: 0.15,
+    paddingVertical: 6,
   },
   nameAddressView: {
     flex: 0.85,
@@ -442,9 +446,13 @@ const styles = StyleSheet.create({
   heading: {
     fontWeight: "bold",
     flex: 0.5,
+    fontSize: 16,
+    paddingTop: 4,
   },
   info: {
     flex: 0.5,
+    paddingVertical: 2,
+    fontSize: 16,
   },
   listView: {
     flexDirection: "column",
