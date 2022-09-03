@@ -1,20 +1,9 @@
 // expo MapView
 // expo install react-native-maps
 import MapView, { Callout, Marker } from "react-native-maps";
-import {
-  Alert,
-  StyleSheet,
-  View,
-  Text,
-  Button,
-  ScrollView,
-  Platform,
-} from "react-native";
-import { useState, useEffect, useLayoutEffect } from "react";
-import {
-  fetchLocationsHeaders,
-  fetchLocationsHeadersWithinMap,
-} from "../util/http";
+import { Alert, StyleSheet, View, Text, Button } from "react-native";
+import { useState, useEffect, useLayoutEffect, useContext } from "react";
+import { fetchLocationsHeadersWithinMap } from "../util/http";
 import LoadingOverlay from "../components/ui/LoadingOverlay";
 import ErrorOverlay from "../components/ui/ErrorOverlay";
 import {
@@ -22,8 +11,10 @@ import {
   useForegroundPermissions,
   PermissionStatus,
 } from "expo-location";
+import { AuthContext } from "../store/auth-context";
 
 function Map({ navigation }) {
+  const authCtx = useContext(AuthContext);
   const [selectedLocation, setSelectedLocation] = useState();
   const [userLocation, setUserLocation] = useState();
   const [isLocationsLoading, setIsLocationsLoading] = useState(true);
@@ -51,7 +42,7 @@ function Map({ navigation }) {
       searchLng = userLocation.coords.longitude;
     }
     navigation.setOptions({
-      headerRight: () => {
+      headerLeft: () => {
         return (
           <Button
             onPress={() =>
@@ -63,6 +54,9 @@ function Map({ navigation }) {
             title="Search"
           />
         );
+      },
+      headerRight: () => {
+        return <Button onPress={authCtx.logout} title="Sign out" />;
       },
     });
   }, [userLocation]);
