@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import AppLoading from "expo-app-loading";
+// import AppLoading from "expo-app-loading";
+import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, Button } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
@@ -191,8 +192,9 @@ function Root() {
     fetchToken();
   }, []);
   if (isTryingLogin) {
-    return <AppLoading />;
+    SplashScreen.preventAutoHideAsync();
   }
+  SplashScreen.hideAsync();
   return <Navigation />;
 }
 
