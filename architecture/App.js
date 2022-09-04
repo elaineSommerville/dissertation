@@ -120,7 +120,7 @@ function AuthenticatedStack() {
                 icon="person"
                 color="white"
                 size={24}
-                onPress={() => navigation.replace("profile")}
+                onPress={() => navigation.replace("profile", { parent: "map" })}
               />
             );
           },
