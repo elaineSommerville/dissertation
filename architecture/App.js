@@ -96,7 +96,14 @@ function AuthStack() {
 function AuthenticatedStack() {
   const authCtx = useContext(AuthContext);
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: { backgroundColor: "red" },
+        headerTitleStyle: { fontWeight: "bold" },
+        headerTintColor: "white",
+        contentStyle: { backgroundColor: "white" },
+      }}
+    >
       <Stack.Screen
         name="map"
         component={Map}
@@ -104,7 +111,7 @@ function AuthenticatedStack() {
           title: "Map",
         }}
       />
-      <Stack.Screen
+      {/* <Stack.Screen
         name="welcome"
         component={WelcomeScreen}
         options={{
@@ -117,7 +124,7 @@ function AuthenticatedStack() {
             />
           ),
         }}
-      />
+      /> */}
       <Stack.Screen
         name="locationDetails"
         component={LocationDetailsScreen}

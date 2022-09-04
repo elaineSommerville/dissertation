@@ -7,6 +7,7 @@ import {
   Pressable,
   Dimensions,
   Button,
+  Linking,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useContext, useState, useEffect, useRef } from "react";
@@ -37,6 +38,7 @@ function LocationDetailsScreen({ route, navigation }) {
   const [error, setError] = useState();
   const isCarousel = useRef(null);
   const [index, setIndex] = useState(0);
+  const [iconPath, setIconPath] = useState();
 
   useEffect(() => {
     async function getLocation(locationId) {
@@ -52,7 +54,6 @@ function LocationDetailsScreen({ route, navigation }) {
   }, []);
 
   const name = fetchedLocation.name;
-  const address = fetchedLocation.address;
   const images = fetchedLocation.images;
   const videos = fetchedLocation.videos;
   const stories = fetchedLocation.stories;
@@ -76,30 +77,61 @@ function LocationDetailsScreen({ route, navigation }) {
 
   function renderVisitorInfo(visitorInfo, openToPublic) {
     if (!openToPublic) {
-      return <Text>This building is not open to the public.</Text>;
+      return (
+        <Text style={styles.info}>
+          This building is not open to the public.
+        </Text>
+      );
     } else {
-      if (visitorInfo == null) {
+      if (
+        visitorInfo == null ||
+        (!("uri" in visitorInfo) &&
+          !("phone" in visitorInfo) &&
+          !("email" in visitorInfo))
+      ) {
         return (
-          <Text>
+          <Text style={styles.info}>
             This building is open to the public, but we don't have any visitor
             information for this building.
           </Text>
         );
       }
       return (
-        <View>
-          <View style={styles.visitorInfoRow}>
-            <Ionicons name="call-outline" size={25} />
-            <Text style={styles.visitorInfoText}>{visitorInfo.phone}</Text>
-          </View>
-          <View style={styles.visitorInfoRow}>
-            <Ionicons name="globe-outline" size={25} />
-            <Text style={styles.visitorInfoText}>{visitorInfo.uri}</Text>
-          </View>
-          <View style={styles.visitorInfoRow}>
-            <Ionicons name="mail-outline" size={25} />
-            <Text style={styles.visitorInfoText}>{visitorInfo.email}</Text>
-          </View>
+        <View style={{ width: "100%" }}>
+          {visitorInfo.phone && (
+            <View style={styles.visitorInfoRow}>
+              <View style={styles.visitorInfoIcon}>
+                <Ionicons name="call-outline" size={25} />
+              </View>
+              <View style={styles.visitorInfoText}>
+                <Text style={styles.visitorInfoText}>{visitorInfo.phone}</Text>
+              </View>
+            </View>
+          )}
+          {visitorInfo.uri && (
+            <View style={styles.visitorInfoRow}>
+              <View style={styles.visitorInfoIcon}>
+                <Ionicons name="globe-outline" size={25} />
+              </View>
+              <View style={styles.visitorInfoText}>
+                <Button
+                  style={styles.visitorInfoTextButton}
+                  onPress={() => Linking.openURL(visitorInfo.uri)}
+                  title={visitorInfo.uri}
+                />
+              </View>
+            </View>
+          )}
+          {visitorInfo.email && (
+            <View style={styles.visitorInfoRow}>
+              <View style={styles.visitorInfoIcon}>
+                <Ionicons name="mail-outline" size={25} />
+              </View>
+              <View style={styles.visitorInfoText}>
+                <Text style={styles.visitorInfoText}>{visitorInfo.email}</Text>
+              </View>
+            </View>
+          )}
         </View>
       );
     }
@@ -153,31 +185,48 @@ function LocationDetailsScreen({ route, navigation }) {
     // once location data has been received, push images into imageUri array
     // for image slider
 
-    images.map((image) => {
-      if ("imageData" in image) {
-        imageUris.push("data:image/jpeg;base64," + image.imageData);
-        imageCaptions.push(image.name);
-      } else {
-        imageUris.push(image.uri);
-        imageCaptions.push(image.name);
-      }
-    });
-    videos.map((video) => {
-      videoUris.push(video.uri);
-      videoCaptions.push(video.name);
-      videoThumbnails.push(video.thumbnail);
-    });
+    "images" in fetchedLocation &&
+      fetchedLocation.images != null &&
+      images.map((image) => {
+        if ("imageData" in image) {
+          imageUris.push("data:image/jpeg;base64," + image.imageData);
+          imageCaptions.push(image.name);
+        } else {
+          imageUris.push(image.uri);
+          imageCaptions.push(image.name);
+        }
+      });
+    "videos" in fetchedLocation &&
+      fetchedLocation.videos != null &&
+      videos.map((video) => {
+        videoUris.push(video.uri);
+        videoCaptions.push(video.name);
+        videoThumbnails.push(video.thumbnail);
+      });
+
+    const markerImages = {
+      // TO DO: CREATE UNIVERSITY ICON
+      university: require("../assets/icons/map-pin-university.png"),
+      education: require("../assets/icons/map-pin-generic.png"),
+      library: require("../assets/icons/map-pin-library.png"),
+      residential: require("../assets/icons/map-pin-generic.png"),
+      commercial: require("../assets/icons/map-pin-generic.png"),
+      industrial: require("../assets/icons/map-pin-generic.png"),
+    };
 
     return (
       <AuthContextProvider>
         <ScrollView style={styles.rootContainer}>
-          <View style={styles.innerContainer}>
+          <View style={styles.rowView}>
             <View style={styles.typeView}>
-              <Ionicons name="home-outline" size={30} />
+              <Image
+                source={markerImages[type.toLowerCase()]}
+                style={styles.locationIcon}
+              />
             </View>
             <View style={styles.nameAddressView}>
               <Text style={styles.nameView}>{name}</Text>
-              <Text style={styles.addressView}>{address}</Text>
+              <Text style={styles.addressView}>{visitorInfo.address}</Text>
             </View>
           </View>
           <SliderBox
@@ -233,149 +282,181 @@ function LocationDetailsScreen({ route, navigation }) {
               }}
             />
           )}
-          <View style={styles.innerContainer}>
-            <Text style={styles.heading}>Type</Text>
-            <Text style={styles.heading}>Style</Text>
+          <View style={styles.rowView}>
+            <Text style={styles.heading50}>Type</Text>
+            <Text style={styles.heading50}>Style</Text>
           </View>
-          <View style={styles.innerContainer}>
-            <Text style={styles.info}>{type}</Text>
-            <Text style={styles.info}>{style}</Text>
+          <View style={styles.rowView}>
+            <Text style={styles.info50}>{type}</Text>
+            <Text style={styles.info50}>{style}</Text>
           </View>
-          <View style={styles.innerContainer}>
-            <Text style={styles.heading}>Build Date</Text>
-            <Text style={styles.heading}>Architect</Text>
+          <View style={styles.rowView}>
+            <Text style={styles.heading50}>Build Date</Text>
+            <Text style={styles.heading50}>Architect</Text>
           </View>
-          <View style={styles.innerContainer}>
-            <Text style={styles.info}>{buildDateStr}</Text>
+          <View style={styles.rowView}>
+            <Text style={styles.info50}>{buildDateStr}</Text>
             <View style={styles.listView}>
               {architects.map((architect, index) => {
                 return (
-                  <Text style={styles.info} key={index}>
+                  <Text style={styles.info50} key={index}>
                     {architect.name}
                   </Text>
                 );
               })}
             </View>
           </View>
-          <View style={styles.innerContainer}>
-            <View style={styles.descriptionView}>
+          <View style={styles.rowView}>
+            <View style={styles.columnView}>
               <Text style={styles.heading}>Description</Text>
-              <Text>{description}</Text>
+              <Text style={styles.info}>{description}</Text>
             </View>
           </View>
-          <View style={styles.innerContainer}>
-            <View style={styles.descriptionView}>
+          <View style={styles.rowView}>
+            <View style={styles.columnView}>
               <Text style={styles.heading}>Visitor Information</Text>
             </View>
           </View>
-          <View style={styles.innerContainer}>
-            <View style={styles.descriptionView}>
+          <View style={styles.rowView}>
+            <View style={styles.columnView}>
               {renderVisitorInfo(visitorInfo, openToPublic)}
-              {/* {renderOpeningTimes(visitorInfo)} */}
-              <View style={styles.headerRow}>
-                <Ionicons name="time-outline" size={25} />
-                <Text style={styles.heading}>Opening Hours</Text>
-              </View>
-              {"openingTimes" in visitorInfo ? (
-                visitorInfo.openingTimes.map((item, key) => {
-                  if (item.status === "open") {
-                    return (
-                      <View key={key}>
-                        <Text>
-                          <Ionicons name="lock-open-outline" size={25} />
+            </View>
+          </View>
+          <View style={styles.columnView}>
+            {/* <View style={styles.headerRow}> */}
+            {/* <View style={styles.openingHoursIcon}>
+                  <Ionicons name="time-outline" size={25} />
+                </View> */}
+            <View>
+              <Text style={styles.heading}>Opening Hours</Text>
+            </View>
+            {/* </View> */}
+            {"openingTimes" in visitorInfo ? (
+              visitorInfo.openingTimes.map((item, key) => {
+                if (item.status === "open") {
+                  return (
+                    <View style={styles.openingHoursRow} key={key}>
+                      <View style={styles.openingHoursIcon}>
+                        {/* <Ionicons name="lock-open-outline" size={25} /> */}
+                        <Ionicons name="checkmark" size={25} color="green" />
+                      </View>
+                      <View style={styles.openingHoursDay}>
+                        <Text style={styles.openingHoursDay}>
                           {item.day[0].toUpperCase() + item.day.substring(1)}
+                        </Text>
+                      </View>
+                      <View style={styles.openingHoursTimes}>
+                        <Text style={styles.openingHoursTimes}>
                           {item.openFrom} - {item.closeAt}
                         </Text>
                       </View>
-                    );
-                  } else {
-                    return (
-                      <View key={key}>
-                        <Text>
-                          <Ionicons name="lock-closed-outline" size={25} />
-                          {item.day[0].toUpperCase() +
-                            item.day.substring(1)}{" "}
-                          Closed
-                        </Text>
-                      </View>
-                    );
-                  }
-                })
-              ) : (
-                <View>
-                  <Text>No information available</Text>
-                </View>
-              )}
-              {/* this ois the start of the admission fees stuff */}
-              <View style={styles.headerRow}>
-                <Ionicons name="cash-outline" size={25} />
-                <Text style={styles.heading}>Admission Fees</Text>
-              </View>
-              {"admissionFees" in visitorInfo ? (
-                visitorInfo.admissionFees.map((item, key) => {
-                  return (
-                    <View key={key}>
-                      <Text>
-                        {item.feeName[0].toUpperCase() +
-                          item.feeName.substring(1)}
-                        {"    "}£{item.feeAmount.toFixed(2)}
-                      </Text>
                     </View>
                   );
-                })
-              ) : (
-                <View>
-                  <Text>No information available</Text>
-                </View>
-              )}
+                } else {
+                  return (
+                    <View style={styles.openingHoursRow} key={key}>
+                      <View style={styles.openingHoursIcon}>
+                        {/* <Ionicons name="lock-closed-outline" size={25} /> */}
+                        <Ionicons name="close" size={25} color="#de1028" />
+                      </View>
+                      <View style={styles.openingHoursDay}>
+                        <Text style={styles.openingHoursDay}>
+                          {item.day[0].toUpperCase() + item.day.substring(1)}
+                        </Text>
+                      </View>
+                      <View style={styles.openingHoursTimes}>
+                        <Text style={styles.openingHoursTimes}>Closed</Text>
+                      </View>
+                    </View>
+                  );
+                }
+              })
+            ) : (
+              <View>
+                <Text style={styles.info}>No information available</Text>
+              </View>
+            )}
+            {/* this ois the start of the admission fees stuff */}
+            <View style={styles.headerRow}>
+              {/* <Ionicons name="cash-outline" size={25} /> */}
+              <Text style={styles.heading}>Admission Fees</Text>
             </View>
+            {"admissionFees" in visitorInfo ? (
+              visitorInfo.admissionFees.map((item, key) => {
+                return (
+                  <View style={styles.openingHoursRow} key={key}>
+                    <View style={styles.openingHoursIcon}></View>
+                    <View style={styles.openingHoursDay}>
+                      <Text style={styles.openingHoursDay}>
+                        {item.feeName[0].toUpperCase() +
+                          item.feeName.substring(1)}
+                      </Text>
+                    </View>
+                    <View style={styles.openingHoursTimes}>
+                      <Text style={styles.openingHoursTimes}>
+                        £{item.feeAmount.toFixed(2)}
+                      </Text>
+                    </View>
+                  </View>
+                );
+              })
+            ) : (
+              <View>
+                <Text style={styles.info}>No information available</Text>
+              </View>
+            )}
           </View>
+          {/* </View> */}
           <View style={styles.headerRow}>
-            <Ionicons name="film-outline" size={25} />
+            {/* <Ionicons name="film-outline" size={25} /> */}
             <Text style={styles.heading}>Videos</Text>
           </View>
-          <SliderBox
-            images={videoThumbnails}
-            sliderBoxHeight={200}
-            onCurrentImagePressed={(index) =>
-              navigation.navigate("videoScreen", {
-                uri: videoUris[index],
-                caption: videoCaptions[index],
-              })
-            }
-            dotColor="#FFEE58"
-            inactiveDotColor="#90A4AE"
-            paginationBoxVerticalPadding={0}
-            autoplay
-            circleLoop
-            resizeMethod={"resize"}
-            resizeMode={"cover"}
-            paginationBoxStyle={{
-              position: "absolute",
-              bottom: 0,
-              paddingLeft: 0,
-              alignItems: "center",
-              alignSelf: "center",
-              justifyContent: "flex-start",
-            }}
-            dotStyle={{
-              width: 10,
-              height: 10,
-              borderRadius: 5,
-              marginHorizontal: 0,
-              padding: 0,
-              margin: 0,
-              marginBottom: 10,
-              backgroundColor: "rgba(128, 128, 128, 0.92)",
-            }}
-            ImageComponentStyle={{
-              borderRadius: 10,
-              width: "87%",
-              marginTop: 5,
-              marginLeft: -50,
-            }}
-            imageLoadingColor="#2196F3"
-          />
+          {"videos" in fetchedLocation && fetchedLocation.videos != null ? (
+            <SliderBox
+              images={videoThumbnails}
+              sliderBoxHeight={200}
+              onCurrentImagePressed={(index) =>
+                navigation.navigate("videoScreen", {
+                  uri: videoUris[index],
+                  caption: videoCaptions[index],
+                })
+              }
+              dotColor="#FFEE58"
+              inactiveDotColor="#90A4AE"
+              paginationBoxVerticalPadding={0}
+              autoplay
+              circleLoop
+              resizeMethod={"resize"}
+              resizeMode={"cover"}
+              paginationBoxStyle={{
+                position: "absolute",
+                bottom: 0,
+                paddingLeft: 0,
+                alignItems: "center",
+                alignSelf: "center",
+                justifyContent: "flex-start",
+              }}
+              dotStyle={{
+                width: 10,
+                height: 10,
+                borderRadius: 5,
+                marginHorizontal: 0,
+                padding: 0,
+                margin: 0,
+                marginBottom: 10,
+                backgroundColor: "rgba(128, 128, 128, 0.92)",
+              }}
+              ImageComponentStyle={{
+                borderRadius: 10,
+                width: "87%",
+                marginTop: 5,
+                marginLeft: -50,
+              }}
+              imageLoadingColor="#2196F3"
+            />
+          ) : (
+            <Text style={styles.info}>No videos have been added yet.</Text>
+          )}
           {authCtx.isAuthenticated && (
             <Button
               title="+ Add a video"
@@ -388,7 +469,7 @@ function LocationDetailsScreen({ route, navigation }) {
             />
           )}
           <View style={styles.headerRow}>
-            <Ionicons name="book-outline" size={25} />
+            {/* <Ionicons name="book-outline" size={25} /> */}
             <Text style={styles.heading}>Stories</Text>
           </View>
           <View style={{ flex: 1, flexDirection: "row" }}>
@@ -427,24 +508,32 @@ export default LocationDetailsScreen;
 
 const styles = StyleSheet.create({
   rootContainer: {
-    marginBottom: 32,
-    marginHorizontal: 25,
+    paddingHorizontal: 25,
+    backgroundColor: "white",
+    paddingTop: 10,
   },
   nameView: {
-    fontWeight: "bold",
+    // fontWeight: "bold",
+    fontSize: 24,
+    paddingVertical: 6,
+    paddingLeft: 10,
   },
   addressView: {
-    color: "#888",
+    color: "#999",
+    fontSize: 16,
+    marginBottom: 6,
+    paddingLeft: 10,
   },
   typeView: {
     width: 75,
     flex: 0.15,
+    paddingTop: 12,
   },
   nameAddressView: {
     flex: 0.85,
     alignItems: "flex-start",
   },
-  innerContainer: {
+  rowView: {
     fontSize: 18,
     flexDirection: "row",
   },
@@ -452,18 +541,49 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 300,
   },
-  heading: {
+  heading50: {
     fontWeight: "bold",
     flex: 0.5,
+    fontSize: 16,
+    paddingTop: 12,
+  },
+  info50: {
+    flex: 0.5,
+    paddingTop: 4,
+    fontSize: 16,
+  },
+  heading: {
+    fontWeight: "bold",
+    fontSize: 16,
+    paddingTop: 12,
+    marginBottom: 6,
   },
   info: {
-    flex: 0.5,
+    paddingTop: 4,
+    fontSize: 16,
+  },
+  openingHoursRow: {
+    flexDirection: "row",
+    flex: 1,
+    paddingTop: 6,
+    marginVertical: 2,
+  },
+  openingHoursIcon: {
+    flex: 1,
+  },
+  openingHoursDay: {
+    flex: 4,
+    fontSize: 16,
+  },
+  openingHoursTimes: {
+    flex: 4,
+    fontSize: 16,
   },
   listView: {
     flexDirection: "column",
     flex: 0.5,
   },
-  descriptionView: {
+  columnView: {
     flexDirection: "column",
   },
   loadingScreen: {
@@ -473,10 +593,19 @@ const styles = StyleSheet.create({
   },
   visitorInfoRow: {
     flexDirection: "row",
-    alignItems: "center",
+    flex: 1,
+    // alignItems: "center",
+    paddingTop: 8,
+  },
+  visitorInfoIcon: {
+    // flex: 1,
+    // backgroundColor: "green",
   },
   visitorInfoText: {
-    paddingLeft: 12,
+    paddingLeft: 7,
+    fontSize: 16,
+    // flex: 2,
+    // backgroundColor: "red",
   },
   headerRow: {
     flexDirection: "row",
@@ -511,5 +640,15 @@ const styles = StyleSheet.create({
     color: "#222",
     fontSize: 14,
     paddingHorizontal: 20,
+  },
+  locationIcon: {
+    width: 50,
+    height: 50,
+  },
+  visitorInfoTextButton: {
+    paddingTop: -5,
+    paddingLeft: 7,
+    marginTop: -5,
+    fontSize: 16,
   },
 });

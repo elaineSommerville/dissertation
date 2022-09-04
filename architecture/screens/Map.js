@@ -52,11 +52,14 @@ function Map({ navigation }) {
               })
             }
             title="Search"
+            color="white"
           />
         );
       },
       headerRight: () => {
-        return <Button onPress={authCtx.logout} title="Sign out" />;
+        return (
+          <Button onPress={authCtx.logout} title="Sign out" color="white" />
+        );
       },
     });
   }, [userLocation]);

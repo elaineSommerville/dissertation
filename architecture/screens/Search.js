@@ -19,6 +19,8 @@ function Search({ navigation, route }) {
         hideNavigationBar: false,
         autoFocus: true,
         onChangeText: (event) => setSearch(event.nativeEvent.text),
+        textColor: "black",
+        barTintColor: "white",
       },
     });
   }, [navigation]);
