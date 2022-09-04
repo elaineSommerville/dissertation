@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, View, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { Colors } from "../constants/styles";
 
 function PrimaryButton({ title, onPress }) {
   return (
@@ -29,7 +30,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   buttonInnerContainer: {
-    backgroundColor: "red",
+    backgroundColor: Colors.primary500,
     paddingVertical: 8,
     paddingHorizontal: 16,
     elevation: 2,

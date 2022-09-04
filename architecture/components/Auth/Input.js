@@ -35,8 +35,9 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   label: {
-    color: "white",
+    color: "black",
     marginBottom: 4,
+    fontSize: 16,
   },
   labelInvalid: {
     color: Colors.error500,
@@ -47,6 +48,8 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 4,
     fontSize: 16,
+    borderColor: "black",
+    borderWidth: 1,
   },
   inputInvalid: {
     backgroundColor: Colors.error100,
