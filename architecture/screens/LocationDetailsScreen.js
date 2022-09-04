@@ -83,7 +83,12 @@ function LocationDetailsScreen({ route, navigation }) {
         </Text>
       );
     } else {
-      if (visitorInfo == null) {
+      if (
+        visitorInfo == null ||
+        (!("uri" in visitorInfo) &&
+          !("phone" in visitorInfo) &&
+          !("email" in visitorInfo))
+      ) {
         return (
           <Text style={styles.info}>
             This building is open to the public, but we don't have any visitor
@@ -406,48 +411,52 @@ function LocationDetailsScreen({ route, navigation }) {
             {/* <Ionicons name="film-outline" size={25} /> */}
             <Text style={styles.heading}>Videos</Text>
           </View>
-          <SliderBox
-            images={videoThumbnails}
-            sliderBoxHeight={200}
-            onCurrentImagePressed={(index) =>
-              navigation.navigate("videoScreen", {
-                uri: videoUris[index],
-                caption: videoCaptions[index],
-              })
-            }
-            dotColor="#FFEE58"
-            inactiveDotColor="#90A4AE"
-            paginationBoxVerticalPadding={0}
-            autoplay
-            circleLoop
-            resizeMethod={"resize"}
-            resizeMode={"cover"}
-            paginationBoxStyle={{
-              position: "absolute",
-              bottom: 0,
-              paddingLeft: 0,
-              alignItems: "center",
-              alignSelf: "center",
-              justifyContent: "flex-start",
-            }}
-            dotStyle={{
-              width: 10,
-              height: 10,
-              borderRadius: 5,
-              marginHorizontal: 0,
-              padding: 0,
-              margin: 0,
-              marginBottom: 10,
-              backgroundColor: "rgba(128, 128, 128, 0.92)",
-            }}
-            ImageComponentStyle={{
-              borderRadius: 10,
-              width: "87%",
-              marginTop: 5,
-              marginLeft: -50,
-            }}
-            imageLoadingColor="#2196F3"
-          />
+          {"videos" in fetchedLocation && fetchedLocation.videos != null ? (
+            <SliderBox
+              images={videoThumbnails}
+              sliderBoxHeight={200}
+              onCurrentImagePressed={(index) =>
+                navigation.navigate("videoScreen", {
+                  uri: videoUris[index],
+                  caption: videoCaptions[index],
+                })
+              }
+              dotColor="#FFEE58"
+              inactiveDotColor="#90A4AE"
+              paginationBoxVerticalPadding={0}
+              autoplay
+              circleLoop
+              resizeMethod={"resize"}
+              resizeMode={"cover"}
+              paginationBoxStyle={{
+                position: "absolute",
+                bottom: 0,
+                paddingLeft: 0,
+                alignItems: "center",
+                alignSelf: "center",
+                justifyContent: "flex-start",
+              }}
+              dotStyle={{
+                width: 10,
+                height: 10,
+                borderRadius: 5,
+                marginHorizontal: 0,
+                padding: 0,
+                margin: 0,
+                marginBottom: 10,
+                backgroundColor: "rgba(128, 128, 128, 0.92)",
+              }}
+              ImageComponentStyle={{
+                borderRadius: 10,
+                width: "87%",
+                marginTop: 5,
+                marginLeft: -50,
+              }}
+              imageLoadingColor="#2196F3"
+            />
+          ) : (
+            <Text style={styles.info}>No videos have been added yet.</Text>
+          )}
           {authCtx.isAuthenticated && (
             <Button
               title="+ Add a video"
@@ -499,24 +508,26 @@ export default LocationDetailsScreen;
 
 const styles = StyleSheet.create({
   rootContainer: {
-    paddingBottom: 32,
     paddingHorizontal: 25,
     backgroundColor: "white",
+    paddingTop: 10,
   },
   nameView: {
     // fontWeight: "bold",
     fontSize: 24,
     paddingVertical: 6,
+    paddingLeft: 10,
   },
   addressView: {
     color: "#999",
     fontSize: 16,
     marginBottom: 6,
+    paddingLeft: 10,
   },
   typeView: {
     width: 75,
     flex: 0.15,
-    paddingVertical: 6,
+    paddingTop: 12,
   },
   nameAddressView: {
     flex: 0.85,
@@ -545,6 +556,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
     paddingTop: 12,
+    marginBottom: 6,
   },
   info: {
     paddingTop: 4,
