@@ -32,6 +32,7 @@ function Map({ navigation }) {
     latitudeDelta: 0.05, // essentially configures the zoom
     longitudeDelta: 0.05, // essentially configures the zoom
   });
+
   //  ***** START ADD SEARCH ICON *****
   useLayoutEffect(() => {
     let searchLat = 54.59803;
@@ -56,11 +57,11 @@ function Map({ navigation }) {
           />
         );
       },
-      headerRight: () => {
-        return (
-          <Button onPress={authCtx.logout} title="Sign out" color="white" />
-        );
-      },
+      // headerRight: () => {
+      //   return (
+      //     <Button onPress={authCtx.logout} title="Sign out" color="white" />
+      //   );
+      // },
     });
   }, [userLocation]);
   // ***** END ADD SEARCH ICON *****
@@ -119,8 +120,7 @@ function Map({ navigation }) {
 
     getLocationsHeaders(region);
   }, [region]);
-  // ***** END GET LOCATIONS *****
-
+  // ***** END GET LOCATIONS ****
   function onMarkerPressHandler(locationId) {
     navigation.navigate("locationDetails", { locationId: locationId });
   }
@@ -137,8 +137,6 @@ function Map({ navigation }) {
     };
 
     return fetchedLocationsHeadersWithinMap.map((location) => {
-      // console.log("fetchedLocationsHeadersWithinMap: ");
-      // console.log(fetchedLocationsHeadersWithinMap);
       return (
         <Marker
           key={location._id}
@@ -176,7 +174,7 @@ function Map({ navigation }) {
       </View>
     );
   } else {
-    console.log(userLocation);
+    // console.log(userLocation);
     return (
       <MapView
         showsUserLocation
