@@ -7,6 +7,7 @@ import {
   Pressable,
   Dimensions,
   Button,
+  Linking,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useContext, useState, useEffect, useRef } from "react";
@@ -37,6 +38,7 @@ function LocationDetailsScreen({ route, navigation }) {
   const [error, setError] = useState();
   const isCarousel = useRef(null);
   const [index, setIndex] = useState(0);
+  const [iconPath, setIconPath] = useState();
 
   useEffect(() => {
     async function getLocation(locationId) {
@@ -91,30 +93,40 @@ function LocationDetailsScreen({ route, navigation }) {
       }
       return (
         <View style={{ width: "100%" }}>
-          <View style={styles.visitorInfoRow}>
-            <View style={styles.visitorInfoIcon}>
-              <Ionicons name="call-outline" size={25} />
+          {visitorInfo.phone && (
+            <View style={styles.visitorInfoRow}>
+              <View style={styles.visitorInfoIcon}>
+                <Ionicons name="call-outline" size={25} />
+              </View>
+              <View style={styles.visitorInfoText}>
+                <Text style={styles.visitorInfoText}>{visitorInfo.phone}</Text>
+              </View>
             </View>
-            <View style={styles.visitorInfoText}>
-              <Text style={styles.visitorInfoText}>{visitorInfo.phone}</Text>
+          )}
+          {visitorInfo.uri && (
+            <View style={styles.visitorInfoRow}>
+              <View style={styles.visitorInfoIcon}>
+                <Ionicons name="globe-outline" size={25} />
+              </View>
+              <View style={styles.visitorInfoText}>
+                <Button
+                  style={styles.visitorInfoTextButton}
+                  onPress={() => Linking.openURL(visitorInfo.uri)}
+                  title={visitorInfo.uri}
+                />
+              </View>
             </View>
-          </View>
-          <View style={styles.visitorInfoRow}>
-            <View style={styles.visitorInfoIcon}>
-              <Ionicons name="globe-outline" size={25} />
+          )}
+          {visitorInfo.email && (
+            <View style={styles.visitorInfoRow}>
+              <View style={styles.visitorInfoIcon}>
+                <Ionicons name="mail-outline" size={25} />
+              </View>
+              <View style={styles.visitorInfoText}>
+                <Text style={styles.visitorInfoText}>{visitorInfo.email}</Text>
+              </View>
             </View>
-            <View style={styles.visitorInfoText}>
-              <Text style={styles.visitorInfoText}>{visitorInfo.uri}</Text>
-            </View>
-          </View>
-          <View style={styles.visitorInfoRow}>
-            <View style={styles.visitorInfoIcon}>
-              <Ionicons name="mail-outline" size={25} />
-            </View>
-            <View style={styles.visitorInfoText}>
-              <Text style={styles.visitorInfoText}>{visitorInfo.email}</Text>
-            </View>
-          </View>
+          )}
         </View>
       );
     }
@@ -168,20 +180,34 @@ function LocationDetailsScreen({ route, navigation }) {
     // once location data has been received, push images into imageUri array
     // for image slider
 
-    images.map((image) => {
-      if ("imageData" in image) {
-        imageUris.push("data:image/jpeg;base64," + image.imageData);
-        imageCaptions.push(image.name);
-      } else {
-        imageUris.push(image.uri);
-        imageCaptions.push(image.name);
-      }
-    });
-    videos.map((video) => {
-      videoUris.push(video.uri);
-      videoCaptions.push(video.name);
-      videoThumbnails.push(video.thumbnail);
-    });
+    "images" in fetchedLocation &&
+      fetchedLocation.images != null &&
+      images.map((image) => {
+        if ("imageData" in image) {
+          imageUris.push("data:image/jpeg;base64," + image.imageData);
+          imageCaptions.push(image.name);
+        } else {
+          imageUris.push(image.uri);
+          imageCaptions.push(image.name);
+        }
+      });
+    "videos" in fetchedLocation &&
+      fetchedLocation.videos != null &&
+      videos.map((video) => {
+        videoUris.push(video.uri);
+        videoCaptions.push(video.name);
+        videoThumbnails.push(video.thumbnail);
+      });
+
+    const markerImages = {
+      // TO DO: CREATE UNIVERSITY ICON
+      university: require("../assets/icons/map-pin-university.png"),
+      education: require("../assets/icons/map-pin-generic.png"),
+      library: require("../assets/icons/map-pin-library.png"),
+      residential: require("../assets/icons/map-pin-generic.png"),
+      commercial: require("../assets/icons/map-pin-generic.png"),
+      industrial: require("../assets/icons/map-pin-generic.png"),
+    };
 
     return (
       <AuthContextProvider>
@@ -189,7 +215,7 @@ function LocationDetailsScreen({ route, navigation }) {
           <View style={styles.rowView}>
             <View style={styles.typeView}>
               <Image
-                source={require("../assets/icons/map-pin-university.png")}
+                source={markerImages[type.toLowerCase()]}
                 style={styles.locationIcon}
               />
             </View>
@@ -606,5 +632,11 @@ const styles = StyleSheet.create({
   locationIcon: {
     width: 50,
     height: 50,
+  },
+  visitorInfoTextButton: {
+    paddingTop: -5,
+    paddingLeft: 7,
+    marginTop: -5,
+    fontSize: 16,
   },
 });
