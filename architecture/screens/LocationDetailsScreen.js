@@ -75,11 +75,15 @@ function LocationDetailsScreen({ route, navigation }) {
 
   function renderVisitorInfo(visitorInfo, openToPublic) {
     if (!openToPublic) {
-      return <Text>This building is not open to the public.</Text>;
+      return (
+        <Text style={styles.info}>
+          This building is not open to the public.
+        </Text>
+      );
     } else {
       if (visitorInfo == null) {
         return (
-          <Text>
+          <Text style={styles.info}>
             This building is open to the public, but we don't have any visitor
             information for this building.
           </Text>
@@ -184,7 +188,6 @@ function LocationDetailsScreen({ route, navigation }) {
         <ScrollView style={styles.rootContainer}>
           <View style={styles.rowView}>
             <View style={styles.typeView}>
-              {/* <Ionicons name="home-outline" size={30} /> */}
               <Image
                 source={require("../assets/icons/map-pin-university.png")}
                 style={styles.locationIcon}
@@ -297,125 +300,80 @@ function LocationDetailsScreen({ route, navigation }) {
               <Text style={styles.heading}>Opening Hours</Text>
             </View>
             {/* </View> */}
-            {visitorInfo.openingTimes.map((item, key) => {
-              if (item.status === "open") {
-                return (
-                  <View style={styles.openingHoursRow} key={key}>
-                    <View style={styles.openingHoursIcon}>
-                      {/* <Ionicons name="lock-open-outline" size={25} /> */}
-                      <Ionicons name="checkmark" size={25} color="green" />
+            {"openingTimes" in visitorInfo ? (
+              visitorInfo.openingTimes.map((item, key) => {
+                if (item.status === "open") {
+                  return (
+                    <View style={styles.openingHoursRow} key={key}>
+                      <View style={styles.openingHoursIcon}>
+                        {/* <Ionicons name="lock-open-outline" size={25} /> */}
+                        <Ionicons name="checkmark" size={25} color="green" />
+                      </View>
+                      <View style={styles.openingHoursDay}>
+                        <Text style={styles.openingHoursDay}>
+                          {item.day[0].toUpperCase() + item.day.substring(1)}
+                        </Text>
+                      </View>
+                      <View style={styles.openingHoursTimes}>
+                        <Text style={styles.openingHoursTimes}>
+                          {item.openFrom} - {item.closeAt}
+                        </Text>
+                      </View>
                     </View>
-                    <View style={styles.openingHoursDay}>
-                      <Text style={styles.openingHoursDay}>
-                        {item.day[0].toUpperCase() + item.day.substring(1)}
-                      </Text>
+                  );
+                } else {
+                  return (
+                    <View style={styles.openingHoursRow} key={key}>
+                      <View style={styles.openingHoursIcon}>
+                        {/* <Ionicons name="lock-closed-outline" size={25} /> */}
+                        <Ionicons name="close" size={25} color="#de1028" />
+                      </View>
+                      <View style={styles.openingHoursDay}>
+                        <Text style={styles.openingHoursDay}>
+                          {item.day[0].toUpperCase() + item.day.substring(1)}
+                        </Text>
+                      </View>
+                      <View style={styles.openingHoursTimes}>
+                        <Text style={styles.openingHoursTimes}>Closed</Text>
+                      </View>
                     </View>
-                    <View style={styles.openingHoursTimes}>
-                      <Text style={styles.openingHoursTimes}>
-                        {item.openFrom} - {item.closeAt}
-                      </Text>
-                    </View>
-                  </View>
-                );
-              } else {
-                return (
-                  <View style={styles.openingHoursRow} key={key}>
-                    <View style={styles.openingHoursIcon}>
-                      {/* <Ionicons name="lock-closed-outline" size={25} /> */}
-                      <Ionicons name="close" size={25} color="#de1028" />
-                    </View>
-                    <View style={styles.openingHoursDay}>
-                      <Text style={styles.openingHoursDay}>
-                        {item.day[0].toUpperCase() + item.day.substring(1)}
-                      </Text>
-                    </View>
-                    <View style={styles.openingHoursTimes}>
-                      <Text style={styles.openingHoursTimes}>Closed</Text>
-                    </View>
-                  </View>
-                );
-              }
-            })}
+                  );
+                }
+              })
+            ) : (
+              <View>
+                <Text style={styles.info}>No information available</Text>
+              </View>
+            )}
             {/* this ois the start of the admission fees stuff */}
             <View style={styles.headerRow}>
               {/* <Ionicons name="cash-outline" size={25} /> */}
               <Text style={styles.heading}>Admission Fees</Text>
-              {/* {renderOpeningTimes(visitorInfo)} */}
-              <View style={styles.headerRow}>
-                <Ionicons name="time-outline" size={25} />
-                <Text style={styles.heading}>Opening Hours</Text>
-              </View>
-              {"openingTimes" in visitorInfo ? (
-                visitorInfo.openingTimes.map((item, key) => {
-                  if (item.status === "open") {
-                    return (
-                      <View key={key}>
-                        <Text>
-                          <Ionicons name="lock-open-outline" size={25} />
-                          {item.day[0].toUpperCase() + item.day.substring(1)}
-                          {item.openFrom} - {item.closeAt}
-                        </Text>
-                      </View>
-                    );
-                  } else {
-                    return (
-                      <View key={key}>
-                        <Text>
-                          <Ionicons name="lock-closed-outline" size={25} />
-                          {item.day[0].toUpperCase() +
-                            item.day.substring(1)}{" "}
-                          Closed
-                        </Text>
-                      </View>
-                    );
-                  }
-                })
-              ) : (
-                <View>
-                  <Text>No information available</Text>
-                </View>
-              )}
-              {/* this ois the start of the admission fees stuff */}
-              <View style={styles.headerRow}>
-                <Ionicons name="cash-outline" size={25} />
-                <Text style={styles.heading}>Admission Fees</Text>
-              </View>
-              {"admissionFees" in visitorInfo ? (
-                visitorInfo.admissionFees.map((item, key) => {
-                  return (
-                    <View key={key}>
-                      <Text>
+            </View>
+            {"admissionFees" in visitorInfo ? (
+              visitorInfo.admissionFees.map((item, key) => {
+                return (
+                  <View style={styles.openingHoursRow} key={key}>
+                    <View style={styles.openingHoursIcon}></View>
+                    <View style={styles.openingHoursDay}>
+                      <Text style={styles.openingHoursDay}>
                         {item.feeName[0].toUpperCase() +
                           item.feeName.substring(1)}
-                        {"    "}£{item.feeAmount.toFixed(2)}
                       </Text>
                     </View>
-                  );
-                })
-              ) : (
-                <View>
-                  <Text>No information available</Text>
-                </View>
-              )}
-            </View>
-            {visitorInfo.admissionFees.map((item, key) => {
-              return (
-                <View style={styles.openingHoursRow} key={key}>
-                  <View style={styles.openingHoursIcon}></View>
-                  <View style={styles.openingHoursDay}>
-                    <Text style={styles.openingHoursDay}>
-                      {item.feeName[0].toUpperCase() +
-                        item.feeName.substring(1)}
-                    </Text>
+                    <View style={styles.openingHoursTimes}>
+                      <Text style={styles.openingHoursTimes}>
+                        £{item.feeAmount.toFixed(2)}
+                      </Text>
+                    </View>
                   </View>
-                  <View style={styles.openingHoursTimes}>
-                    <Text style={styles.openingHoursTimes}>
-                      £{item.feeAmount.toFixed(2)}
-                    </Text>
-                  </View>
-                </View>
-              );
-            })}
+                );
+              })
+            ) : (
+              <View>
+                <Text style={styles.info}>No information available</Text>
+              </View>
+            )}
           </View>
           {/* </View> */}
           <View style={styles.headerRow}>
