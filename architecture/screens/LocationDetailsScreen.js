@@ -71,17 +71,6 @@ function LocationDetailsScreen({ route, navigation }) {
   const videoCaptions = [];
   const videoThumbnails = [];
 
-  const markerImages = {
-    // TO DO: CREATE UNIVERSITY ICON
-    university: require("../assets/icons/map-pin-university.png"),
-    education: require("../assets/icons/map-pin-generic.png"),
-    library: require("../assets/icons/map-pin-library.png"),
-    residential: require("../assets/icons/map-pin-generic.png"),
-    commercial: require("../assets/icons/map-pin-generic.png"),
-    industrial: require("../assets/icons/map-pin-generic.png"),
-  };
-  const locationIcon = ``;
-
   const authCtx = useContext(AuthContext);
 
   function renderVisitorInfo(visitorInfo, openToPublic) {
@@ -196,7 +185,10 @@ function LocationDetailsScreen({ route, navigation }) {
           <View style={styles.rowView}>
             <View style={styles.typeView}>
               {/* <Ionicons name="home-outline" size={30} /> */}
-              <Image source={{ uri: markerImages[type.toLowerCase()] }} />
+              <Image
+                source={require("../assets/icons/map-pin-university.png")}
+                style={styles.locationIcon}
+              />
             </View>
             <View style={styles.nameAddressView}>
               <Text style={styles.nameView}>{name}</Text>
@@ -348,6 +340,63 @@ function LocationDetailsScreen({ route, navigation }) {
             <View style={styles.headerRow}>
               {/* <Ionicons name="cash-outline" size={25} /> */}
               <Text style={styles.heading}>Admission Fees</Text>
+              {/* {renderOpeningTimes(visitorInfo)} */}
+              <View style={styles.headerRow}>
+                <Ionicons name="time-outline" size={25} />
+                <Text style={styles.heading}>Opening Hours</Text>
+              </View>
+              {"openingTimes" in visitorInfo ? (
+                visitorInfo.openingTimes.map((item, key) => {
+                  if (item.status === "open") {
+                    return (
+                      <View key={key}>
+                        <Text>
+                          <Ionicons name="lock-open-outline" size={25} />
+                          {item.day[0].toUpperCase() + item.day.substring(1)}
+                          {item.openFrom} - {item.closeAt}
+                        </Text>
+                      </View>
+                    );
+                  } else {
+                    return (
+                      <View key={key}>
+                        <Text>
+                          <Ionicons name="lock-closed-outline" size={25} />
+                          {item.day[0].toUpperCase() +
+                            item.day.substring(1)}{" "}
+                          Closed
+                        </Text>
+                      </View>
+                    );
+                  }
+                })
+              ) : (
+                <View>
+                  <Text>No information available</Text>
+                </View>
+              )}
+              {/* this ois the start of the admission fees stuff */}
+              <View style={styles.headerRow}>
+                <Ionicons name="cash-outline" size={25} />
+                <Text style={styles.heading}>Admission Fees</Text>
+              </View>
+              {"admissionFees" in visitorInfo ? (
+                visitorInfo.admissionFees.map((item, key) => {
+                  return (
+                    <View key={key}>
+                      <Text>
+                        {item.feeName[0].toUpperCase() +
+                          item.feeName.substring(1)}
+                        {"    "}£{item.feeAmount.toFixed(2)}
+                      </Text>
+                    </View>
+                  );
+                })
+              ) : (
+                <View>
+                  <Text>No information available</Text>
+                </View>
+              )}
             </View>
             {visitorInfo.admissionFees.map((item, key) => {
               return (
@@ -595,5 +644,9 @@ const styles = StyleSheet.create({
     color: "#222",
     fontSize: 14,
     paddingHorizontal: 20,
+  },
+  locationIcon: {
+    width: 50,
+    height: 50,
   },
 });

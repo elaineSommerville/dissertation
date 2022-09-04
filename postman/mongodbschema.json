@@ -1,0 +1,108 @@
+{
+  "_id": string,
+  "name": string,
+  "description": string,
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      number,
+      number
+    ]
+  },
+  "type": string,
+  "style": string,
+  "buildDate": number, // UNIX Timestamp
+  "architect": [
+    {
+      "name": string
+    }
+  ],
+  "visitorInfo": {
+    "uri": string,
+    "phone": string,
+    "address": string,
+    "email": string,
+    "admissionFees": [
+      {
+        "feeName": string,
+        "feeAmount": number
+      }
+    ],
+    "openingTimes": [
+      {
+        "day": string,
+        "status": string,
+        "openFrom": string, //08:00
+        "closeAt": string
+      }
+    ]
+  },
+  "images": [
+    {
+      "title": string,
+      "uri": string,
+      "width": number,
+      "height": number,
+      "altText": string,
+      "location": {
+        "type": "Ponumber",
+        "coordinates": [
+          number,
+          number
+        ]
+      },
+      "imageData": string, //base64 encoded
+      "bearing": number, // not used - intended for AR feature
+      "distance": number, // not used - intended for AR feature
+      "attitude": number, // not used - intended for AR feature
+      "submittedBy": string,
+      "submittedOn": number // UNIX time
+    }
+  ],
+  "videos": [
+    {
+      "title": string,
+      "uri": string,
+      "thumbnail": string,
+      "width": number,
+      "height": number,
+      "runTime": number, // not used
+      "format": string, // not used - e.g. mpeg-4
+      "location": {
+        "type": "Point",
+        "coordinates": [
+          number,
+          number
+        ]
+      },
+      "bearing": number, // not used - intended for AR feature
+      "distance": number, // not used - intended for AR feature
+      "attitude": number, // not used - intended for AR feature
+      "sourceDate": number, // UNIX time
+      "submittedBy": string,
+      "submittedOn": number // UNIX time
+    }
+  ],
+  "stories": [
+    {
+      "title": string,
+      "subtitle": string,
+      "uri": string,
+      "body": string,
+      "location": {
+        "type": "Ponumber",
+        "coordinates": [
+          number,
+          number
+        ]
+      },
+      "language": string, // e.g. EN
+      "sourceDate": number, // UNIX time
+      "submittedBy": string,
+      "submittedOn": number // UNIX time
+    }
+  ],
+  "submittedBy": string,
+  "submittedOn": number, // UNIX time
+  "openToPublic": boolean
+}
