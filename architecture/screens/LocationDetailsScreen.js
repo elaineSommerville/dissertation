@@ -71,6 +71,17 @@ function LocationDetailsScreen({ route, navigation }) {
   const videoCaptions = [];
   const videoThumbnails = [];
 
+  const markerImages = {
+    // TO DO: CREATE UNIVERSITY ICON
+    university: require("../assets/icons/map-pin-university.png"),
+    education: require("../assets/icons/map-pin-generic.png"),
+    library: require("../assets/icons/map-pin-library.png"),
+    residential: require("../assets/icons/map-pin-generic.png"),
+    commercial: require("../assets/icons/map-pin-generic.png"),
+    industrial: require("../assets/icons/map-pin-generic.png"),
+  };
+  const locationIcon = ``;
+
   const authCtx = useContext(AuthContext);
 
   function renderVisitorInfo(visitorInfo, openToPublic) {
@@ -184,7 +195,8 @@ function LocationDetailsScreen({ route, navigation }) {
         <ScrollView style={styles.rootContainer}>
           <View style={styles.rowView}>
             <View style={styles.typeView}>
-              <Ionicons name="home-outline" size={30} />
+              {/* <Ionicons name="home-outline" size={30} /> */}
+              <Image source={{ uri: markerImages[type.toLowerCase()] }} />
             </View>
             <View style={styles.nameAddressView}>
               <Text style={styles.nameView}>{name}</Text>
