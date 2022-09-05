@@ -27,7 +27,14 @@ function AuthStack() {
   console.log("authctx");
   console.log(authCtx.isAuthenticated);
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: { backgroundColor: "red" },
+        headerTitleStyle: { fontWeight: "bold" },
+        headerTintColor: "white",
+        contentStyle: { backgroundColor: "white" },
+      }}
+    >
       <Stack.Screen
         name="onboarding"
         component={OnboardingScreen}
