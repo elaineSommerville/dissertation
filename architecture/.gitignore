@@ -11,4 +11,5 @@ npm-debug.*
 web-build/
 
 # macOS
-.DS_Store
+*.DS_Store
+*.psd

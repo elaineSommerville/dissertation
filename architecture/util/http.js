@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // need to use IP of laptop running server when testing on phone
-const BACKEND_URL = "http://192.168.1.8:5000";
+const BACKEND_URL = "http://54.217.190.99:5000";
 // const BACKEND_URL = "http://192.168.1.9:5000";
 // const BACKEND_URL = "http://localhost:5000";
 //
