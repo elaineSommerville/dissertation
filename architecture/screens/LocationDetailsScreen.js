@@ -209,9 +209,9 @@ function LocationDetailsScreen({ route, navigation }) {
       university: require("../assets/icons/map-pin-university.png"),
       education: require("../assets/icons/map-pin-generic.png"),
       library: require("../assets/icons/map-pin-library.png"),
-      residential: require("../assets/icons/map-pin-generic.png"),
+      residential: require("../assets/icons/map-pin-residential.png"),
       commercial: require("../assets/icons/map-pin-generic.png"),
-      industrial: require("../assets/icons/map-pin-generic.png"),
+      industrial: require("../assets/icons/map-pin-industrial.png"),
     };
 
     return (
