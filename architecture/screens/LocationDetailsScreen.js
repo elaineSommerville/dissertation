@@ -511,6 +511,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
     backgroundColor: "white",
     paddingTop: 10,
+    marginBottom: 50,
   },
   nameView: {
     // fontWeight: "bold",
