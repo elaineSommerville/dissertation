@@ -1,13 +1,25 @@
-import { View, Text, Pressable, StyleSheet } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { View, Image, Text, Pressable, StyleSheet } from "react-native";
+// import { Ionicons } from "@expo/vector-icons";
 
 function LocationItem({ id, name, address, distance, type, onPress }) {
+  const markerImages = {
+    university: require("../assets/icons/map-pin-university.png"),
+    education: require("../assets/icons/map-pin-generic.png"),
+    library: require("../assets/icons/map-pin-library.png"),
+    residential: require("../assets/icons/map-pin-residential.png"),
+    commercial: require("../assets/icons/map-pin-generic.png"),
+    industrial: require("../assets/icons/map-pin-industrial.png"),
+  };
   return (
     <View style={styles.viewContainer} key={id}>
       <Pressable onPress={onPress}>
         <View style={styles.innerContainer}>
           <View style={styles.iconDistanceView}>
-            <Ionicons name="home-outline" size={30} />
+            {/* <Ionicons name="home-outline" size={30} /> */}
+            <Image
+              source={markerImages[type.toLowerCase()]}
+              style={styles.locationIcon}
+            />
             <Text>{distance} mi</Text>
           </View>
           <View style={styles.nameAddressView}>
@@ -56,5 +68,9 @@ const styles = StyleSheet.create({
   },
   innerContainer: {
     flexDirection: "row",
+  },
+  locationItem: {
+    width: 25,
+    height: 25,
   },
 });
