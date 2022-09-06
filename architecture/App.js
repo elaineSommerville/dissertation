@@ -67,9 +67,18 @@ function AuthStack() {
       <Stack.Screen
         name="map"
         component={Map}
-        options={{
+        options={({ navigation }) => ({
           title: "Map",
-        }}
+          headerRight: () => {
+            return (
+              <Button
+                title="Sign In"
+                color="white"
+                onPress={() => navigation.navigate("onboarding")}
+              />
+            );
+          },
+        })}
       />
       <Stack.Screen
         name="locationDetails"
