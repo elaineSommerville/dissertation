@@ -198,7 +198,8 @@ function AddContent({ route }) {
             />
             <Text style={styles.label}>Story</Text>
             <TextInput
-              style={styles.input}
+              multiline
+              style={[styles.input, styles.inputStory]}
               onChangeText={changeBodyHandler}
               value={body}
             />
@@ -280,5 +281,8 @@ const styles = StyleSheet.create({
     borderBottomColor: "black",
     borderBottomWidth: 2,
     backgroundColor: "white",
+  },
+  inputStory: {
+    paddingBottom: 50,
   },
 });
