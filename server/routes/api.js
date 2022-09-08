@@ -366,7 +366,7 @@ apiRoutes.route("/location/:id/video").post(function (req, response) {
     let updateDocument = "";
     updateDocument = {
       $push: {
-        images: {
+        videos: {
           title: req.body.title,
           sourceDate: req.body.date,
           videoUri: req.body.videoUri,
@@ -399,7 +399,7 @@ apiRoutes.route("/location/:id/story").post(function (req, response) {
     let updateDocument = "";
     updateDocument = {
       $push: {
-        images: {
+        stories: {
           title: req.body.title,
           sourceDate: req.body.date,
           body: req.body.body,
