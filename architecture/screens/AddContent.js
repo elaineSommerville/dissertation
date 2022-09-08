@@ -175,7 +175,7 @@ function AddContent({ route }) {
             />
           </View>
           <PrimaryButton title="Take photo" onPress={takeImageHandler} />
-          <PrimaryButton title="Upload" onPress={uploadImageHandler} />
+          <PrimaryButton title="Submit" onPress={uploadImageHandler} />
         </>
       );
       break;
@@ -198,13 +198,14 @@ function AddContent({ route }) {
             />
             <Text style={styles.label}>Story</Text>
             <TextInput
-              style={styles.input}
+              multiline
+              style={[styles.input, styles.inputStory]}
               onChangeText={changeBodyHandler}
               value={body}
             />
           </View>
           <PrimaryButton title="Take photo" onPress={takeImageHandler} />
-          <PrimaryButton title="Upload" onPress={uploadStoryHandler} />
+          <PrimaryButton title="Submit" onPress={uploadStoryHandler} />
         </>
       );
       break;
@@ -280,5 +281,8 @@ const styles = StyleSheet.create({
     borderBottomColor: "black",
     borderBottomWidth: 2,
     backgroundColor: "white",
+  },
+  inputStory: {
+    paddingBottom: 50,
   },
 });
